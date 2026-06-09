@@ -197,6 +197,19 @@ function FileIcon({ name }) {
   );
 }
 
+/* URL / globe icon */
+function GlobeIcon() {
+  return (
+    <div style={{ width: 32, height: 32, borderRadius: 6, background: '#F0FAF4', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="6.5" stroke="#38A169" strokeWidth="1.3"/>
+        <ellipse cx="8" cy="8" rx="2.8" ry="6.5" stroke="#38A169" strokeWidth="1.3"/>
+        <path d="M1.5 6h13M1.5 10h13" stroke="#38A169" strokeWidth="1.3" strokeLinecap="round"/>
+      </svg>
+    </div>
+  );
+}
+
 /* Close × button — shared between both chip variants */
 function CloseBtn({ onRemove, transparent }) {
   return (
@@ -215,7 +228,23 @@ function CloseBtn({ onRemove, transparent }) {
   );
 }
 
+function isUrl(name) { return /^https?:\/\/|^www\.|\.com|\.io|\.co|\.net|\.org/.test(name); }
+
 function AttachmentChip({ name, onRemove }) {
+  /* URL variant — globe icon */
+  if (isUrl(name)) {
+    const display = name.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    return (
+      <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', background: '#fff', border: '1px solid #E8E7E7', borderRadius: 8, overflow: 'visible', flexShrink: 0 }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 6, paddingRight: 16 }}>
+          <GlobeIcon />
+          <span style={{ fontSize: 12, fontWeight: 500, color: '#151414', whiteSpace: 'nowrap', maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis' }}>{display}</span>
+        </span>
+        {onRemove && <CloseBtn onRemove={onRemove} transparent={false} />}
+      </span>
+    );
+  }
+
   /* Image variant — Figma node 23:884 — 48×48 thumbnail */
   if (isImage(name)) {
     return (
