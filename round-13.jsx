@@ -914,8 +914,8 @@ function ImportFlow({ onClose, onImport }) {
   /* shell override — wider for this modal */
   const wideShell = { ...shell, width: 580, maxWidth: '95vw', borderRadius: 16 };
 
-  /* Harmony input style */
-  const hInput = { height: 38, boxSizing: 'border-box', padding: '0 12px', border: '1px solid #C1C2C3', borderRadius: 8, fontSize: 14, color: H_INK, outline: 'none', fontFamily: 'inherit', background: '#fff', width: '100%' };
+  /* Harmony Input component style */
+  const hInput = { height: 36, boxSizing: 'border-box', padding: '0 12px', border: '1px solid #C1C2C3', borderRadius: 24, fontSize: 14, color: '#32324D', outline: 'none', fontFamily: 'inherit', background: '#fff', width: '100%', transition: 'border-color 120ms, box-shadow 120ms' };
 
   return <Overlay><div onClick={(e) => e.stopPropagation()} style={wideShell}>
     {/* header */}
@@ -934,7 +934,7 @@ function ImportFlow({ onClose, onImport }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         <label style={{ fontSize: 14, fontWeight: 500, color: '#32324D' }}>Website URL</label>
         <div style={{ display: 'flex', gap: 8 }}>
-          <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="e.g., www.example.com" style={{ ...hInput, flex: 1, width: 'auto' }} />
+          <input className="h-input" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="e.g., www.example.com" style={{ ...hInput, flex: 1, width: 'auto' }} />
           <button className={phase === 'url' ? 'hbtn' : 'hbtn hbtn-secondary'} onClick={scan} style={{ ...(phase === 'url' ? hBtnPrimary('medium') : hBtnSecondary('medium')), flexShrink: 0 }}>{phase === 'url' ? 'Scan' : 'Re-scan'}</button>
         </div>
       </div>
