@@ -580,7 +580,12 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                   <span style={{ color: H_INK, fontWeight: 600 }}>{prompt}</span>
                   {ariaTouch ? <span> <TypewriterInline key={ariaTouch} text={ariaTouch} color="#5B7FFF" delay={600} /></span> : null}
                 </div> :
-                <div style={{ flex: 1, position: 'relative', minHeight: 180, maxHeight: 260, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ position: 'relative', maxHeight: 260, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                  {/* spacer: drives container height naturally, capped at maxHeight */}
+                  <div aria-hidden="true" style={{ padding: '24px 28px 0', fontSize: 18, lineHeight: 1.7, pointerEvents: 'none', whiteSpace: 'pre-wrap', wordBreak: 'break-word', visibility: 'hidden', minHeight: 76 }}>
+                    {prompt || ' '}
+                    {ready && ariaTouch ? <span> {ariaTouch}</span> : null}
+                  </div>
                   {/* overlay: ariaTouch in purple (absolute, pointer-events none) */}
                   <div aria-hidden="true" style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '24px 28px 0', fontSize: 18, lineHeight: 1.7, pointerEvents: 'none', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                     <span style={{ color: 'transparent' }}>{prompt}</span>
