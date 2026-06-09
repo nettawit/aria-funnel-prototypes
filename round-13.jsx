@@ -799,14 +799,14 @@ function ImportFlow({ onClose, onImport }) {
   const Opt = ({ id, title, sub, icon }) => {
     const on = sel === id;
     return (
-      <button onClick={() => setSel(id)} style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6, width: '100%', boxSizing: 'border-box', textAlign: 'left', border: `${on ? '2px' : '1.5px'} solid ${on ? '#1E1E2E' : '#E0E0EE'}`, borderRadius: 12, padding: '14px 14px 12px', background: on ? '#F7F8FA' : '#fff', cursor: 'pointer' }}>
+      <button onClick={() => setSel(id)} style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 8, width: '100%', boxSizing: 'border-box', textAlign: 'left', border: `1px solid ${on ? '#116DFF' : '#C1C2C3'}`, borderRadius: 8, padding: '12px', background: on ? '#EEF4FF' : '#fff', cursor: 'pointer', transition: 'border-color 120ms, background 120ms' }}>
         {on && (
-          <span style={{ position: 'absolute', top: -10, right: -10, width: 24, height: 24, borderRadius: '50%', background: '#1E1E2E', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 6.5L5.5 9.5L10.5 4" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          <span style={{ position: 'absolute', top: -9, right: -9, width: 20, height: 20, borderRadius: '50%', background: '#116DFF', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 0 2px #fff' }}>
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5L4.5 8L9 3" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </span>
         )}
         {icon}
-        <span style={{ display: 'block', fontSize: 14, fontWeight: 700, color: H_INK, marginTop: 2 }}>{title}</span>
+        <span style={{ display: 'block', fontSize: 14, fontWeight: 600, color: '#32324D', marginTop: 2 }}>{title}</span>
         <span style={{ display: 'block', fontSize: 12, color: H_MUTED, lineHeight: 1.4 }}>{sub}</span>
       </button>
     );
