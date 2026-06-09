@@ -694,7 +694,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                 <button className="hbtn hbtn-secondary" onClick={() => setOv('import-url')} style={{ ...hBtnSecondary('medium') }}>
                   <HIc name="globe" size={14} color="#32324D" />
                   Create from URL
-                  <span style={{ background: '#DDFBE8', borderRadius: 4, padding: '2px 5px', fontSize: 10, fontWeight: 600, color: '#2D8A4E' }}>Beta</span>
+                  <span style={{ background: '#DFF994', borderRadius: 4, padding: '2px 5px', fontSize: 10, fontWeight: 600, color: '#2D8A4E' }}>Beta</span>
                 </button>
                 <div style={{ flex: 1 }} />
                 {ready ?
