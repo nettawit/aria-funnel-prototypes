@@ -168,6 +168,41 @@ function HeadlineBody({ parts }) {
   </div>;
 }
 
+/* ---- Attachment chip (Figma design: node 23:840) ---- */
+function fileExt(name) {
+  const m = name.match(/\.(\w+)$/);
+  return m ? m[1].toUpperCase() : 'FILE';
+}
+function FileIcon({ name }) {
+  const ext = fileExt(name);
+  const colors = { PDF: '#E53E3E', JPG: '#38A169', JPEG: '#38A169', PNG: '#3182CE', MP4: '#805AD5', MOV: '#805AD5', DOC: '#2B6CB0', DOCX: '#2B6CB0' };
+  const c = colors[ext] || '#718096';
+  return (
+    <div style={{ width: 32, height: 32, borderRadius: 6, background: '#F8F6F6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <svg width="18" height="20" viewBox="0 0 18 20" fill="none">
+        <path d="M11 1H3C2.46957 1 1.96086 1.21071 1.58579 1.58579C1.21071 1.96086 1 2.46957 1 3V17C1 17.5304 1.21071 18.0391 1.58579 18.4142C1.96086 18.7893 2.46957 19 3 19H15C15.5304 19 16.0391 18.7893 16.4142 18.4142C16.7893 18.0391 17 17.5304 17 17V7L11 1Z" stroke={c} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="white"/>
+        <path d="M11 1V7H17" stroke={c} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <text x="9" y="15" textAnchor="middle" fontSize="5" fontWeight="700" fill={c} fontFamily="sans-serif">{ext.slice(0,4)}</text>
+      </svg>
+    </div>
+  );
+}
+function AttachmentChip({ name, onRemove }) {
+  return (
+    <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', background: '#fff', border: '1px solid #E8E7E7', borderRadius: 8, overflow: 'visible', flexShrink: 0 }}>
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 6, paddingRight: 16 }}>
+        <FileIcon name={name} />
+        <span style={{ fontSize: 12, fontWeight: 500, color: '#151414', whiteSpace: 'nowrap', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis' }}>{name}</span>
+      </span>
+      {onRemove && (
+        <span onClick={onRemove} style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#fff', border: '1px solid #E8E7E7', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          <svg width="6" height="6" viewBox="0 0 6 6" fill="none"><path d="M1 1L5 5M5 1L1 5" stroke="#888898" strokeWidth="1.3" strokeLinecap="round"/></svg>
+        </span>
+      )}
+    </span>
+  );
+}
+
 /* ---- template thumbnails ---- */
 const WIX_TPL = 'https://images-wixmp-530a50041672c69d335ba4cf.wixmp.com/templates/image/';
 const tImg = (id) => <img src={`${WIX_TPL}${id}/v1/fill/w_536%2Ch_302%2Cq_90%2Cusm_0.60_1.00_0.01/${id}`} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }} />;
@@ -417,10 +452,10 @@ function HomeFlow({ start = 'empty', onGenerate }) {
               {(asset || refs.length > 0 || imported) &&
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, padding: '16px 28px 6px' }}>
                   {asset && (assetFiles.length ? assetFiles : ['logo.png']).slice(0, 5).map((nm, i) =>
-                <span key={i} style={{ height: 30, padding: '0 10px 0 5px', borderRadius: 20, display: 'inline-flex', alignItems: 'center', gap: 6, background: '#F5F6FA', border: '1px solid #E6E7EF', color: '#444455', fontSize: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}><span style={{ width: 20, height: 20, borderRadius: 5, background: 'linear-gradient(135deg,#FFD9A8,#FFB36B)' }} />{nm}<span onClick={() => {const next = (assetFiles.length ? assetFiles : ['logo.png']).filter((_, idx) => idx !== i);setAssetFiles(next);if (!next.length) setAsset(false);}} style={{ color: '#AAAAAA', fontSize: 14, cursor: 'pointer' }}>×</span></span>
-                )}
-                  {asset && assetFiles.length > 5 && <span style={{ height: 30, padding: '0 12px', borderRadius: 20, display: 'inline-flex', alignItems: 'center', background: '#F5F6FA', border: '1px solid #E6E7EF', color: '#666677', fontSize: 12 }}>+{assetFiles.length - 5} more</span>}
-                  {refs.map((r, i) => <span key={i} style={{ height: 30, padding: '0 10px 0 5px', borderRadius: 20, display: 'inline-flex', alignItems: 'center', gap: 6, background: '#F5F6FA', border: '1px solid #E6E7EF', color: '#444455', fontSize: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}><span style={{ width: 20, height: 20, borderRadius: 5, background: '#EDE9FF', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><HIc name="link" size={11} color="#7B5CF0" /></span>{r}<span onClick={() => setRefs(prev => prev.filter((_, idx) => idx !== i))} style={{ color: '#AAAAAA', fontSize: 14, cursor: 'pointer' }}>×</span></span>)}
+                    <AttachmentChip key={i} name={nm} onRemove={() => { const next = (assetFiles.length ? assetFiles : ['logo.png']).filter((_, idx) => idx !== i); setAssetFiles(next); if (!next.length) setAsset(false); }} />
+                  )}
+                  {asset && assetFiles.length > 5 && <span style={{ height: 30, padding: '0 12px', borderRadius: 8, display: 'inline-flex', alignItems: 'center', background: '#F5F6FA', border: '1px solid #E8E7E7', color: '#666677', fontSize: 12 }}>+{assetFiles.length - 5} more</span>}
+                  {refs.map((r, i) => <AttachmentChip key={i} name={r} onRemove={() => setRefs(prev => prev.filter((_, idx) => idx !== i))} />)}
                   {imported && <span style={{ height: 30, padding: '0 10px 0 5px', borderRadius: 20, display: 'inline-flex', alignItems: 'center', gap: 6, background: '#F5F6FA', border: '1px solid #E6E7EF', color: '#444455', fontSize: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}><span style={{ width: 20, height: 20, borderRadius: 5, background: '#E0F7EC', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><HIc name="globe" size={11} color="#1A8A5A" /></span>mysite.myshopify.com<span onClick={() => setImported(false)} style={{ color: '#AAAAAA', fontSize: 14, cursor: 'pointer' }}>×</span></span>}
                 </div>
               }
