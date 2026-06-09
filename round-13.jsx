@@ -1012,54 +1012,128 @@ function ExtractModal({ onClose, onAdd }) {
 }
 
 function UrlModal({ onClose, onAdd, onBack }) {
-  const [fetched, setFetched] = hs(false);
+  const [phase, setPhase] = hs('url'); // 'url' | 'scanning' | 'results' | 'error'
   const [url, setUrl] = hs('');
-  const displayHost = url.replace(/^https?:\/\//, '').replace(/\/.*$/, '') || 'example.com';
-  return <Overlay><div onClick={(e) => e.stopPropagation()} style={shell}>
-    <ModalHead icon="link" iconBg="#EEF2FF" iconFg="#3D5ECC" title="From URL" sub="Paste a link to a site you love" onClose={onClose} onBack={onBack} />
-    <div style={{ padding: '20px 22px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-      {!fetched && <>
-      <div style={{ display: 'flex', gap: 8 }}>
-        <input value={url} onChange={e => setUrl(e.target.value)} placeholder="https://example.com" style={{ flex: 1, padding: '10px 14px', border: '1.5px solid #E0E0EE', borderRadius: 10, fontSize: 13, color: H_INK, outline: 'none', fontFamily: 'inherit' }} />
-        <button onClick={() => setFetched(true)} style={{ padding: '10px 18px', background: H_BLUE, border: 0, borderRadius: 10, fontSize: 12, fontWeight: 600, color: '#fff', cursor: 'pointer', fontFamily: 'inherit' }}>Fetch</button>
+  const isValidUrl = (u) => /^(https?:\/\/)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/.test(u.trim());
+  const host = url.replace(/^https?:\/\//, '').replace(/\/.*$/, '') || '';
+  const fetch_ = () => {
+    if (!isValidUrl(url)) { setPhase('error'); return; }
+    setPhase('scanning');
+    setTimeout(() => setPhase('results'), 1600);
+  };
+  const hInput = { height: 38, boxSizing: 'border-box', padding: '0 12px', border: `1px solid ${phase === 'error' ? '#D32F2F' : '#C1C2C3'}`, borderRadius: 8, fontSize: 14, color: '#32324D', outline: 'none', fontFamily: 'inherit', background: '#fff', width: '100%', transition: 'border-color 120ms, box-shadow 120ms' };
+  const wideShell = { ...shell, width: 520, maxWidth: '95vw', borderRadius: 16 };
+
+  return <Overlay><div onClick={(e) => e.stopPropagation()} style={wideShell}>
+    {/* header */}
+    <div style={{ padding: '24px 24px 20px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', borderBottom: '1px solid #F0F0F4' }}>
+      <div>
+        <div style={{ fontSize: 18, fontWeight: 700, color: H_INK }}>Add a reference site</div>
+        <div style={{ fontSize: 13, color: H_MUTED, marginTop: 3 }}>Paste a link to a site you love — Aria will match its style.</div>
+      </div>
+      <button onClick={onClose} style={{ border: 0, background: 'transparent', cursor: 'pointer', padding: 6, marginTop: -2, borderRadius: 6, color: '#888898', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3L13 13M13 3L3 13" stroke="#888898" strokeWidth="1.8" strokeLinecap="round"/></svg>
+      </button>
+    </div>
+
+    <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+      {/* URL input row — always visible */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <label style={{ fontSize: 13, fontWeight: 500, color: '#32324D' }}>Website URL</label>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <input
+            className="h-input"
+            value={url}
+            onChange={(e) => { setUrl(e.target.value); if (phase === 'error') setPhase('url'); }}
+            onKeyDown={(e) => e.key === 'Enter' && fetch_()}
+            placeholder="e.g. www.example.com"
+            style={{ ...hInput, flex: 1, width: 'auto' }}
+          />
+          <button
+            className="hbtn"
+            onClick={fetch_}
+            disabled={!url.trim()}
+            style={{ ...hBtnPrimary('medium'), flexShrink: 0, opacity: url.trim() ? 1 : 0.4, cursor: url.trim() ? 'pointer' : 'not-allowed' }}
+          >
+            {phase === 'results' ? 'Re-fetch' : 'Fetch'}
+          </button>
+        </div>
+        {phase === 'error' && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: '#FFF3F3', border: '1px solid #FFCDD2', borderRadius: 8 }}>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#D32F2F" strokeWidth="1.4"/><path d="M8 4.5V8.5" stroke="#D32F2F" strokeWidth="1.6" strokeLinecap="round"/><circle cx="8" cy="11" r="1" fill="#D32F2F"/></svg>
+            <span style={{ fontSize: 12, color: '#B71C1C' }}>Couldn't reach this site. Check the URL and try again.</span>
+          </div>
+        )}
       </div>
 
-      {/* or browse Wix Inspirations */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ flex: 1, height: 1, background: '#F0F0F8' }} />
-        <span style={{ fontSize: 11, color: '#AAAAAA' }}>or browse for inspiration</span>
-        <span style={{ flex: 1, height: 1, background: '#F0F0F8' }} />
-      </div>
-      <button onClick={() => {}} style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', boxSizing: 'border-box', textAlign: 'left', padding: '12px 14px', border: '1px solid #E0E0EC', borderRadius: 10, background: '#fff', cursor: 'pointer', fontFamily: 'inherit' }}>
-        <span style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, width: 44, height: 36, flexShrink: 0 }}>
-          <span style={{ borderRadius: 3, background: '#E4DDFF' }} /><span style={{ borderRadius: 3, background: '#C8D4FF' }} />
-          <span style={{ borderRadius: 3, background: '#D4EAD4' }} /><span style={{ borderRadius: 3, background: '#FFE8CC' }} />
-        </span>
-        <span style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: 'block', fontSize: 13, fontWeight: 600, color: H_INK }}>Wix Inspirations</span>
-          <span style={{ display: 'block', fontSize: 11, color: H_MUTED, marginTop: 2 }}>Browse curated sites by style &amp; category</span>
-        </span>
-        <HIc name="chevronRight" size={14} color="#AAAAAA" />
-      </button>
-      </>}
-      {fetched &&
-        <div style={{ border: '1px solid #E0E0EE', borderRadius: 12, overflow: 'hidden' }}>
-          <div style={{ height: 80, background: '#F4F6FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ opacity: 0.4 }}><HIc name="image" size={18} color="#AAAACC" /></span></div>
-          <div style={{ padding: '10px 12px', borderTop: '1px solid #EEEEEE' }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: H_INK }}>{displayHost}</div>
-            <div style={{ fontSize: 11, color: H_MUTED }}>Page title goes here</div>
+      {/* scanning */}
+      {phase === 'scanning' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ width: '100%', height: 4, background: '#EEEEF6', borderRadius: 4, overflow: 'hidden' }}>
+            <div style={{ width: '65%', height: '100%', background: '#2F5DFF', borderRadius: 4, transition: 'width 1.4s ease' }} />
+          </div>
+          <div style={{ fontSize: 13, color: H_MUTED }}>Fetching {host}…</div>
+        </div>
+      )}
+
+      {/* results — preview card */}
+      {phase === 'results' && (
+        <div style={{ border: '1px solid #C1C2C3', borderRadius: 10, overflow: 'hidden', animation: 'h-fade 300ms ease' }}>
+          {/* browser chrome */}
+          <div style={{ height: 20, background: '#F5F6FA', display: 'flex', alignItems: 'center', gap: 5, padding: '0 10px', borderBottom: '1px solid #E8E8F0' }}>
+            {[0,1,2].map(i => <span key={i} style={{ width: 7, height: 7, borderRadius: '50%', background: ['#FF5F57','#FEBC2E','#28C840'][i] }} />)}
+            <span style={{ flex: 1, height: 14, background: '#EAEBF0', borderRadius: 4, marginLeft: 8 }} />
+          </div>
+          {/* screenshot placeholder */}
+          <div style={{ height: 120, background: 'linear-gradient(135deg, #EEF4FF 0%, #E8EEFF 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, opacity: 0.5 }}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="#6B7AE8" strokeWidth="1.5"/><circle cx="8.5" cy="8.5" r="1.5" fill="#6B7AE8"/><path d="M3 15L8 10L13 15M11 13L15 9L21 15" stroke="#6B7AE8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <span style={{ fontSize: 11, color: '#6B7AE8', fontWeight: 500 }}>{host}</span>
+            </div>
+          </div>
+          {/* site info */}
+          <div style={{ padding: '10px 14px', background: '#fff', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 28, height: 28, borderRadius: 6, background: '#EEF4FF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#3D5ECC" strokeWidth="1.3"/><path d="M8 1.5C8 1.5 5.5 4.5 5.5 8C5.5 11.5 8 14.5 8 14.5M8 1.5C8 1.5 10.5 4.5 10.5 8C10.5 11.5 8 14.5 8 14.5M1.5 8H14.5" stroke="#3D5ECC" strokeWidth="1.3" strokeLinecap="round"/></svg>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: H_INK }}>{host}</div>
+              <div style={{ fontSize: 11, color: H_MUTED }}>Reference site added</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8L6.5 11.5L13 5" stroke="#2D8A4E" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </div>
         </div>
-        }
-      {fetched &&
-        <div>
-        <div style={{ fontSize: 10, fontWeight: 600, color: H_MUTED, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8 }}>Instructions (optional)</div>
-        <textarea placeholder="e.g. Match the visual style of this site…" style={{ width: '100%', boxSizing: 'border-box', height: 60, resize: 'none', padding: '10px 12px', border: '1.5px solid #E0E0EE', borderRadius: 10, fontSize: 12, color: H_INK, outline: 'none', fontFamily: 'inherit' }} />
-      </div>
-        }
+      )}
+
+      {/* or browse — shown only in url/error phase */}
+      {(phase === 'url' || phase === 'error') && (
+        <>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ flex: 1, height: 1, background: '#F0F0F8' }} />
+            <span style={{ fontSize: 11, color: '#AAAAAA' }}>or browse for inspiration</span>
+            <span style={{ flex: 1, height: 1, background: '#F0F0F8' }} />
+          </div>
+          <button onClick={() => {}} style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', boxSizing: 'border-box', textAlign: 'left', padding: '12px 14px', border: '1px solid #E0E0EC', borderRadius: 10, background: '#fff', cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, width: 40, height: 32, flexShrink: 0 }}>
+              <span style={{ borderRadius: 3, background: '#E4DDFF' }} /><span style={{ borderRadius: 3, background: '#C8D4FF' }} />
+              <span style={{ borderRadius: 3, background: '#D4EAD4' }} /><span style={{ borderRadius: 3, background: '#FFE8CC' }} />
+            </span>
+            <span style={{ flex: 1, minWidth: 0 }}>
+              <span style={{ display: 'block', fontSize: 13, fontWeight: 600, color: H_INK }}>Wix Inspirations</span>
+              <span style={{ display: 'block', fontSize: 11, color: H_MUTED, marginTop: 2 }}>Browse curated sites by style &amp; category</span>
+            </span>
+            <HIc name="chevronRight" size={14} color="#AAAAAA" />
+          </button>
+        </>
+      )}
     </div>
-    <div style={{ padding: '12px 22px 18px', borderTop: '1px solid #EEEEEE', display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-      <button onClick={onClose} className="hbtn hbtn-secondary" style={cancelB}>Cancel</button><button onClick={() => onAdd(displayHost)} className="hbtn" style={addB}>Add reference &rarr;</button>
+
+    {/* footer */}
+    <div style={{ padding: '12px 24px 20px', borderTop: '1px solid #F0F0F4', display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+      <button onClick={onClose} className="hbtn hbtn-secondary" style={cancelB}>Cancel</button>
+      {phase === 'results' && (
+        <button onClick={() => onAdd(host)} className="hbtn" style={addB}>Add reference →</button>
+      )}
     </div>
   </div></Overlay>;
 }
