@@ -567,12 +567,6 @@ function HomeFlow({ start = 'empty', onGenerate }) {
               }
 
               {/* Undo toast */}
-              {undoItem && (
-                <div style={{ position: 'absolute', bottom: 64, left: '50%', transform: 'translateX(-50%)', zIndex: 50, background: undoItem.restore ? '#32324D' : '#B71C1C', color: '#fff', borderRadius: 8, padding: '10px 16px', fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 4px 20px rgba(0,0,0,0.18)', whiteSpace: 'nowrap', animation: 'fadeInUp 200ms ease-out' }}>
-                  <span>{undoItem.restore ? <>Removed <b style={{ fontWeight: 700 }}>{undoItem.label.length > 28 ? undoItem.label.slice(0, 28) + '…' : undoItem.label}</b></> : undoItem.label}</span>
-                  {undoItem.restore && <button onClick={() => { undoItem.restore(); clearTimeout(undoTimerRef.current); setUndoItem(null); }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.35)', borderRadius: 6, color: '#fff', fontSize: 12, fontWeight: 600, padding: '3px 10px', cursor: 'pointer' }}>Undo</button>}
-                </div>
-              )}
 
               {/* text area / transition view */}
               {transitioning ?
@@ -758,6 +752,14 @@ function HomeFlow({ start = 'empty', onGenerate }) {
         {ov === 'extract' && <ExtractModal onClose={closeOverlay} onAdd={confirmAsset} />}
         {ov === 'url' && <UrlModal onClose={closeOverlay} onAdd={confirmRef} onBack={() => setOv('dropdown')} />}
         {ov === 'import-url' && <ImportFlow onClose={closeOverlay} onImport={() => {setImported(true);if (screen === 'empty') setScreen('text');setOv(null);}} />}
+
+        {/* Undo toast — fixed at bottom of viewport */}
+        {undoItem && (
+          <div style={{ position: 'fixed', bottom: 32, left: '50%', transform: 'translateX(-50%)', zIndex: 9999, background: undoItem.restore ? '#32324D' : '#B71C1C', color: '#fff', borderRadius: 8, padding: '10px 16px', fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 4px 20px rgba(0,0,0,0.22)', whiteSpace: 'nowrap', animation: 'fadeInUp 200ms ease-out' }}>
+            <span>{undoItem.restore ? <>Removed <b style={{ fontWeight: 700 }}>{undoItem.label.length > 28 ? undoItem.label.slice(0, 28) + '…' : undoItem.label}</b></> : undoItem.label}</span>
+            {undoItem.restore && <button onClick={() => { undoItem.restore(); clearTimeout(undoTimerRef.current); setUndoItem(null); }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.35)', borderRadius: 6, color: '#fff', fontSize: 12, fontWeight: 600, padding: '3px 10px', cursor: 'pointer' }}>Undo</button>}
+          </div>
+        )}
       </div>
     </div>);
 
