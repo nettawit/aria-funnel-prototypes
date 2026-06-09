@@ -231,16 +231,19 @@ function CloseBtn({ onRemove, transparent }) {
 function isUrl(name) { return /^https?:\/\/|^www\.|\.com|\.io|\.co|\.net|\.org/.test(name); }
 
 function AttachmentChip({ name, onRemove }) {
+  const [hovered, setHovered] = hs(false);
+  const hoverProps = onRemove ? { onMouseEnter: () => setHovered(true), onMouseLeave: () => setHovered(false) } : {};
+
   /* URL variant — globe icon */
   if (isUrl(name)) {
     const display = name.replace(/^https?:\/\//, '').replace(/\/$/, '');
     return (
-      <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', background: '#fff', border: '1px solid #E8E7E7', borderRadius: 8, overflow: 'visible', flexShrink: 0 }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 6, paddingRight: 16 }}>
+      <span {...hoverProps} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', background: '#fff', border: '1px solid #E8E7E7', borderRadius: 8, overflow: 'visible', flexShrink: 0 }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 6, paddingRight: onRemove ? 16 : 10 }}>
           <GlobeIcon />
           <span style={{ fontSize: 12, fontWeight: 500, color: '#151414', whiteSpace: 'nowrap', maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis' }}>{display}</span>
         </span>
-        {onRemove && <CloseBtn onRemove={onRemove} transparent={false} />}
+        {onRemove && hovered && <CloseBtn onRemove={onRemove} transparent={false} />}
       </span>
     );
   }
@@ -248,28 +251,36 @@ function AttachmentChip({ name, onRemove }) {
   /* Image variant — Figma node 23:884 — 48×48 thumbnail */
   if (isImage(name)) {
     return (
-      <span style={{ position: 'relative', display: 'inline-flex', width: 48, height: 48, borderRadius: 8, border: '1px solid rgba(19,23,32,0.1)', overflow: 'hidden', flexShrink: 0 }}>
+      <span {...hoverProps} style={{ position: 'relative', display: 'inline-flex', width: 48, height: 48, borderRadius: 8, border: '1px solid rgba(19,23,32,0.1)', overflow: 'hidden', flexShrink: 0 }}>
         <img src={imgSrc(name)} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-        {onRemove && <CloseBtn onRemove={onRemove} transparent={true} />}
+        {onRemove && hovered && <CloseBtn onRemove={onRemove} transparent={true} />}
       </span>
     );
   }
 
   /* File variant — Figma node 23:840 */
   return (
-    <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', background: '#fff', border: '1px solid #E8E7E7', borderRadius: 8, overflow: 'visible', flexShrink: 0 }}>
-      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 6, paddingRight: 16 }}>
+    <span {...hoverProps} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', background: '#fff', border: '1px solid #E8E7E7', borderRadius: 8, overflow: 'visible', flexShrink: 0 }}>
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 6, paddingRight: onRemove ? 16 : 10 }}>
         <FileIcon name={name} />
         <span style={{ fontSize: 12, fontWeight: 500, color: '#151414', whiteSpace: 'nowrap', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis' }}>{name}</span>
       </span>
-      {onRemove && <CloseBtn onRemove={onRemove} transparent={false} />}
+      {onRemove && hovered && <CloseBtn onRemove={onRemove} transparent={false} />}
     </span>
   );
 }
 
 /* ---- template thumbnails ---- */
 const WIX_TPL = 'https://images-wixmp-530a50041672c69d335ba4cf.wixmp.com/templates/image/';
-const tImg = (id) => <img src={`${WIX_TPL}${id}/v1/fill/w_536%2Ch_302%2Cq_90%2Cusm_0.60_1.00_0.01/${id}`} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }} />;
+function TplImg({ id }) {
+  const [loaded, setLoaded] = hs(false);
+  return (
+    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+      {!loaded && <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg,#e8eaf6 25%,#d0d4f0 50%,#e8eaf6 75%)', backgroundSize: '200% 100%', animation: 'h-shimmer 1.4s linear infinite' }} />}
+      <img src={`${WIX_TPL}${id}/v1/fill/w_536%2Ch_302%2Cq_90%2Cusm_0.60_1.00_0.01/${id}`} onLoad={() => setLoaded(true)} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block', opacity: loaded ? 1 : 0, transition: 'opacity 300ms ease' }} />
+    </div>
+  );
+}
 
 function TBrowser({ bar = '#fff', children }) {
   return (
@@ -401,6 +412,22 @@ function HomeFlow({ start = 'empty', onGenerate }) {
   const [dragOver, setDragOver] = hs(false);
   const [undoItem, setUndoItem] = hs(null); // { label, restore: fn }
   const undoTimerRef = hr(null);
+  const [continuing, setContinuing] = hs(false);
+  const [emptyKey, setEmptyKey] = hs(0); // increments to re-trigger empty state animation
+
+  // Auto-focus textarea when entering text screen
+  he(() => {
+    if ((screen === 'text' || screen === 'empty') && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [screen]);
+
+  // Escape closes any open overlay/modal
+  he(() => {
+    const handler = (e) => { if (e.key === 'Escape') setOv(null); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
 
   const showUndo = (label, restore) => {
     clearTimeout(undoTimerRef.current);
@@ -418,7 +445,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
       const invalid = files.filter(f => !ALLOWED_EXTS.includes((f.name.split('.').pop() || '').toUpperCase()));
       if (valid.length) {
         const names = valid.map(f => f.name);
-        setAsset(true); setAssetFiles(prev => [...prev, ...names]);
+        setAsset(true); setAssetFiles(prev => { const newOnes = names.filter(n => !prev.includes(n)); return [...prev, ...newOnes]; });
         if (screen === 'empty') setScreen('text');
       }
       if (invalid.length) {
@@ -481,16 +508,28 @@ function HomeFlow({ start = 'empty', onGenerate }) {
   };
 
   const handleContinue = () => {
-    const key = (detectName(prompt) ? '1' : '0') + (detectType(prompt) ? '1' : '0') + (detectUnique(prompt) ? '1' : '0');
-    setReadyKey(key);
-    const touch = buildAriaTouch();
-    setAriaTouch(touch);
-    setScreen('transitioning');
-    setTimeout(() => setScreen('ready'), touch ? 3200 : 1800);
+    if (continuing) return;
+    setContinuing(true);
+    setTimeout(() => {
+      setContinuing(false);
+      const key = (detectName(prompt) ? '1' : '0') + (detectType(prompt) ? '1' : '0') + (detectUnique(prompt) ? '1' : '0');
+      setReadyKey(key);
+      const touch = buildAriaTouch();
+      setAriaTouch(touch);
+      setScreen('transitioning');
+      setTimeout(() => setScreen('ready'), touch ? 3200 : 1800);
+    }, 600);
   };
 
   const closeOverlay = () => setOv(null);
-  const confirmAsset = (names) => {setAsset(true);const arr = Array.isArray(names) ? names : ['logo.png'];setAssetFiles(prev => [...prev, ...arr]);setAssetCount(prev => prev + arr.length);if (screen === 'empty') setScreen('text');setOv(null);};
+  const confirmAsset = (names) => {
+    setAsset(true);
+    const arr = Array.isArray(names) ? names : ['logo.png'];
+    setAssetFiles(prev => { const newOnes = arr.filter(n => !prev.includes(n)); return [...prev, ...newOnes]; });
+    setAssetCount(prev => prev + arr.length);
+    if (screen === 'empty') setScreen('text');
+    setOv(null);
+  };
   const confirmRef = (url) => {
     const u = url || 'example.com';
     if (!refs.includes(u)) { setRefs(prev => [...prev, u]); if (screen === 'empty') setScreen('text'); }
@@ -602,7 +641,21 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                       }
                       setPrompt(val);
                       if (screen === 'empty' && val) setScreen('text');
-                      if (!val && !asset && !refs.length && !imported) setScreen('empty');
+                      if (!val && !asset && !refs.length && !imported) { setScreen('empty'); setEmptyKey(k => k + 1); }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey && !ov) {
+                        const canContinue = prompt.trim() || asset || refs.length || imported;
+                        if (canContinue && !continuing) { e.preventDefault(); handleContinue(); }
+                      }
+                    }}
+                    onPaste={(e) => {
+                      const pasted = e.clipboardData.getData('text').trim();
+                      if (/^(https?:\/\/|www\.)[^\s]+$/.test(pasted) || /^[a-zA-Z0-9-]+\.(?:com|io|co|net|org|dev|app|shop|ly)$/.test(pasted)) {
+                        e.preventDefault();
+                        const host = pasted.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+                        if (!refs.includes(host)) { setRefs(prev => [...prev, host]); if (screen === 'empty') setScreen('text'); }
+                      }
                     }}
                     onFocus={() => {
                       // Merge ariaTouch into editable prompt when user clicks in
@@ -648,7 +701,9 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                 <button className="hbtn" onClick={() => onGenerate && onGenerate(prompt)} style={{ ...hBtnPrimary('medium') }}>Generate site with Aria <HIc name="arrowUp" size={14} color="#fff" /></button> :
                 transitioning ?
                 <button disabled className="hbtn" style={{ ...hBtnPrimary('medium'), opacity: 0.5, cursor: 'not-allowed' }}>Thinking… <span style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.4)', borderTopColor: '#fff', display: 'inline-block', animation: 'h-spin 0.8s linear infinite' }} /></button> :
-                <button className="hbtn" onClick={prompt.trim() || asset || refs.length || imported ? handleContinue : undefined} disabled={!prompt.trim() && !asset && !refs.length && !imported} style={{ ...hBtnPrimary('medium'), opacity: prompt.trim() || asset || refs.length || imported ? 1 : 0.4, cursor: prompt.trim() || asset || refs.length || imported ? 'pointer' : 'not-allowed' }}>Continue with Aria →</button>
+                <button className="hbtn" onClick={prompt.trim() || asset || refs.length || imported ? handleContinue : undefined} disabled={(!prompt.trim() && !asset && !refs.length && !imported) || continuing} style={{ ...hBtnPrimary('medium'), opacity: prompt.trim() || asset || refs.length || imported ? 1 : 0.4, cursor: prompt.trim() || asset || refs.length || imported ? 'pointer' : 'not-allowed', minWidth: 172, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                  {continuing ? <><span style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.4)', borderTopColor: '#fff', display: 'inline-block', animation: 'h-spin 0.8s linear infinite' }} />Loading…</> : 'Continue with Aria →'}
+                </button>
                 }
               </div>
             </div>
@@ -721,7 +776,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                 <div key={i}>
                     <div className="hf-tcard" style={{ position: 'relative', height: 188, borderRadius: 12, border: `1px solid ${ready ? '#C8D4FF' : '#E8E8F0'}`, overflow: 'hidden', boxShadow: '0 2px 10px rgba(80,80,140,0.06)', cursor: 'pointer' }}>
                       <TBrowser bar={ready ? '#F0F2FF' : '#fff'}>
-                        {tImg(imgId)}
+                        <TplImg id={imgId} />
                       </TBrowser>
                       {/* WIX Harmony badge removed */}
                       <div className="hf-scrim" style={{ position: 'absolute', inset: 0, zIndex: 2, background: 'rgba(0,0,0,0.50)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: 0, transition: 'opacity 180ms ease', pointerEvents: 'none' }}>
