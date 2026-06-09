@@ -915,7 +915,7 @@ function ImportFlow({ onClose, onImport }) {
   const wideShell = { ...shell, width: 580, maxWidth: '95vw', borderRadius: 16 };
 
   /* Harmony Input component style */
-  const hInput = { height: 36, boxSizing: 'border-box', padding: '0 12px', border: '1px solid #C1C2C3', borderRadius: 24, fontSize: 14, color: '#32324D', outline: 'none', fontFamily: 'inherit', background: '#fff', width: '100%', transition: 'border-color 120ms, box-shadow 120ms' };
+  const hInput = { height: 36, boxSizing: 'border-box', padding: '0 12px', border: '1px solid #C1C2C3', borderRadius: 8, fontSize: 14, color: '#32324D', outline: 'none', fontFamily: 'inherit', background: '#fff', width: '100%', transition: 'border-color 120ms, box-shadow 120ms' };
 
   return <Overlay><div onClick={(e) => e.stopPropagation()} style={wideShell}>
     {/* header */}
