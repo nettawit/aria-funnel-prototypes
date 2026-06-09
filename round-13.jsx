@@ -396,6 +396,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
   const [refHover, setRefHover] = hs(false);
   const [scanPct, setScanPct] = hs(60);
   const [showMore, setShowMore] = hs(false);
+  const [ideasSet, setIdeasSet] = hs(0);
   const textareaRef = hr(null);
   const [dragOver, setDragOver] = hs(false);
   const [undoItem, setUndoItem] = hs(null); // { label, restore: fn }
@@ -658,16 +659,34 @@ function HomeFlow({ start = 'empty', onGenerate }) {
               <div style={{ fontSize: 14, color: H_MUTED, marginBottom: 10 }}>Try an example prompt</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
                 {[
-                ['Fashion store', "A sustainable women's fashion boutique focused on minimalist, ethically sourced slow-fashion pieces. Every item is curated for style-conscious women who value quality over quantity."],
-                ['Online course', "An online course teaching productivity and time management to overwhelmed professionals. What makes it special is a signature 5-day sprint method — students see real results in one week."],
-                ['Wellness service', "A wellness coaching practice offering holistic sessions — nutrition, movement and mindset for busy women. What makes it unique is a personalized 1:1 approach with weekly accountability check-ins."],
-                ['Consulting website', "A boutique consultancy helping early-stage startups build their go-to-market strategy. We specialize in SaaS, fintech and consumer brands, with 10 years of hands-on experience."],
-                ['Community hub', "A membership hub for indie makers and creative entrepreneurs — weekly live sessions, a curated resource library and a tight-knit community focused on sustainable growth."],
-                ['Creative portfolio', "A design studio portfolio specializing in bold identity systems for hospitality and lifestyle brands. The work balances innovative typography with refined, editorial details and authentic storytelling."]].
-                map(([t, full], i) =>
+                  [
+                    ['Fashion store', "A sustainable women's fashion boutique focused on minimalist, ethically sourced slow-fashion pieces. Every item is curated for style-conscious women who value quality over quantity."],
+                    ['Online course', "An online course teaching productivity and time management to overwhelmed professionals. What makes it special is a signature 5-day sprint method — students see real results in one week."],
+                    ['Wellness service', "A wellness coaching practice offering holistic sessions — nutrition, movement and mindset for busy women. What makes it unique is a personalized 1:1 approach with weekly accountability check-ins."],
+                    ['Consulting website', "A boutique consultancy helping early-stage startups build their go-to-market strategy. We specialize in SaaS, fintech and consumer brands, with 10 years of hands-on experience."],
+                    ['Community hub', "A membership hub for indie makers and creative entrepreneurs — weekly live sessions, a curated resource library and a tight-knit community focused on sustainable growth."],
+                    ['Creative portfolio', "A design studio portfolio specializing in bold identity systems for hospitality and lifestyle brands. The work balances innovative typography with refined, editorial details and authentic storytelling."],
+                  ],
+                  [
+                    ['Photography studio', "A wedding and portrait photography studio with a documentary, candid style. Known for capturing genuine emotion, working with natural light, and delivering timeless galleries."],
+                    ['Coffee shop', "A specialty coffee shop and roastery in the heart of the city. We source single-origin beans directly from farmers, brew with precision, and host weekly tasting events."],
+                    ['Law firm', "A boutique law firm specializing in startup legal services — incorporation, fundraising, IP protection and employment contracts. Flat-fee packages designed for founders."],
+                    ['Fitness coach', "An online personal training platform for busy parents who want to get fit in 30 minutes a day. Programs are home-friendly, progressive, and backed by a supportive community."],
+                    ['Interior design', "An interior design studio creating calm, functional spaces for modern families. We blend Scandinavian minimalism with warm textures and sustainable materials."],
+                    ['Music school', "A local music school offering lessons in guitar, piano and vocals for all ages. Small class sizes, flexible scheduling, and a focus on playing music you actually love."],
+                  ],
+                  [
+                    ['Event planner', "A boutique event planning studio specializing in intimate weddings and corporate retreats. We handle every detail — from venue scouting to day-of coordination — so clients can be present."],
+                    ['Tech startup', "A B2B SaaS tool that helps operations teams automate their recurring workflows without writing code. Backed by Y Combinator, used by 500+ companies in 30 countries."],
+                    ['Bakery', "A home-based bakery specializing in custom celebration cakes and allergen-friendly treats. All orders are made to order using organic, locally sourced ingredients."],
+                    ['Real estate', "A real estate agency focused on helping first-time buyers navigate the Tel Aviv market. We offer bilingual service, transparent pricing, and end-to-end support."],
+                    ['Kids education', "An after-school enrichment program teaching coding and robotics to kids aged 7–14. Project-based, self-paced, and designed to spark curiosity and problem-solving confidence."],
+                    ['Therapist', "A licensed psychotherapist offering CBT and mindfulness-based sessions for adults dealing with anxiety, burnout, and life transitions. Online and in-person in Berlin."],
+                  ],
+                ][ideasSet % 3].map(([t, full], i) =>
                 <button key={i} onClick={() => {setPrompt(full);setScreen('text');}} className="hf-chip" style={{ height: 40, padding: '0 18px', border: '1px solid rgba(255,255,255,0.7)', borderRadius: 10, fontSize: 14, color: '#2C2C2C', cursor: 'pointer', fontFamily: 'inherit', background: 'rgba(255,255,255,0.5)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', transition: 'background 120ms ease, border-color 120ms ease, color 120ms ease' }}>{t}</button>
                 )}
-                <button className="hf-chip hf-chip-more" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 40, padding: '0 18px', background: 'rgba(255,255,255,0.5)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.7)', borderRadius: 10, fontSize: 14, color: H_BLUE, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', transition: 'background 120ms ease, border-color 120ms ease' }}><HIc name="refresh" size={14} color={H_BLUE} /> More Ideas</button>
+                <button onClick={() => setIdeasSet(s => s + 1)} className="hf-chip hf-chip-more" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 40, padding: '0 18px', background: 'rgba(255,255,255,0.5)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.7)', borderRadius: 10, fontSize: 14, color: H_BLUE, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', transition: 'background 120ms ease, border-color 120ms ease' }}><HIc name="refresh" size={14} color={H_BLUE} /> More ideas</button>
               </div>
             </div>}
 
@@ -677,7 +696,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                 <div style={{ fontSize: 20, fontWeight: 600, color: H_INK }}>
                   {ready ? 'Or start with a relevant template for your business' : 'Or you can start with stunning templates'}
                 </div>
-                <div style={{ fontSize: 14, color: H_MUTED, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}>See All <HIc name="chevronRight" size={14} color={H_MUTED} /></div>
+                <a href="https://www.wix.com/website/templates" target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, color: H_BLUE, fontWeight: 500, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>See all <HIc name="chevronRight" size={14} color={H_BLUE} /></a>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
                 {transitioning ? [0,1,2,3,4,5,6,7,8].map(i =>
