@@ -397,6 +397,30 @@ function HomeFlow({ start = 'empty', onGenerate }) {
   const [scanPct, setScanPct] = hs(60);
   const [showMore, setShowMore] = hs(false);
   const textareaRef = hr(null);
+  const [dragOver, setDragOver] = hs(false);
+  const [undoItem, setUndoItem] = hs(null); // { label, restore: fn }
+  const undoTimerRef = hr(null);
+
+  const showUndo = (label, restore) => {
+    clearTimeout(undoTimerRef.current);
+    setUndoItem({ label, restore });
+    undoTimerRef.current = setTimeout(() => setUndoItem(null), 4000);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault(); setDragOver(false);
+    const files = Array.from(e.dataTransfer.files);
+    const urlText = e.dataTransfer.getData('text/uri-list') || e.dataTransfer.getData('text/plain');
+    if (files.length) {
+      const names = files.map(f => f.name);
+      setAsset(true); setAssetFiles(prev => [...prev, ...names]);
+      if (screen === 'empty') setScreen('text');
+    } else if (urlText && urlText.startsWith('http')) {
+      const host = urlText.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+      setRefs(prev => [...prev, host]);
+      if (screen === 'empty') setScreen('text');
+    }
+  };
 
   he(() => {}, [ov]);
 
@@ -511,18 +535,32 @@ function HomeFlow({ start = 'empty', onGenerate }) {
             </div>
 
             {/* input card */}
-            <div className={isTyping && !ready && !transitioning ? 'hf-typing-card' : ''} style={{ background: (ready || transitioning) ? '#F4F6FF' : 'rgba(255,255,255,0.5)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', minHeight: 360, borderRadius: 16, border: `1px solid ${(ready || transitioning) ? '#B8C5FF' : 'rgba(255,255,255,0.7)'}`, boxShadow: (ready || transitioning) ? '0 4px 32px rgba(80,100,220,0.14)' : '0 2px 12px rgba(100,100,180,0.07)', transition: 'background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease', position: 'relative', zIndex: ov === 'dropdown' ? 30 : 1, display: 'flex', flexDirection: 'column' }}>
+            <div
+              className={isTyping && !ready && !transitioning ? 'hf-typing-card' : ''}
+              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={handleDrop}
+              style={{ background: dragOver ? '#F0F4FF' : (ready || transitioning) ? '#F4F6FF' : 'rgba(255,255,255,0.5)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', minHeight: 360, borderRadius: 16, border: dragOver ? '2px dashed #2F5DFF' : `1px solid ${(ready || transitioning) ? '#B8C5FF' : 'rgba(255,255,255,0.7)'}`, boxShadow: (ready || transitioning) ? '0 4px 32px rgba(80,100,220,0.14)' : '0 2px 12px rgba(100,100,180,0.07)', transition: 'background 0.3s ease, border-color 0.2s ease, box-shadow 0.6s ease', position: 'relative', zIndex: ov === 'dropdown' ? 30 : 1, display: 'flex', flexDirection: 'column' }}>
+              {dragOver && <div style={{ position: 'absolute', inset: 0, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, pointerEvents: 'none' }}><div style={{ background: 'rgba(47,93,255,0.06)', borderRadius: 16, padding: '12px 24px', fontSize: 14, fontWeight: 600, color: '#2F5DFF' }}>Drop files or URLs here</div></div>}
               {/* attachment chips */}
               {(asset || refs.length > 0 || imported) &&
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, padding: '16px 28px 6px' }}>
                   {asset && (assetFiles.length ? assetFiles : ['logo.png']).slice(0, 5).map((nm, i) =>
-                    <AttachmentChip key={i} name={nm} onRemove={() => { const next = (assetFiles.length ? assetFiles : ['logo.png']).filter((_, idx) => idx !== i); setAssetFiles(next); if (!next.length) setAsset(false); }} />
+                    <AttachmentChip key={i} name={nm} onRemove={() => { const removed = nm; const removedIndex = i; const next = (assetFiles.length ? assetFiles : ['logo.png']).filter((_, idx) => idx !== removedIndex); setAssetFiles(next); if (!next.length) setAsset(false); showUndo(removed, () => { setAssetFiles(prev => { const arr = [...prev]; arr.splice(removedIndex, 0, removed); return arr; }); setAsset(true); }); }} />
                   )}
                   {asset && assetFiles.length > 5 && <span style={{ height: 30, padding: '0 12px', borderRadius: 8, display: 'inline-flex', alignItems: 'center', background: '#F5F6FA', border: '1px solid #E8E7E7', color: '#666677', fontSize: 12 }}>+{assetFiles.length - 5} more</span>}
-                  {refs.map((r, i) => <AttachmentChip key={i} name={r} onRemove={() => setRefs(prev => prev.filter((_, idx) => idx !== i))} />)}
-                  {imported && <AttachmentChip name="mysite.myshopify.com" onRemove={() => setImported(false)} />}
+                  {refs.map((r, i) => <AttachmentChip key={i} name={r} onRemove={() => { const removed = r; const idx = i; setRefs(prev => prev.filter((_, j) => j !== idx)); showUndo(removed, () => setRefs(prev => { const arr = [...prev]; arr.splice(idx, 0, removed); return arr; })); }} />)}
+                  {imported && <AttachmentChip name="mysite.myshopify.com" onRemove={() => { setImported(false); showUndo('mysite.myshopify.com', () => setImported(true)); }} />}
                 </div>
               }
+
+              {/* Undo toast */}
+              {undoItem && (
+                <div style={{ position: 'absolute', bottom: 64, left: '50%', transform: 'translateX(-50%)', zIndex: 50, background: '#32324D', color: '#fff', borderRadius: 8, padding: '10px 16px', fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 4px 20px rgba(0,0,0,0.18)', whiteSpace: 'nowrap', animation: 'fadeInUp 200ms ease-out' }}>
+                  <span>Removed <b style={{ fontWeight: 700 }}>{undoItem.label.length > 28 ? undoItem.label.slice(0, 28) + '…' : undoItem.label}</b></span>
+                  <button onClick={() => { undoItem.restore(); clearTimeout(undoTimerRef.current); setUndoItem(null); }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.35)', borderRadius: 6, color: '#fff', fontSize: 12, fontWeight: 600, padding: '3px 10px', cursor: 'pointer' }}>Undo</button>
+                </div>
+              )}
 
               {/* text area / transition view */}
               {transitioning ?
@@ -557,7 +595,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                       }
                     }}
                     placeholder={ready ? '' : 'Tell me about your site, or drop a URL to get started…'}
-                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', boxSizing: 'border-box', border: 0, outline: 'none', resize: 'none', background: 'transparent', padding: '24px 28px', fontSize: 18, lineHeight: 1.7, color: H_INK, fontFamily: 'inherit' }} />
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', boxSizing: 'border-box', border: 0, outline: 'none', resize: 'none', background: 'transparent', padding: '24px 28px', fontSize: 18, lineHeight: 1.7, color: H_INK, fontFamily: 'inherit', overflowY: 'auto' }} />
                 </div>
               }
 
