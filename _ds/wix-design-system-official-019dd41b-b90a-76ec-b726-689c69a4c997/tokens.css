@@ -1,0 +1,13 @@
+/* ============================================================
+   tokens.css — backward-compat alias.
+
+   This file exists so older imports (`<link href="tokens.css">`)
+   keep working. It re-exports the Studio 2.0 theme by default,
+   since that is the original WDS theme this kit shipped with.
+
+   For NEW work, prefer importing a theme file directly:
+     <link rel="stylesheet" href="tokens-harmony.css">
+     <link rel="stylesheet" href="tokens-studio-2.css">
+     <link rel="stylesheet" href="tokens-classic.css">
+   ============================================================ */
+@import url('./tokens-studio-2.css');

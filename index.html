@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Aria · Home Screen Flow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400..800&family=Wix+Madefor+Text:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="_ds/wix-design-system-official-019dd41b-b90a-76ec-b726-689c69a4c997/tokens-harmony.css">
+  <link rel="stylesheet" href="wds/colors_and_type.css">
+  <script src="wds/icons.js" defer></script>
+  <script src="_ds/wix-design-system-official-019dd41b-b90a-76ec-b726-689c69a4c997/_ds_bundle.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; background: linear-gradient(180deg, #ffffff 0%, #eaf0fb 55%, #d8e5f5 100%) fixed; font-family: var(--wds-font-family-default, "Wix Madefor Text", "Madefor", sans-serif); }
+    #root { width: 100%; height: 100%; }
+
+    /* Typing animated border */
+    @property --hf-angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+    @keyframes hf-border-spin {
+      to { --hf-angle: 360deg; }
+    }
+    .hf-typing-card {
+      border-color: transparent !important;
+      background-clip: padding-box;
+      position: relative;
+    }
+    .hf-typing-card::before {
+      content: '';
+      position: absolute;
+      inset: -1.5px;
+      border-radius: 17px;
+      background: conic-gradient(from var(--hf-angle), #a78bfa, #6366f1, #2F5DFF, #38bdf8, #a78bfa);
+      animation: hf-border-spin 2.4s linear infinite;
+      z-index: -1;
+      opacity: 0.7;
+    }
+    .hf-typing-card::after {
+      content: '';
+      position: absolute;
+      inset: 1px;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(20px);
+      z-index: -1;
+    }
+
+    /* Example prompt chips */
+    .hf-chip:hover { background: rgba(255,255,255,0.85) !important; border-color: rgba(0,0,0,0.18) !important; }
+    .hf-chip:active { background: rgba(255,255,255,1) !important; transform: scale(0.98); }
+    .hf-chip-more:hover { color: #1a3ecc !important; }
+
+    /* Harmony button hover states */
+    .hbtn { transition: filter 120ms ease, box-shadow 120ms ease; }
+    .hbtn:hover:not(:disabled) { filter: brightness(0.92); }
+    .hbtn:active:not(:disabled) { filter: brightness(0.85); transform: scale(0.99); }
+    .hbtn-secondary:hover:not(:disabled) { background: #F4F4F4 !important; filter: none; }
+    .hbtn-secondary:active:not(:disabled) { background: #E8E8E8 !important; filter: none; }
+    .hbtn-ghost:hover:not(:disabled) { background: rgba(47,93,255,0.07) !important; filter: none; }
+    .hbtn-ghost:active:not(:disabled) { background: rgba(47,93,255,0.14) !important; filter: none; }
+  </style>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <style id="force-madefor">
+    :root {
+      --wds-font-family-default: "Wix Madefor Text", sans-serif !important;
+      --wds-font-family-display: "Wix Madefor Display", sans-serif !important;
+    }
+    *, body, button, input, textarea, select { font-family: "Wix Madefor Text", sans-serif !important; }
+  </style>
+</head>
+<body style="background: linear-gradient(180deg, #ffffff 0%, #eaf0fb 55%, #d8e5f5 100%) no-repeat fixed; background-size: 100% 100vh">
+  <div id="root"></div>
+  <script type="text/babel" src="round-13.jsx"></script>
+  <script type="text/babel">
+    const E = window.HarmonyApp;
+    ReactDOM.createRoot(document.getElementById('root')).render(<E />);
+  </script>
+</body>
+</html>

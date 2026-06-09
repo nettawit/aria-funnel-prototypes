@@ -1,0 +1,220 @@
+/* ============================================================
+   WDS — Colors & Type foundation
+   Loads Madefor via the bundled WOFF2, sets sensible defaults,
+   and exposes type utility classes. Theme tokens are NOT
+   imported here — link a theme tokens file FIRST, then this
+   file:
+
+     <link rel="stylesheet" href="tokens-harmony.css">  (or tokens-studio-2.css, tokens-classic.css)
+     <link rel="stylesheet" href="colors_and_type.css">
+     <body> ... </body>
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   Type utility classes (text-*, heading-*, caption-1) live in
+   the sibling typography.css file.
+   ------------------------------------------------------------ */
+@import url("./typography.css");
+
+/* ------------------------------------------------------------
+   Madefor — Wix's proprietary type family.
+   Loaded as a variable font (weight axis only) from the
+   bundled WOFF2. One file covers Regular → Bold via font-weight.
+   ------------------------------------------------------------ */
+@font-face {
+  font-family: "Wix Madefor Text";
+  src: url("./fonts/WixMadeforTextVF_W_Wght.8022447a.woff2") format("woff2-variations"),
+       url("./fonts/WixMadeforTextVF_W_Wght.8022447a.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Wix Madefor Display";
+  src: url("./fonts/WixMadeforDisplayVF_W_Wght.ab35e4df.woff2") format("woff2-variations"),
+       url("./fonts/WixMadeforDisplayVF_W_Wght.ab35e4df.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Theme tokens are imported by the page itself — see header. */
+
+/* ------------------------------------------------------------
+   Map Madefor → WDS font-family tokens.
+   The token CSS references the bare names "Madefor" /
+   "Madefor Display"; we expose the loaded variable font under
+   both keys so all heading + body tokens resolve correctly.
+   "Wix Madefor Display" is not a separate file — the variable
+   "Text" font handles every weight we need.
+   ------------------------------------------------------------ */
+:root {
+  --wds-font-family-default:
+    "Wix Madefor Text", "Helvetica Neue", Helvetica, Arial,
+    "メイリオ", "meiryo", "ヒラギノ角ゴ pro w3",
+    "hiragino kaku gothic pro", sans-serif;
+
+  --wds-font-family-display:
+    "Wix Madefor Display", "Wix Madefor Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* ------------------------------------------------------------
+   Base reset + body
+   ------------------------------------------------------------ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--wds-color-fill-surface-sunken);
+  color: var(--wds-color-text-standard-primary);
+  font-family: var(--wds-font-family-default);
+  font-size: var(--wds-font-size-body-medium);
+  line-height: var(--wds-font-line-height-300);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ------------------------------------------------------------
+   Headings — bind to WDS heading semantic tokens.
+   ------------------------------------------------------------ */
+h1, .wds-heading-1 {
+  font-family: var(--wds-font-family-display);
+  font-size: var(--wds-font-size-heading-1);          /* 32px */
+  font-weight: var(--wds-font-weight-heading-1);       /* 400 */
+  line-height: var(--wds-font-line-height-500);        /* 30px */
+  letter-spacing: var(--wds-font-letter-spacing-heading-1);
+  color: var(--wds-color-text-standard-primary);
+  margin: 0;
+}
+
+h2, .wds-heading-2 {
+  font-family: var(--wds-font-family-display);
+  font-size: var(--wds-font-size-heading-2);          /* 24px */
+  font-weight: var(--wds-font-weight-heading-2);       /* 500 */
+  line-height: var(--wds-font-line-height-500);
+  letter-spacing: var(--wds-font-letter-spacing-heading-2);
+  color: var(--wds-color-text-standard-primary);
+  margin: 0;
+}
+
+h3, .wds-heading-3 {
+  font-family: var(--wds-font-family-default);
+  font-size: var(--wds-font-size-heading-3);          /* 16px */
+  font-weight: var(--wds-font-weight-heading-3);       /* 600 */
+  line-height: var(--wds-font-line-height-300);
+  letter-spacing: var(--wds-font-letter-spacing-heading-3);
+  color: var(--wds-color-text-standard-primary);
+  margin: 0;
+}
+
+h4, .wds-heading-4 {
+  font-family: var(--wds-font-family-default);
+  font-size: var(--wds-font-size-heading-4);          /* 16px */
+  font-weight: var(--wds-font-weight-heading-4);       /* 600 */
+  line-height: var(--wds-font-line-height-300);
+  letter-spacing: var(--wds-font-letter-spacing-heading-4);
+  color: var(--wds-color-text-standard-primary);
+  margin: 0;
+}
+
+h5, .wds-heading-5 {
+  font-family: var(--wds-font-family-default);
+  font-size: var(--wds-font-size-heading-5);          /* 10px */
+  font-weight: var(--wds-font-weight-heading-5);       /* 600 */
+  line-height: var(--wds-font-line-height-100);
+  letter-spacing: var(--wds-font-letter-spacing-heading-5);
+  text-transform: uppercase;
+  color: var(--wds-color-text-standard-primary);
+  margin: 0;
+}
+
+h6, .wds-heading-6 {
+  font-family: var(--wds-font-family-default);
+  font-size: var(--wds-font-size-heading-6);          /* 12px */
+  font-weight: var(--wds-font-weight-heading-6);       /* 400 */
+  line-height: var(--wds-font-line-height-200);
+  letter-spacing: var(--wds-font-letter-spacing-heading-6);
+  color: var(--wds-color-text-standard-secondary);
+  margin: 0;
+}
+
+/* ------------------------------------------------------------
+   Body text utilities
+   ------------------------------------------------------------ */
+.wds-body-medium {
+  font-family: var(--wds-font-family-default);
+  font-size: var(--wds-font-size-body-medium);   /* 16px */
+  line-height: var(--wds-font-line-height-300);
+}
+
+.wds-body-small {
+  font-family: var(--wds-font-family-default);
+  font-size: var(--wds-font-size-body-small);    /* 14px */
+  line-height: var(--wds-font-line-height-200);
+}
+
+.wds-body-tiny {
+  font-family: var(--wds-font-family-default);
+  font-size: var(--wds-font-size-body-tiny);     /* 12px */
+  line-height: var(--wds-font-line-height-100);
+}
+
+.wds-body-extra-tiny {
+  font-family: var(--wds-font-family-default);
+  font-size: var(--wds-font-size-body-extra-tiny); /* 10px */
+  line-height: var(--wds-font-line-height-100);
+}
+
+.wds-body-bold {
+  font-weight: var(--wds-font-weight-body-bold); /* 600 */
+}
+
+/* ------------------------------------------------------------
+   Text color utilities
+   ------------------------------------------------------------ */
+.wds-text-primary       { color: var(--wds-color-text-standard-primary); }
+.wds-text-secondary     { color: var(--wds-color-text-standard-secondary); }
+.wds-text-disabled      { color: var(--wds-color-text-disabled); }
+.wds-text-placeholder   { color: var(--wds-color-text-placeholder); }
+.wds-text-link          { color: var(--wds-color-text-primary); }
+.wds-text-success       { color: var(--wds-color-text-success); }
+.wds-text-warning       { color: var(--wds-color-text-warning); }
+.wds-text-urgent        { color: var(--wds-color-text-urgent); }
+.wds-text-destructive   { color: var(--wds-color-text-destructive); }
+
+/* ------------------------------------------------------------
+   Link styling
+   ------------------------------------------------------------ */
+a {
+  color: var(--wds-color-text-primary);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+/* ------------------------------------------------------------
+   Selection
+   ------------------------------------------------------------ */
+::selection {
+  background: var(--wds-color-blue-300);
+  color: var(--wds-color-text-standard-primary);
+}
+
+/* ------------------------------------------------------------
+   Focus ring
+   ------------------------------------------------------------ */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--wds-shadow-focus-standard);
+  border-radius: var(--wds-border-radius-200);
+}
