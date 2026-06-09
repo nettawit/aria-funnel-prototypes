@@ -813,58 +813,62 @@ function ImportFlow({ onClose, onImport }) {
   };
 
   /* shell override — wider for this modal */
-  const wideShell = { ...shell, width: 600, maxWidth: '95vw' };
+  const wideShell = { ...shell, width: 580, maxWidth: '95vw', borderRadius: 16 };
+
+  /* Harmony input style */
+  const hInput = { height: 38, boxSizing: 'border-box', padding: '0 12px', border: '1px solid #C1C2C3', borderRadius: 8, fontSize: 14, color: H_INK, outline: 'none', fontFamily: 'inherit', background: '#fff', width: '100%' };
 
   return <Overlay><div onClick={(e) => e.stopPropagation()} style={wideShell}>
     {/* header */}
-    <div style={{ padding: '22px 24px 0', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+    <div style={{ padding: '24px 24px 0', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
       <div>
-        <div style={{ fontSize: 20, fontWeight: 700, color: H_INK, lineHeight: 1.2 }}>Create from URL</div>
-        <div style={{ fontSize: 13, color: H_MUTED, marginTop: 4 }}>Use any website as a starting point for your new site.</div>
+        <div style={{ fontSize: 20, fontWeight: 700, color: H_INK, lineHeight: 1.3 }}>Create from URL</div>
+        <div style={{ fontSize: 14, color: H_MUTED, marginTop: 4 }}>Use any website as a starting point for your new site.</div>
       </div>
-      <button onClick={onClose} style={{ border: 0, background: 'transparent', cursor: 'pointer', color: '#888898', padding: 4, marginTop: -2 }}>
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 4L14 14M14 4L4 14" stroke="#888898" strokeWidth="1.8" strokeLinecap="round"/></svg>
+      <button onClick={onClose} style={{ border: 0, background: 'transparent', cursor: 'pointer', padding: 6, marginTop: -2, borderRadius: 6, color: '#888898', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3L13 13M13 3L3 13" stroke="#888898" strokeWidth="1.8" strokeLinecap="round"/></svg>
       </button>
     </div>
 
-    <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 18 }}>
       {/* URL label + input */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        <label style={{ fontSize: 13, fontWeight: 600, color: H_INK }}>Website URL</label>
+        <label style={{ fontSize: 14, fontWeight: 500, color: '#32324D' }}>Website URL</label>
         <div style={{ display: 'flex', gap: 8 }}>
-          <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="e.g., www.example.com" style={{ flex: 1, padding: '10px 14px', border: '1.5px solid #E0E0EE', borderRadius: 10, fontSize: 13, color: H_INK, outline: 'none', fontFamily: 'inherit', background: '#fff' }} />
-          <button className="hbtn" onClick={scan} style={{ ...hBtnPrimary('medium') }}>{phase === 'url' ? 'Scan' : 'Re-scan'}</button>
+          <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="e.g., www.example.com" style={{ ...hInput, flex: 1, width: 'auto' }} />
+          <button className="hbtn" onClick={scan} style={{ ...hBtnPrimary('medium'), flexShrink: 0 }}>{phase === 'url' ? 'Scan' : 'Re-scan'}</button>
         </div>
       </div>
 
       {/* scanning */}
       {phase === 'scanning' &&
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <div style={{ width: '100%', height: 5, background: '#EEEEF6', borderRadius: 6, overflow: 'hidden' }}><div style={{ width: '60%', height: '100%', background: H_BLUE, borderRadius: 6 }} /></div>
-          <div style={{ fontSize: 12, color: H_MUTED }}>Analyzing {host} — reading category, products, images and prices…</div>
+          <div style={{ width: '100%', height: 4, background: '#EEEEF6', borderRadius: 4, overflow: 'hidden' }}><div style={{ width: '60%', height: '100%', background: '#2F5DFF', borderRadius: 4, transition: 'width 0.4s' }} /></div>
+          <div style={{ fontSize: 13, color: H_MUTED }}>Analyzing {host}…</div>
         </div>
       }
 
       {/* results */}
       {phase === 'results' &&
-        <div style={{ display: 'flex', gap: 16, alignItems: 'stretch' }}>
+        <div style={{ display: 'flex', gap: 14, alignItems: 'stretch' }}>
 
-          {/* LEFT — site preview + shopify tag + aria note */}
-          <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <div style={{ background: '#F0F1F5', borderRadius: 12, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ height: 14, background: '#E4E5EA', display: 'flex', alignItems: 'center', gap: 4, padding: '0 8px', flexShrink: 0 }}>
-                {['#FF5F57','#FEBC2E','#28C840'].map((c) => <span key={c} style={{ width: 5, height: 5, borderRadius: '50%', background: c }} />)}
+          {/* LEFT — site preview */}
+          <div style={{ flex: '0 0 220px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ border: '1px solid #E0E0EE', borderRadius: 10, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+              {/* browser bar */}
+              <div style={{ height: 16, background: '#F3F4F6', display: 'flex', alignItems: 'center', gap: 4, padding: '0 8px', flexShrink: 0, borderBottom: '1px solid #EBEBEB' }}>
+                {['#FF5F57','#FEBC2E','#28C840'].map((c) => <span key={c} style={{ width: 6, height: 6, borderRadius: '50%', background: c }} />)}
               </div>
-              <div style={{ height: 100, background: '#E0E2E8' }} />
-              <div style={{ padding: '8px 10px', background: '#F0F1F5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6 }}>
-                <span style={{ fontSize: 10, fontWeight: 600, color: '#666677', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{host}</span>
-                <span style={{ background: '#EDFAF3', borderRadius: 5, padding: '2px 6px', fontSize: 9, fontWeight: 700, color: '#1A8A5A', flexShrink: 0 }}>Shopify</span>
+              <div style={{ height: 108, background: '#E8EAF0' }} />
+              <div style={{ padding: '8px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, borderTop: '1px solid #EBEBEB' }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: '#32324D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{host}</span>
+                <span style={{ background: '#EDFAF3', borderRadius: 4, padding: '2px 7px', fontSize: 10, fontWeight: 700, color: '#1A8A5A', flexShrink: 0 }}>Shopify</span>
               </div>
             </div>
-            {/* Aria capability note */}
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6 }}>
-              <HAria size={16} style={{ marginTop: 1, flexShrink: 0 }} />
-              <span style={{ fontSize: 11, color: '#666677', lineHeight: 1.5 }}>I can analyze your category, products, images and prices.</span>
+            {/* Aria note */}
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 7 }}>
+              <HAria size={15} style={{ marginTop: 1, flexShrink: 0 }} />
+              <span style={{ fontSize: 12, color: '#666677', lineHeight: 1.5 }}>I can analyze your category, products, images and prices.</span>
             </div>
           </div>
 
@@ -878,14 +882,15 @@ function ImportFlow({ onClose, onImport }) {
 
       {/* legal banner */}
       {phase === 'results' &&
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 9, background: '#F3F4F8', borderRadius: 10, padding: '10px 14px' }}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, marginTop: 1 }}><circle cx="8" cy="8" r="7" stroke="#888898" strokeWidth="1.3"/><path d="M8 7.5V11" stroke="#888898" strokeWidth="1.5" strokeLinecap="round"/><circle cx="8" cy="5.5" r="0.75" fill="#888898"/></svg>
-          <span style={{ fontSize: 12, color: '#666677', lineHeight: 1.5 }}>Only use URLs where you have rights to the content.</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 9, background: '#F3F4F8', borderRadius: 8, padding: '10px 14px' }}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}><circle cx="8" cy="8" r="7" stroke="#888898" strokeWidth="1.3"/><path d="M8 7.5V11" stroke="#888898" strokeWidth="1.5" strokeLinecap="round"/><circle cx="8" cy="5.5" r="0.75" fill="#888898"/></svg>
+          <span style={{ fontSize: 13, color: '#666677', lineHeight: 1.5 }}>Only use URLs where you have rights to the content.</span>
         </div>
       }
     </div>
 
-    <div style={{ padding: '10px 24px 20px', display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+    {/* footer */}
+    <div style={{ padding: '12px 24px 20px', borderTop: '1px solid #F0F0F4', display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
       <button onClick={onClose} className="hbtn hbtn-secondary" style={cancelB}>Cancel</button>
       <button onClick={onImport} disabled={phase !== 'results'} className="hbtn" style={{ ...addB, opacity: phase === 'results' ? 1 : 0.4, cursor: phase === 'results' ? 'pointer' : 'not-allowed' }}>Add</button>
     </div>
