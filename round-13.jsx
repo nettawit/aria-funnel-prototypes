@@ -270,6 +270,31 @@ function AttachmentChip({ name, onRemove }) {
   );
 }
 
+/* ---- folder chip (10+ files) ---- */
+function FolderChip({ files, onRemoveFile }) {
+  const [open, setOpen] = hs(false);
+  return (
+    <span style={{ position: 'relative' }}>
+      <button onClick={() => setOpen(o => !o)} style={{ height: 36, padding: '0 12px', borderRadius: 8, background: open ? '#EEF4FF' : '#F5F6FA', border: `1px solid ${open ? '#116DFF' : '#E0E0E8'}`, color: open ? '#116DFF' : '#32324D', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, transition: 'background 120ms, border-color 120ms, color 120ms', fontFamily: 'inherit' }}>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 3.5C1 2.67 1.67 2 2.5 2H5.25L6.75 3.5H11.5C12.33 3.5 13 4.17 13 5V10.5C13 11.33 12.33 12 11.5 12H2.5C1.67 12 1 11.33 1 10.5V3.5Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/></svg>
+        +{files.length} more
+      </button>
+      {open && (
+        <div style={{ position: 'absolute', bottom: 'calc(100% + 8px)', left: 0, background: '#fff', borderRadius: 10, border: '1px solid #E8E7E7', boxShadow: '0 4px 20px rgba(0,0,0,0.10)', padding: 6, minWidth: 220, zIndex: 40, animation: 'h-menu 140ms ease-out' }}>
+          <div style={{ fontSize: 10, fontWeight: 600, color: '#AAA', textTransform: 'uppercase', letterSpacing: '0.08em', padding: '6px 10px 4px' }}>{files.length} files</div>
+          {files.map((f, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 8px', borderRadius: 6 }}>
+              <FileIcon name={f} />
+              <span style={{ flex: 1, fontSize: 12, color: '#32324D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f}</span>
+              <button onClick={() => onRemoveFile(i)} style={{ border: 0, background: 'none', cursor: 'pointer', color: '#AAAAAA', fontSize: 16, lineHeight: 1, padding: '0 2px' }}>×</button>
+            </div>
+          ))}
+        </div>
+      )}
+    </span>
+  );
+}
+
 /* ---- template thumbnails ---- */
 const WIX_TPL = 'https://images-wixmp-530a50041672c69d335ba4cf.wixmp.com/templates/image/';
 function TplImg({ id }) {
@@ -413,7 +438,9 @@ function HomeFlow({ start = 'empty', onGenerate }) {
   const [undoItem, setUndoItem] = hs(null); // { label, restore: fn }
   const undoTimerRef = hr(null);
   const [continuing, setContinuing] = hs(false);
-  const [emptyKey, setEmptyKey] = hs(0); // increments to re-trigger empty state animation
+  const [emptyKey, setEmptyKey] = hs(0);
+  const [placeholderKey, setPlaceholderKey] = hs(0);
+  const prevPlaceholderRef = hr('');
 
   // Auto-focus textarea when entering text screen
   he(() => {
@@ -421,6 +448,15 @@ function HomeFlow({ start = 'empty', onGenerate }) {
       textareaRef.current.focus();
     }
   }, [screen]);
+
+  // Placeholder crossfade trigger
+  const placeholderText = ready ? '' : (asset || refs.length || imported) ? 'You can add here instructions to Aria…' : 'Tell me about your site, or drop a URL to get started…';
+  he(() => {
+    if (placeholderText !== prevPlaceholderRef.current) {
+      prevPlaceholderRef.current = placeholderText;
+      setPlaceholderKey(k => k + 1);
+    }
+  }, [placeholderText]);
 
   // Escape closes any open overlay/modal
   he(() => {
@@ -591,15 +627,27 @@ function HomeFlow({ start = 'empty', onGenerate }) {
               onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
               onDragLeave={() => setDragOver(false)}
               onDrop={handleDrop}
-              style={{ background: dragOver ? '#F0F4FF' : (ready || transitioning) ? '#F4F6FF' : 'rgba(255,255,255,0.5)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', minHeight: 360, borderRadius: 16, border: dragOver ? '2px dashed #2F5DFF' : `1px solid ${(ready || transitioning) ? '#B8C5FF' : 'rgba(255,255,255,0.7)'}`, boxShadow: (ready || transitioning) ? '0 4px 32px rgba(80,100,220,0.14)' : '0 2px 12px rgba(100,100,180,0.07)', transition: 'background 0.3s ease, border-color 0.2s ease, box-shadow 0.6s ease', position: 'relative', zIndex: ov === 'dropdown' ? 30 : 1, display: 'flex', flexDirection: 'column' }}>
+              style={{ background: dragOver ? '#F0F4FF' : (ready || transitioning) ? '#F4F6FF' : 'rgba(255,255,255,0.5)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', minHeight: 360, borderRadius: 16, border: dragOver ? '2px dashed #2F5DFF' : `1px solid ${(ready || transitioning) ? '#B8C5FF' : 'rgba(255,255,255,0.7)'}`, boxShadow: (ready || transitioning) ? '0 4px 32px rgba(80,100,220,0.14)' : '0 2px 12px rgba(100,100,180,0.07)', transition: 'background 0.3s ease, border-color 0.2s ease, box-shadow 0.6s ease', position: 'relative', zIndex: ov === 'dropdown' ? 30 : 1, display: 'flex', flexDirection: 'column', animation: 'card-enter 420ms ease-out' }}>
               {dragOver && <div style={{ position: 'absolute', inset: 0, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, pointerEvents: 'none' }}><div style={{ background: 'rgba(47,93,255,0.06)', borderRadius: 16, padding: '12px 24px', fontSize: 14, fontWeight: 600, color: '#2F5DFF' }}>Drop files or URLs here</div></div>}
               {/* attachment chips */}
               {(asset || refs.length > 0 || imported) &&
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, padding: '16px 28px 6px' }}>
-                  {asset && (assetFiles.length ? assetFiles : ['logo.png']).slice(0, 5).map((nm, i) =>
+                  {asset && (assetFiles.length ? assetFiles : ['logo.png']).slice(0, 9).map((nm, i) =>
                     <AttachmentChip key={i} name={nm} onRemove={() => { const removed = nm; const removedIndex = i; const next = (assetFiles.length ? assetFiles : ['logo.png']).filter((_, idx) => idx !== removedIndex); setAssetFiles(next); if (!next.length) setAsset(false); showUndo(removed, () => { setAssetFiles(prev => { const arr = [...prev]; arr.splice(removedIndex, 0, removed); return arr; }); setAsset(true); }); }} />
                   )}
-                  {asset && assetFiles.length > 5 && <span style={{ height: 30, padding: '0 12px', borderRadius: 8, display: 'inline-flex', alignItems: 'center', background: '#F5F6FA', border: '1px solid #E8E7E7', color: '#666677', fontSize: 12 }}>+{assetFiles.length - 5} more</span>}
+                  {asset && assetFiles.length > 9 && (
+                    <FolderChip
+                      files={assetFiles.slice(9)}
+                      onRemoveFile={(idx) => {
+                        const realIdx = 9 + idx;
+                        const removed = assetFiles[realIdx];
+                        const next = assetFiles.filter((_, i) => i !== realIdx);
+                        setAssetFiles(next);
+                        if (!next.length) setAsset(false);
+                        showUndo(removed, () => { setAssetFiles(prev => { const arr = [...prev]; arr.splice(realIdx, 0, removed); return arr; }); setAsset(true); });
+                      }}
+                    />
+                  )}
                   {refs.map((r, i) => <AttachmentChip key={i} name={r} onRemove={() => { const removed = r; const idx = i; setRefs(prev => prev.filter((_, j) => j !== idx)); showUndo(removed, () => setRefs(prev => { const arr = [...prev]; arr.splice(idx, 0, removed); return arr; })); }} />)}
                   {imported && <AttachmentChip name="mysite.myshopify.com" onRemove={() => { setImported(false); showUndo('mysite.myshopify.com', () => setImported(true)); }} />}
                 </div>
@@ -613,7 +661,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                   <span style={{ color: H_INK, fontWeight: 600 }}>{prompt}</span>
                   {ariaTouch ? <span> <TypewriterInline key={ariaTouch} text={ariaTouch} color="#5B7FFF" delay={600} /></span> : null}
                 </div> :
-                <div style={{ flex: 1, position: 'relative', minHeight: 200, display: 'flex', flexDirection: 'column' }}>
+                <div style={{ flex: 1, position: 'relative', minHeight: 200, maxHeight: 280, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                   {/* visual spacer for height */}
                   <div aria-hidden="true" style={{ padding: '24px 28px 0', fontSize: 18, lineHeight: 1.7, pointerEvents: 'none', whiteSpace: 'pre-wrap', wordBreak: 'break-word', visibility: 'hidden' }}>
                     {prompt || ' '}
@@ -667,8 +715,14 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                         setTimeout(() => { if (textareaRef.current) { textareaRef.current.setSelectionRange(merged.length, merged.length); } }, 0);
                       }
                     }}
-                    placeholder={ready ? '' : (asset || refs.length || imported) ? 'You can add here instructions to Aria…' : 'Tell me about your site, or drop a URL to get started…'}
-                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', boxSizing: 'border-box', border: 0, outline: 'none', resize: 'none', background: 'transparent', padding: '24px 28px', fontSize: 18, lineHeight: 1.7, color: H_INK, fontFamily: 'inherit', overflowY: 'auto' }} />
+                    placeholder=""
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', boxSizing: 'border-box', border: 0, outline: 'none', resize: 'none', background: 'transparent', padding: '24px 28px', fontSize: 18, lineHeight: 1.7, color: H_INK, fontFamily: 'inherit', overflowY: 'auto', zIndex: 1 }} />
+                  {/* custom placeholder with crossfade */}
+                  {!prompt && placeholderText && (
+                    <div key={placeholderKey} aria-hidden="true" style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '24px 28px 0', fontSize: 18, lineHeight: 1.7, color: '#AAAAAA', pointerEvents: 'none', animation: 'placeholder-fadein 320ms ease', zIndex: 0 }}>
+                      {placeholderText}
+                    </div>
+                  )}
                 </div>
               }
 
