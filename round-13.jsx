@@ -176,18 +176,10 @@ function fileExt(name) {
 const IMG_EXTS = ['JPG','JPEG','PNG','GIF','WEBP','SVG','HEIC'];
 function isImage(name) { return IMG_EXTS.includes(fileExt(name)); }
 
-/* Placeholder gradient per image filename (deterministic) */
-const IMG_GRADIENTS = [
-  'linear-gradient(135deg,#f6d365,#fda085)',
-  'linear-gradient(135deg,#a1c4fd,#c2e9fb)',
-  'linear-gradient(135deg,#d4fc79,#96e6a1)',
-  'linear-gradient(135deg,#f093fb,#f5576c)',
-  'linear-gradient(135deg,#4facfe,#00f2fe)',
-  'linear-gradient(135deg,#43e97b,#38f9d7)',
-];
-function imgGradient(name) {
-  let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
-  return IMG_GRADIENTS[h % IMG_GRADIENTS.length];
+/* Real photo thumbnails via picsum — seed from filename for consistency */
+function imgSrc(name) {
+  const seed = encodeURIComponent(name.replace(/\.[^.]+$/, ''));
+  return `https://picsum.photos/seed/${seed}/96/96`;
 }
 
 function FileIcon({ name }) {
@@ -228,13 +220,7 @@ function AttachmentChip({ name, onRemove }) {
   if (isImage(name)) {
     return (
       <span style={{ position: 'relative', display: 'inline-flex', width: 48, height: 48, borderRadius: 8, border: '1px solid rgba(19,23,32,0.1)', overflow: 'hidden', flexShrink: 0 }}>
-        <span style={{ width: '100%', height: '100%', background: imgGradient(name), display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          {/* mountain/photo icon */}
-          <svg width="20" height="18" viewBox="0 0 20 18" fill="none" opacity="0.4">
-            <path d="M1 13L6 8L9.5 11.5L13 7L19 13" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            <circle cx="6" cy="5" r="2" stroke="white" strokeWidth="1.5"/>
-          </svg>
-        </span>
+        <img src={imgSrc(name)} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
         {onRemove && <CloseBtn onRemove={onRemove} transparent={true} />}
       </span>
     );
