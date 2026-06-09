@@ -168,14 +168,31 @@ function HeadlineBody({ parts }) {
   </div>;
 }
 
-/* ---- Attachment chip (Figma design: node 23:840) ---- */
+/* ---- Attachment chip (Figma design: node 23:840 / 23:884) ---- */
 function fileExt(name) {
   const m = name.match(/\.(\w+)$/);
   return m ? m[1].toUpperCase() : 'FILE';
 }
+const IMG_EXTS = ['JPG','JPEG','PNG','GIF','WEBP','SVG','HEIC'];
+function isImage(name) { return IMG_EXTS.includes(fileExt(name)); }
+
+/* Placeholder gradient per image filename (deterministic) */
+const IMG_GRADIENTS = [
+  'linear-gradient(135deg,#f6d365,#fda085)',
+  'linear-gradient(135deg,#a1c4fd,#c2e9fb)',
+  'linear-gradient(135deg,#d4fc79,#96e6a1)',
+  'linear-gradient(135deg,#f093fb,#f5576c)',
+  'linear-gradient(135deg,#4facfe,#00f2fe)',
+  'linear-gradient(135deg,#43e97b,#38f9d7)',
+];
+function imgGradient(name) {
+  let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
+  return IMG_GRADIENTS[h % IMG_GRADIENTS.length];
+}
+
 function FileIcon({ name }) {
   const ext = fileExt(name);
-  const colors = { PDF: '#E53E3E', JPG: '#38A169', JPEG: '#38A169', PNG: '#3182CE', MP4: '#805AD5', MOV: '#805AD5', DOC: '#2B6CB0', DOCX: '#2B6CB0' };
+  const colors = { PDF: '#E53E3E', MP4: '#805AD5', MOV: '#805AD5', DOC: '#2B6CB0', DOCX: '#2B6CB0' };
   const c = colors[ext] || '#718096';
   return (
     <div style={{ width: 32, height: 32, borderRadius: 6, background: '#F8F6F6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -187,18 +204,50 @@ function FileIcon({ name }) {
     </div>
   );
 }
+
+/* Close × button — shared between both chip variants */
+function CloseBtn({ onRemove, transparent }) {
+  return (
+    <span onClick={onRemove} style={{
+      position: 'absolute', top: transparent ? 2 : -6, right: transparent ? 2 : -6,
+      width: 18, height: 18, borderRadius: '50%',
+      background: transparent ? 'rgba(82,81,80,0.5)' : '#fff',
+      border: transparent ? 'none' : '1px solid #E8E7E7',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      cursor: 'pointer', boxShadow: transparent ? 'none' : '0 1px 3px rgba(0,0,0,0.1)'
+    }}>
+      <svg width="6" height="6" viewBox="0 0 6 6" fill="none">
+        <path d="M1 1L5 5M5 1L1 5" stroke={transparent ? '#fff' : '#888898'} strokeWidth="1.3" strokeLinecap="round"/>
+      </svg>
+    </span>
+  );
+}
+
 function AttachmentChip({ name, onRemove }) {
+  /* Image variant — Figma node 23:884 — 48×48 thumbnail */
+  if (isImage(name)) {
+    return (
+      <span style={{ position: 'relative', display: 'inline-flex', width: 48, height: 48, borderRadius: 8, border: '1px solid rgba(19,23,32,0.1)', overflow: 'hidden', flexShrink: 0 }}>
+        <span style={{ width: '100%', height: '100%', background: imgGradient(name), display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {/* mountain/photo icon */}
+          <svg width="20" height="18" viewBox="0 0 20 18" fill="none" opacity="0.4">
+            <path d="M1 13L6 8L9.5 11.5L13 7L19 13" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <circle cx="6" cy="5" r="2" stroke="white" strokeWidth="1.5"/>
+          </svg>
+        </span>
+        {onRemove && <CloseBtn onRemove={onRemove} transparent={true} />}
+      </span>
+    );
+  }
+
+  /* File variant — Figma node 23:840 */
   return (
     <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', background: '#fff', border: '1px solid #E8E7E7', borderRadius: 8, overflow: 'visible', flexShrink: 0 }}>
       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 6, paddingRight: 16 }}>
         <FileIcon name={name} />
         <span style={{ fontSize: 12, fontWeight: 500, color: '#151414', whiteSpace: 'nowrap', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis' }}>{name}</span>
       </span>
-      {onRemove && (
-        <span onClick={onRemove} style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#fff', border: '1px solid #E8E7E7', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <svg width="6" height="6" viewBox="0 0 6 6" fill="none"><path d="M1 1L5 5M5 1L1 5" stroke="#888898" strokeWidth="1.3" strokeLinecap="round"/></svg>
-        </span>
-      )}
+      {onRemove && <CloseBtn onRemove={onRemove} transparent={false} />}
     </span>
   );
 }
