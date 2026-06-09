@@ -14,38 +14,13 @@
     html, body { margin: 0; height: 100%; background: linear-gradient(180deg, #ffffff 0%, #eaf0fb 55%, #d8e5f5 100%) fixed; font-family: var(--wds-font-family-default, "Wix Madefor Text", "Madefor", sans-serif); }
     #root { width: 100%; height: 100%; }
 
-    /* Typing animated border */
-    @property --hf-angle {
-      syntax: '<angle>';
-      initial-value: 0deg;
-      inherits: false;
-    }
-    @keyframes hf-border-spin {
-      to { --hf-angle: 360deg; }
+    /* Typing border — subtle pulse on the border only */
+    @keyframes hf-border-pulse {
+      0%, 100% { border-color: rgba(47, 93, 255, 0.22); box-shadow: 0 0 0 3px rgba(47,93,255,0.06), 0 2px 12px rgba(100,100,180,0.07); }
+      50%       { border-color: rgba(47, 93, 255, 0.50); box-shadow: 0 0 0 3px rgba(47,93,255,0.11), 0 2px 16px rgba(47,93,255,0.10); }
     }
     .hf-typing-card {
-      border-color: transparent !important;
-      background-clip: padding-box;
-      position: relative;
-    }
-    .hf-typing-card::before {
-      content: '';
-      position: absolute;
-      inset: -1.5px;
-      border-radius: 17px;
-      background: conic-gradient(from var(--hf-angle), #a78bfa, #6366f1, #2F5DFF, #38bdf8, #a78bfa);
-      animation: hf-border-spin 2.4s linear infinite;
-      z-index: -1;
-      opacity: 0.7;
-    }
-    .hf-typing-card::after {
-      content: '';
-      position: absolute;
-      inset: 1px;
-      border-radius: 15px;
-      background: rgba(255,255,255,0.5);
-      backdrop-filter: blur(20px);
-      z-index: -1;
+      animation: hf-border-pulse 1.8s ease-in-out infinite !important;
     }
 
     /* Example prompt chips */
