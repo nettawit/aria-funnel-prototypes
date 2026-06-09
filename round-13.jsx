@@ -407,18 +407,25 @@ function HomeFlow({ start = 'empty', onGenerate }) {
     undoTimerRef.current = setTimeout(() => setUndoItem(null), 4000);
   };
 
+  const ALLOWED_EXTS = ['PNG','JPG','JPEG','PDF','SVG','ZIP'];
   const handleDrop = (e) => {
     e.preventDefault(); setDragOver(false);
     const files = Array.from(e.dataTransfer.files);
     const urlText = e.dataTransfer.getData('text/uri-list') || e.dataTransfer.getData('text/plain');
     if (files.length) {
-      const names = files.map(f => f.name);
-      setAsset(true); setAssetFiles(prev => [...prev, ...names]);
-      if (screen === 'empty') setScreen('text');
+      const valid = files.filter(f => ALLOWED_EXTS.includes((f.name.split('.').pop() || '').toUpperCase()));
+      const invalid = files.filter(f => !ALLOWED_EXTS.includes((f.name.split('.').pop() || '').toUpperCase()));
+      if (valid.length) {
+        const names = valid.map(f => f.name);
+        setAsset(true); setAssetFiles(prev => [...prev, ...names]);
+        if (screen === 'empty') setScreen('text');
+      }
+      if (invalid.length) {
+        showUndo(`${invalid.map(f => f.name).join(', ')} — unsupported format`, null);
+      }
     } else if (urlText && urlText.startsWith('http')) {
       const host = urlText.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
-      setRefs(prev => [...prev, host]);
-      if (screen === 'empty') setScreen('text');
+      if (!refs.includes(host)) { setRefs(prev => [...prev, host]); if (screen === 'empty') setScreen('text'); }
     }
   };
 
@@ -483,7 +490,11 @@ function HomeFlow({ start = 'empty', onGenerate }) {
 
   const closeOverlay = () => setOv(null);
   const confirmAsset = (names) => {setAsset(true);const arr = Array.isArray(names) ? names : ['logo.png'];setAssetFiles(prev => [...prev, ...arr]);setAssetCount(prev => prev + arr.length);if (screen === 'empty') setScreen('text');setOv(null);};
-  const confirmRef = (url) => {setRefs(prev => [...prev, url || 'example.com']);if (screen === 'empty') setScreen('text');setOv(null);};
+  const confirmRef = (url) => {
+    const u = url || 'example.com';
+    if (!refs.includes(u)) { setRefs(prev => [...prev, u]); if (screen === 'empty') setScreen('text'); }
+    setOv(null);
+  };
   const addContent = confirmAsset;
 
   return (
@@ -556,9 +567,9 @@ function HomeFlow({ start = 'empty', onGenerate }) {
 
               {/* Undo toast */}
               {undoItem && (
-                <div style={{ position: 'absolute', bottom: 64, left: '50%', transform: 'translateX(-50%)', zIndex: 50, background: '#32324D', color: '#fff', borderRadius: 8, padding: '10px 16px', fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 4px 20px rgba(0,0,0,0.18)', whiteSpace: 'nowrap', animation: 'fadeInUp 200ms ease-out' }}>
-                  <span>Removed <b style={{ fontWeight: 700 }}>{undoItem.label.length > 28 ? undoItem.label.slice(0, 28) + '…' : undoItem.label}</b></span>
-                  <button onClick={() => { undoItem.restore(); clearTimeout(undoTimerRef.current); setUndoItem(null); }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.35)', borderRadius: 6, color: '#fff', fontSize: 12, fontWeight: 600, padding: '3px 10px', cursor: 'pointer' }}>Undo</button>
+                <div style={{ position: 'absolute', bottom: 64, left: '50%', transform: 'translateX(-50%)', zIndex: 50, background: undoItem.restore ? '#32324D' : '#B71C1C', color: '#fff', borderRadius: 8, padding: '10px 16px', fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 4px 20px rgba(0,0,0,0.18)', whiteSpace: 'nowrap', animation: 'fadeInUp 200ms ease-out' }}>
+                  <span>{undoItem.restore ? <>Removed <b style={{ fontWeight: 700 }}>{undoItem.label.length > 28 ? undoItem.label.slice(0, 28) + '…' : undoItem.label}</b></> : undoItem.label}</span>
+                  {undoItem.restore && <button onClick={() => { undoItem.restore(); clearTimeout(undoTimerRef.current); setUndoItem(null); }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.35)', borderRadius: 6, color: '#fff', fontSize: 12, fontWeight: 600, padding: '3px 10px', cursor: 'pointer' }}>Undo</button>}
                 </div>
               )}
 
@@ -568,13 +579,8 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                   <span style={{ color: H_INK, fontWeight: 600 }}>{prompt}</span>
                   {ariaTouch ? <span> <TypewriterInline key={ariaTouch} text={ariaTouch} color="#5B7FFF" delay={600} /></span> : null}
                 </div> :
-                <div style={{ flex: 1, position: 'relative', minHeight: 200, display: 'flex', flexDirection: 'column' }}>
-                  {/* visual spacer for height */}
-                  <div aria-hidden="true" style={{ padding: '24px 28px 0', fontSize: 18, lineHeight: 1.7, pointerEvents: 'none', whiteSpace: 'pre-wrap', wordBreak: 'break-word', visibility: 'hidden' }}>
-                    {prompt || ' '}
-                    {ready && ariaTouch ? <span> {ariaTouch}</span> : null}
-                  </div>
-                  {/* overlay: prompt (transparent) + ariaTouch in purple */}
+                <div style={{ flex: 1, position: 'relative', minHeight: 180, maxHeight: 260, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                  {/* overlay: ariaTouch in purple (absolute, pointer-events none) */}
                   <div aria-hidden="true" style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '24px 28px 0', fontSize: 18, lineHeight: 1.7, pointerEvents: 'none', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                     <span style={{ color: 'transparent' }}>{prompt}</span>
                     {ready && ariaTouch ? <span style={{ color: '#7B6CF6' }}> {ariaTouch}</span> : null}
@@ -583,7 +589,21 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                   <textarea
                     ref={textareaRef}
                     value={prompt}
-                    onChange={(e) => { setPrompt(e.target.value); if (screen === 'empty' && e.target.value) setScreen('text'); }}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      // Auto-detect URL typed/pasted followed by space
+                      const urlMatch = val.match(/(https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9-]+\.(?:com|io|co|net|org|dev|app|shop|ly))\s$/);
+                      if (urlMatch) {
+                        const raw = urlMatch[1];
+                        const host = raw.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+                        if (!refs.includes(host)) { setRefs(prev => [...prev, host]); if (screen === 'empty') setScreen('text'); }
+                        setPrompt(val.slice(0, val.length - raw.length - 1).trimEnd());
+                        return;
+                      }
+                      setPrompt(val);
+                      if (screen === 'empty' && val) setScreen('text');
+                      if (!val && !asset && !refs.length && !imported) setScreen('empty');
+                    }}
                     onFocus={() => {
                       // Merge ariaTouch into editable prompt when user clicks in
                       if (ready && ariaTouch) {
@@ -910,10 +930,15 @@ function UrlModal({ onClose, onAdd, onBack }) {
 }
 
 function ImportFlow({ onClose, onImport }) {
-  const [phase, setPhase] = hs('url'); // 'url' | 'scanning' | 'results'
+  const [phase, setPhase] = hs('url'); // 'url' | 'scanning' | 'results' | 'error'
   const [url, setUrl] = hs('');
   const [sel, setSel] = hs('both');
-  const scan = () => {setPhase('scanning');setTimeout(() => setPhase('results'), 1600);};
+  const isValidUrl = (u) => /^(https?:\/\/)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/.test(u.trim());
+  const scan = () => {
+    if (!isValidUrl(url)) { setPhase('error'); return; }
+    setPhase('scanning');
+    setTimeout(() => setPhase('results'), 1600);
+  };
   const host = url.replace(/^https?:\/\//, '').replace(/\/.*$/, '') || 'mysite.myshopify.com';
 
   /* icon SVGs inline */
@@ -972,10 +997,18 @@ function ImportFlow({ onClose, onImport }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         <label style={{ fontSize: 14, fontWeight: 500, color: '#32324D' }}>Website URL</label>
         <div style={{ display: 'flex', gap: 8 }}>
-          <input className="h-input" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="e.g., www.example.com" style={{ ...hInput, flex: 1, width: 'auto' }} />
-          <button className={phase === 'url' ? 'hbtn' : 'hbtn hbtn-secondary'} onClick={scan} style={{ ...(phase === 'url' ? hBtnPrimary('medium') : hBtnSecondary('medium')), flexShrink: 0 }}>{phase === 'url' ? 'Scan' : 'Re-scan'}</button>
+          <input className="h-input" value={url} onChange={(e) => { setUrl(e.target.value); if (phase === 'error') setPhase('url'); }} onKeyDown={(e) => e.key === 'Enter' && scan()} placeholder="e.g., www.example.com" style={{ ...hInput, flex: 1, width: 'auto', borderColor: phase === 'error' ? '#D32F2F' : undefined }} />
+          <button className={phase === 'url' || phase === 'error' ? 'hbtn' : 'hbtn hbtn-secondary'} onClick={scan} style={{ ...(phase === 'url' || phase === 'error' ? hBtnPrimary('medium') : hBtnSecondary('medium')), flexShrink: 0 }}>{phase === 'url' || phase === 'error' ? 'Scan' : 'Re-scan'}</button>
         </div>
       </div>
+
+      {/* error */}
+      {phase === 'error' &&
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: '#FFF3F3', border: '1px solid #FFCDD2', borderRadius: 8 }}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#D32F2F" strokeWidth="1.4"/><path d="M8 4.5V8.5" stroke="#D32F2F" strokeWidth="1.6" strokeLinecap="round"/><circle cx="8" cy="11" r="1" fill="#D32F2F"/></svg>
+          <span style={{ fontSize: 13, color: '#B71C1C' }}>Couldn't reach this site. Check the URL and try again.</span>
+        </div>
+      }
 
       {/* scanning */}
       {phase === 'scanning' &&
