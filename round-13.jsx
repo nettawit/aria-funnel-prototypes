@@ -384,7 +384,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
 
         {/* header */}
         <div style={{ padding: '24px 40px', display: 'flex', alignItems: 'center', gap: 14, position: 'relative', zIndex: 2, background: 'transparent', maxWidth: 1400, margin: '0 auto' }}>
-          <span style={{ fontFamily: 'var(--wds-font-family-display)', fontWeight: 700, fontSize: 22, letterSpacing: '-.5px', color: '#1E1E2E' }}>WIX</span>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/76/Wix.com_website_logo.svg" alt="Wix" style={{ height: 22, width: 'auto', display: 'block' }} />
           <span style={{ width: 28, height: 28, borderRadius: 50, background: 'linear-gradient(135deg,#fbcfbb,#e7b3f3)', border: '2px solid #fff' }} />
           <div style={{ flex: 1 }} />
           <button className="hbtn hbtn-ghost" style={{ ...hBtnGhost('small') }}>Upgrade</button>
