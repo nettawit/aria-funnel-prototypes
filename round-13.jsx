@@ -520,7 +520,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                   )}
                   {asset && assetFiles.length > 5 && <span style={{ height: 30, padding: '0 12px', borderRadius: 8, display: 'inline-flex', alignItems: 'center', background: '#F5F6FA', border: '1px solid #E8E7E7', color: '#666677', fontSize: 12 }}>+{assetFiles.length - 5} more</span>}
                   {refs.map((r, i) => <AttachmentChip key={i} name={r} onRemove={() => setRefs(prev => prev.filter((_, idx) => idx !== i))} />)}
-                  {imported && <span style={{ height: 30, padding: '0 10px 0 5px', borderRadius: 20, display: 'inline-flex', alignItems: 'center', gap: 6, background: '#F5F6FA', border: '1px solid #E6E7EF', color: '#444455', fontSize: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}><span style={{ width: 20, height: 20, borderRadius: 5, background: '#E0F7EC', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><HIc name="globe" size={11} color="#1A8A5A" /></span>mysite.myshopify.com<span onClick={() => setImported(false)} style={{ color: '#AAAAAA', fontSize: 14, cursor: 'pointer' }}>×</span></span>}
+                  {imported && <AttachmentChip name="mysite.myshopify.com" onRemove={() => setImported(false)} />}
                 </div>
               }
 
