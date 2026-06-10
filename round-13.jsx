@@ -847,9 +847,10 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                         <TplImg id={imgId} />
                       </TBrowser>
                       {/* WIX Harmony badge removed */}
-                      <div className="hf-scrim" style={{ position: 'absolute', inset: 0, zIndex: 2, background: 'rgba(0,0,0,0.50)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: 0, transition: 'opacity 180ms ease', pointerEvents: 'none' }}>
-                        <button style={{ background: '#2D4EE0', color: '#fff', border: 0, borderRadius: 24, padding: '8px 24px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Edit site</button>
-                        <button style={{ background: 'transparent', color: '#fff', border: '1.5px solid rgba(255,255,255,0.7)', borderRadius: 24, padding: '7px 24px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Preview</button>
+                      <div className="hf-scrim" style={{ position: 'absolute', inset: 0, zIndex: 2, background: 'rgba(255,255,255,0.55)', backdropFilter: 'blur(2px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10, opacity: 0, transition: 'opacity 180ms ease', pointerEvents: 'none' }}>
+                        <button style={{ background: '#1E1E2E', color: '#fff', border: 0, borderRadius: 12, padding: '10px 0', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: 160, textAlign: 'center' }}>Edit</button>
+                        <button style={{ background: '#fff', color: '#1E1E2E', border: '1.5px solid #1E1E2E', borderRadius: 12, padding: '9px 0', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: 160, textAlign: 'center' }}>View</button>
+                        <span style={{ position: 'absolute', bottom: 10, left: 12, fontSize: 12, fontWeight: 500, color: '#32324D' }}>Info</span>
                       </div>
                     </div>
                     <div style={{ fontSize: 14, color: H_INK, marginTop: 10 }}>{name}</div>
