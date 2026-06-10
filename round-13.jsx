@@ -1305,20 +1305,15 @@ function ImportFlow({ onClose, onImport }) {
               {['#FF5F57','#FEBC2E','#28C840'].map((c) => <span key={c} style={{ width: 7, height: 7, borderRadius: '50%', background: c }} />)}
               <span style={{ flex: 1, height: 12, background: '#E4E5EA', borderRadius: 4, marginLeft: 8 }} />
             </div>
-            {/* screenshot */}
+            {/* screenshot — live via thum.io */}
             <div style={{ height: 148, background: '#E8EAF0', position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg,#EEF4FF 0%,#E4EAFF 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style={{ opacity: 0.35 }}><rect x="3" y="3" width="18" height="18" rx="2" stroke="#6B7AE8" strokeWidth="1.5"/><circle cx="8.5" cy="8.5" r="1.5" fill="#6B7AE8"/><path d="M3 15L8 10L13 15M11 13L15 9L21 15" stroke="#6B7AE8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              </div>
+              <img src={`https://image.thum.io/get/width/640/crop/400/${url.startsWith('http') ? url : 'https://' + url}`} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }} />
             </div>
             {/* footer row */}
             <div style={{ padding: '10px 14px', background: '#fff', borderTop: '1px solid #EBEBEB', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 0 }}>
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#32324D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{host}</span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
-                  <HAria size={13} style={{ flexShrink: 0 }} />
-                  <span style={{ fontSize: 11, color: H_BLUE, fontWeight: 500 }}>I can analyze your category, products, images and prices.</span>
-                </span>
+                <span style={{ fontSize: 11, color: H_BLUE, fontWeight: 500 }}>I can analyze your category, products, images and prices.</span>
               </div>
               <span style={{ background: '#EDFAF3', borderRadius: 4, padding: '2px 8px', fontSize: 10, fontWeight: 700, color: '#1A8A5A', flexShrink: 0 }}>Shopify</span>
             </div>
