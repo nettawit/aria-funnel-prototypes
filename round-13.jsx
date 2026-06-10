@@ -1154,12 +1154,9 @@ function UrlModal({ onClose, onAdd, onBack }) {
             {[0,1,2].map(i => <span key={i} style={{ width: 7, height: 7, borderRadius: '50%', background: ['#FF5F57','#FEBC2E','#28C840'][i] }} />)}
             <span style={{ flex: 1, height: 14, background: '#EAEBF0', borderRadius: 4, marginLeft: 8 }} />
           </div>
-          {/* screenshot placeholder */}
-          <div style={{ height: 120, background: 'linear-gradient(135deg, #EEF4FF 0%, #E8EEFF 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, opacity: 0.5 }}>
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="#6B7AE8" strokeWidth="1.5"/><circle cx="8.5" cy="8.5" r="1.5" fill="#6B7AE8"/><path d="M3 15L8 10L13 15M11 13L15 9L21 15" stroke="#6B7AE8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              <span style={{ fontSize: 11, color: '#6B7AE8', fontWeight: 500 }}>{host}</span>
-            </div>
+          {/* screenshot — live */}
+          <div style={{ height: 120, overflow: 'hidden', background: '#EEF4FF' }}>
+            <img src={`https://image.thum.io/get/width/640/crop/400/${url.startsWith('http') ? url : 'https://' + url}`} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }} />
           </div>
           {/* site info */}
           <div style={{ padding: '10px 14px', background: '#fff', display: 'flex', alignItems: 'center', gap: 10 }}>
