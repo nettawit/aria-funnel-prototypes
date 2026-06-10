@@ -666,18 +666,18 @@ function HomeFlow({ start = 'empty', onGenerate }) {
 
               {/* text area / transition view */}
               {transitioning ?
-                <div style={{ flex: 1, padding: '24px 28px 18px', fontSize: 28, lineHeight: 1.5, minHeight: 200 }}>
+                <div style={{ flex: 1, padding: '24px 28px 18px', fontSize: 24, lineHeight: 1.5, minHeight: 200 }}>
                   <span style={{ color: H_INK, fontWeight: 600 }}>{prompt}</span>
                   {ariaTouch ? <span> <TypewriterInline key={ariaTouch} text={ariaTouch} color="#5B7FFF" delay={600} /></span> : null}
                 </div> :
                 <div style={{ flex: 1, position: 'relative', minHeight: 200, maxHeight: 280, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                   {/* visual spacer for height */}
-                  <div aria-hidden="true" style={{ padding: '24px 28px 0', fontSize: 28, lineHeight: 1.5, pointerEvents: 'none', whiteSpace: 'pre-wrap', wordBreak: 'break-word', visibility: 'hidden' }}>
+                  <div aria-hidden="true" style={{ padding: '24px 28px 0', fontSize: 24, lineHeight: 1.5, pointerEvents: 'none', whiteSpace: 'pre-wrap', wordBreak: 'break-word', visibility: 'hidden' }}>
                     {prompt || ' '}
                     {ready && ariaTouch ? <span> {ariaTouch}</span> : null}
                   </div>
                   {/* overlay: prompt (transparent) + ariaTouch in purple */}
-                  <div aria-hidden="true" style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '24px 28px 0', fontSize: 28, lineHeight: 1.5, pointerEvents: 'none', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                  <div aria-hidden="true" style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '24px 28px 0', fontSize: 24, lineHeight: 1.5, pointerEvents: 'none', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                     <span style={{ color: 'transparent' }}>{prompt}</span>
                     {ready && ariaTouch ? <span style={{ color: '#7B6CF6' }}> {ariaTouch}</span> : null}
                   </div>
@@ -725,10 +725,10 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                       }
                     }}
                     placeholder=""
-                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', boxSizing: 'border-box', border: 0, outline: 'none', resize: 'none', background: 'transparent', padding: '24px 28px', fontSize: 28, lineHeight: 1.5, color: H_INK, fontFamily: 'inherit', overflowY: 'auto', zIndex: 1 }} />
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', boxSizing: 'border-box', border: 0, outline: 'none', resize: 'none', background: 'transparent', padding: '24px 28px', fontSize: 24, lineHeight: 1.5, color: H_INK, fontFamily: 'inherit', overflowY: 'auto', zIndex: 1 }} />
                   {/* custom placeholder with crossfade */}
                   {!prompt && placeholderText && (
-                    <div key={placeholderKey} aria-hidden="true" style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '24px 28px 0', fontSize: 28, lineHeight: 1.5, color: '#AAAAAA', pointerEvents: 'none', animation: 'placeholder-fadein 320ms ease', zIndex: 0 }}>
+                    <div key={placeholderKey} aria-hidden="true" style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '24px 28px 0', fontSize: 24, lineHeight: 1.5, color: '#AAAAAA', pointerEvents: 'none', animation: 'placeholder-fadein 320ms ease', zIndex: 0 }}>
                       {placeholderText}
                     </div>
                   )}
