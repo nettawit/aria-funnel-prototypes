@@ -1014,7 +1014,7 @@ function AssetsModal({ onClose, onAdd }) {
   const removeAt = (i) => setFiles((f) => f.filter((_, idx) => idx !== i));
   const iconFor = (n) => /\.(png|jpg|jpeg|gif|svg|webp)$/i.test(n) ? 'image' : /\.(mp4|mov|webm)$/i.test(n) ? 'play' : 'document';
   return <Overlay><div onClick={(e) => e.stopPropagation()} style={shell}>
-    <ModalHead iconEl={<FanIcon bg="#FFF0E8" fg="#C05B2A" icon="image" icon2="document" size={1.1} />} title="Add photos or files" sub="Images, videos, PDFs, docs and more" onClose={onClose} />
+    <ModalHead title="Add photos or files" sub="Images, videos, PDFs, docs and more" onClose={onClose} />
     <div style={{ padding: '18px 20px' }}>
       {sizeErr && <div style={{ marginBottom: 10, background: '#FFF0F0', border: '1px solid #FFCCCC', borderRadius: 8, padding: '8px 12px', fontSize: 12, color: '#C0392B', display: 'flex', alignItems: 'center', gap: 8 }}><HIc name="statusWarning" size={14} color="#C0392B" />{sizeErr}</div>}
       <input ref={inputRef} type="file" multiple style={{ display: 'none' }} onChange={(e) => { addRealFiles([...e.target.files]); e.target.value = ''; }} />
@@ -1214,37 +1214,45 @@ function ImportFlow({ onClose, onImport }) {
   };
   const host = url.replace(/^https?:\/\//, '').replace(/\/.*$/, '') || 'mysite.myshopify.com';
 
+  /* ── Demo flag: always show Shopify for demo purposes ──────────
+     To toggle off Shopify mode, change this to: false            */
+  const isShopify = true;
+
   /* icon SVGs inline */
-  const IconLayers = () => (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path d="M10 2L2 6.5L10 11L18 6.5L10 2Z" stroke="#1E1E2E" strokeWidth="1.4" strokeLinejoin="round"/>
-      <path d="M2 10L10 14.5L18 10" stroke="#1E1E2E" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M2 13.5L10 18L18 13.5" stroke="#1E1E2E" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+  const IconLayers = ({ active }) => (
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+      <path d="M10 2L2 6.5L10 11L18 6.5L10 2Z" stroke={active ? '#32324D' : '#888'} strokeWidth="1.5" strokeLinejoin="round"/>
+      <path d="M2 10L10 14.5L18 10" stroke={active ? '#32324D' : '#888'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M2 13.5L10 18L18 13.5" stroke={active ? '#32324D' : '#888'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   );
-  const IconPalette = () => (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path d="M10 2C5.58 2 2 5.58 2 10C2 14.42 5.58 18 10 18C10.92 18 11.5 17.24 11.5 16.5C11.5 16.16 11.38 15.86 11.18 15.62C10.99 15.39 10.88 15.1 10.88 14.75C10.88 14.01 11.49 13.38 12.25 13.38H14C16.21 13.38 18 11.59 18 9.38C18 5.3 14.41 2 10 2Z" stroke="#1E1E2E" strokeWidth="1.4"/>
-      <circle cx="6.5" cy="9.5" r="1" fill="#1E1E2E"/>
-      <circle cx="9" cy="6.5" r="1" fill="#1E1E2E"/>
-      <circle cx="13" cy="7" r="1" fill="#1E1E2E"/>
+  const IconPalette = ({ active }) => (
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+      <path d="M10 2C5.58 2 2 5.58 2 10C2 14.42 5.58 18 10 18C10.92 18 11.5 17.24 11.5 16.5C11.5 16.16 11.38 15.86 11.18 15.62C10.99 15.39 10.88 15.1 10.88 14.75C10.88 14.01 11.49 13.38 12.25 13.38H14C16.21 13.38 18 11.59 18 9.38C18 5.3 14.41 2 10 2Z" stroke={active ? '#32324D' : '#888'} strokeWidth="1.4"/>
+      <circle cx="6.5" cy="9.5" r="1" fill={active ? '#32324D' : '#888'}/>
+      <circle cx="9" cy="6.5" r="1" fill={active ? '#32324D' : '#888'}/>
+      <circle cx="13" cy="7" r="1" fill={active ? '#32324D' : '#888'}/>
     </svg>
   );
 
-  const Opt = ({ id, title, sub, icon }) => {
+  const Opt = ({ id, title, sub, icon, shopifyNote }) => {
     const on = sel === id;
     return (
-      <button onClick={() => setSel(id)} style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10, boxSizing: 'border-box', textAlign: 'left', border: `1.5px solid ${on ? '#116DFF' : '#C1C2C3'}`, borderRadius: 10, padding: '12px 14px', background: on ? '#EEF4FF' : '#fff', cursor: 'pointer', transition: 'border-color 120ms, background 120ms', fontFamily: 'inherit' }}>
+      <button onClick={() => setSel(id)} style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0, boxSizing: 'border-box', textAlign: 'left', border: `1.5px solid ${on ? '#116DFF' : '#C1C2C3'}`, borderRadius: 10, padding: '12px 14px', background: on ? '#EEF4FF' : '#fff', cursor: 'pointer', transition: 'border-color 120ms, background 120ms', fontFamily: 'inherit' }}>
         {on && (
           <span style={{ position: 'absolute', top: -8, right: -8, width: 18, height: 18, borderRadius: '50%', background: '#116DFF', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 0 2px #fff' }}>
             <svg width="10" height="10" viewBox="0 0 11 11" fill="none"><path d="M2 5.5L4.5 8L9 3" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </span>
         )}
-        <span style={{ flexShrink: 0 }}>{icon}</span>
-        <span>
-          <span style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#32324D' }}>{title}</span>
-          <span style={{ display: 'block', fontSize: 11, color: H_MUTED, marginTop: 2, lineHeight: 1.4 }}>{sub}</span>
+        {/* icon + title inline */}
+        <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ flexShrink: 0 }}>{icon}</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: on ? '#32324D' : '#888' }}>{title}</span>
         </span>
+        <span style={{ display: 'block', fontSize: 11, color: H_MUTED, marginTop: 5, lineHeight: 1.4 }}>{sub}</span>
+        {shopifyNote && isShopify && (
+          <span style={{ display: 'block', marginTop: 7, paddingTop: 7, borderTop: '1px solid rgba(17,109,255,0.15)', fontSize: 11, color: '#2F5DFF', fontWeight: 500 }}>✦ Includes products, categories &amp; prices</span>
+        )}
       </button>
     );
   };
@@ -1294,31 +1302,33 @@ function ImportFlow({ onClose, onImport }) {
 
       {/* results */}
       {phase === 'results' &&
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, animation: 'h-fade 300ms ease' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, animation: 'h-fade 300ms ease' }}>
           {/* full-width preview */}
-          <div style={{ border: '1px solid #E0E0EE', borderRadius: 12, overflow: 'hidden' }}>
+          <div style={{ border: '1px solid #E0E0EE', borderRadius: 10, overflow: 'hidden' }}>
             {/* browser bar */}
             <div style={{ height: 22, background: '#F3F4F6', display: 'flex', alignItems: 'center', gap: 4, padding: '0 10px', borderBottom: '1px solid #EBEBEB' }}>
               {['#FF5F57','#FEBC2E','#28C840'].map((c) => <span key={c} style={{ width: 7, height: 7, borderRadius: '50%', background: c }} />)}
               <span style={{ flex: 1, height: 12, background: '#E4E5EA', borderRadius: 4, marginLeft: 8 }} />
             </div>
             {/* screenshot — live via thum.io */}
-            <div style={{ height: 148, background: '#E8EAF0', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ height: 148, background: '#E8EAF0', overflow: 'hidden' }}>
               <img src={`https://image.thum.io/get/width/640/crop/400/${url.startsWith('http') ? url : 'https://' + url}`} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }} />
             </div>
             {/* footer row */}
-            <div style={{ padding: '10px 14px', background: '#fff', borderTop: '1px solid #EBEBEB', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 0 }}>
-                <span style={{ fontSize: 13, fontWeight: 600, color: '#32324D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{host}</span>
-                <span style={{ fontSize: 11, color: H_BLUE, fontWeight: 500 }}>I can analyze your category, products, images and prices.</span>
-              </div>
-              <span style={{ background: '#EDFAF3', borderRadius: 4, padding: '2px 8px', fontSize: 10, fontWeight: 700, color: '#1A8A5A', flexShrink: 0 }}>Shopify</span>
+            <div style={{ padding: '9px 14px', background: '#fff', borderTop: '1px solid #EBEBEB', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 13, fontWeight: 600, color: '#32324D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{host}</span>
+              {isShopify && <span style={{ background: '#EDFAF3', borderRadius: 6, padding: '3px 10px', fontSize: 12, fontWeight: 700, color: '#1A8A5A', flexShrink: 0 }}>Shopify</span>}
             </div>
+          </div>
+          {/* green chip — always imported */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '8px 12px', background: '#F0FAF4', borderRadius: 8 }}>
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" fill="#2D8A4E"/><path d="M4 7L6 9.5L10 5" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <span style={{ fontSize: 12, color: '#1E6B3E', fontWeight: 500 }}>All pages — always imported</span>
           </div>
           {/* options — side by side */}
           <div style={{ display: 'flex', gap: 10 }}>
-            <Opt id="both" title="Content & design" sub="Keep style, content and product data" icon={<IconLayers />} />
-            <Opt id="design" title="Design only" sub="Create a new site in the same style." icon={<IconPalette />} />
+            <Opt id="both" title="Content & design" sub="Keep style & content" icon={<IconLayers active={sel === 'both'} />} shopifyNote />
+            <Opt id="design" title="Design only" sub="Visual style only" icon={<IconPalette active={sel === 'design'} />} />
           </div>
         </div>
       }
@@ -1335,7 +1345,7 @@ function ImportFlow({ onClose, onImport }) {
     {/* footer */}
     <div style={{ padding: '12px 24px 20px', borderTop: '1px solid #F0F0F4', display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
       <button onClick={onClose} className="hbtn hbtn-secondary" style={cancelB}>Cancel</button>
-      <button onClick={onImport} disabled={phase !== 'results'} className="hbtn" style={{ ...addB, opacity: phase === 'results' ? 1 : 0.4, cursor: phase === 'results' ? 'pointer' : 'not-allowed' }}>Add</button>
+      <button onClick={onImport} disabled={phase !== 'results'} className="hbtn" style={{ ...addB, opacity: phase === 'results' ? 1 : 0.4, cursor: phase === 'results' ? 'pointer' : 'not-allowed' }}>Add to Aria</button>
     </div>
   </div></Overlay>;
 }

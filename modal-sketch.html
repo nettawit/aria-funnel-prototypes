@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Modal Sketch</title>
+<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #EEF1FA; font-family: "Wix Madefor Text", sans-serif; display: flex; gap: 40px; padding: 40px; justify-content: center; align-items: flex-start; }
+  h2 { font-size: 13px; color: #888; font-weight: 500; text-align: center; margin-bottom: 14px; letter-spacing: .5px; text-transform: uppercase; }
+  .modal { background: #fff; border-radius: 20px; box-shadow: 0 16px 48px rgba(0,0,80,0.14); width: 480px; overflow: hidden; }
+
+  /* ---- CURRENT ---- */
+  .cur-head { padding: 22px 24px 14px; border-bottom: 1px solid #eee; }
+  .cur-head h3 { font-size: 18px; font-weight: 700; color: #1E1E2E; }
+  .cur-head p { font-size: 13px; color: #888; margin-top: 4px; }
+  .cur-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+  .input-row { display: flex; gap: 8px; }
+  .input-row input { flex: 1; height: 38px; border: 1px solid #C1C2C3; border-radius: 8px; padding: 0 12px; font-size: 14px; font-family: inherit; outline: none; }
+  .input-row input:focus { border-color: #116DFF; box-shadow: 0 0 0 3px rgba(17,109,255,0.12); }
+  .btn-rescan { height: 38px; padding: 0 16px; border: 1px solid #C1C2C3; border-radius: 8px; background: #fff; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .preview-box { border: 1px solid #E0E0EC; border-radius: 10px; overflow: hidden; }
+  .browser-bar { height: 28px; background: #F5F5FA; display: flex; align-items: center; gap: 5px; padding: 0 10px; border-bottom: 1px solid #eee; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .preview-img { height: 110px; background: #E8EAF0; }
+  .preview-footer { padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; }
+  .preview-footer span { font-size: 12px; color: #1E1E2E; font-weight: 500; }
+  .badge { background: #E8F8EE; color: #2D8A52; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+  .preview-note { font-size: 11px; color: #888; display: flex; gap: 6px; align-items: flex-start; }
+  .option-card { border: 1px solid #E0E0EC; border-radius: 10px; padding: 14px; cursor: pointer; }
+  .option-card.selected { border-color: #116DFF; background: #F0F4FF; }
+  .option-card .oc-icon { font-size: 20px; margin-bottom: 8px; }
+  .option-card h4 { font-size: 13px; font-weight: 700; color: #1E1E2E; }
+  .option-card p { font-size: 11px; color: #888; margin-top: 3px; }
+  .disclaimer { background: #F5F5FA; border-radius: 8px; padding: 10px 12px; font-size: 11px; color: #888; display: flex; gap: 8px; align-items: center; }
+  .footer { padding: 14px 20px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 8px; }
+  .btn-cancel { height: 36px; padding: 0 18px; border: 1px solid #C1C2C3; border-radius: 8px; background: #fff; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+  .btn-add { height: 36px; padding: 0 18px; border: 0; border-radius: 8px; background: #116DFF; color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+
+  /* ---- NEW ---- */
+  .new-head { padding: 22px 24px 14px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 12px; }
+  .new-head-icon { width: 40px; height: 40px; border-radius: 10px; background: #EEF2FF; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .new-head h3 { font-size: 17px; font-weight: 700; color: #1E1E2E; }
+  .new-head p { font-size: 12px; color: #888; margin-top: 2px; }
+  .new-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+  .new-preview { border: 1px solid #E0E0EC; border-radius: 12px; overflow: hidden; }
+  .new-browser-bar { height: 26px; background: #F5F5FA; display: flex; align-items: center; gap: 5px; padding: 0 10px; border-bottom: 1px solid #eee; }
+  .new-browser-url { flex: 1; background: #EBEBF0; border-radius: 4px; height: 14px; margin: 0 6px; }
+  .new-preview-img { height: 130px; background: linear-gradient(135deg, #E8EAF0 0%, #D8DCF0 100%); position: relative; display: flex; align-items: center; justify-content: center; }
+  .new-preview-img .site-hint { font-size: 11px; color: #AAAACC; }
+  .new-preview-footer { padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; background: #FAFBFF; }
+  .new-preview-footer-left { display: flex; flex-direction: column; gap: 2px; }
+  .new-preview-footer-left .domain { font-size: 13px; color: #1E1E2E; font-weight: 600; }
+  .new-preview-footer-left .insight { font-size: 11px; color: #5B7FFF; display: flex; gap: 5px; align-items: center; }
+  .toggle-row { display: flex; gap: 8px; }
+  .toggle-opt { flex: 1; border: 1.5px solid #E0E0EC; border-radius: 10px; padding: 12px 14px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 120ms; }
+  .toggle-opt.sel { border-color: #116DFF; background: #F0F4FF; }
+  .toggle-opt .to-icon { width: 32px; height: 32px; border-radius: 8px; background: #EEF2FF; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .toggle-opt .to-text h4 { font-size: 13px; font-weight: 700; color: #1E1E2E; }
+  .toggle-opt .to-text p { font-size: 11px; color: #888; margin-top: 2px; }
+  .legal { background: #F8F8FC; border-radius: 8px; padding: 9px 12px; font-size: 11px; color: #AAAAAA; display: flex; gap: 7px; align-items: center; }
+</style>
+</head>
+<body>
+
+<!-- CURRENT -->
+<div>
+  <h2>עכשיו</h2>
+  <div class="modal">
+    <div class="cur-head">
+      <h3>Create from URL</h3>
+      <p>Use any website as a starting point for your new site.</p>
+    </div>
+    <div class="cur-body">
+      <div class="input-row">
+        <input value="wix.com" readonly />
+        <button class="btn-rescan">Re-scan</button>
+      </div>
+      <div class="two-col">
+        <!-- left: preview -->
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="preview-box">
+            <div class="browser-bar">
+              <div class="dot" style="background:#FF5F56"></div>
+              <div class="dot" style="background:#FFBD2E"></div>
+              <div class="dot" style="background:#27C93F"></div>
+            </div>
+            <div class="preview-img" style="padding:0;">
+              <img src="https://images-wixmp-530a50041672c69d335ba4cf.wixmp.com/templates/image/a132e872-a8c0-4baf-bd6d-6e2eb1d1f004.jpg/v1/fill/w_536%2Ch_302%2Cq_90%2Cusm_0.60_1.00_0.01/a132e872-a8c0-4baf-bd6d-6e2eb1d1f004.jpg" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" />
+            </div>
+            <div class="preview-footer">
+              <span>wix.com</span>
+              <span class="badge">Shopify</span>
+            </div>
+          </div>
+          <div class="preview-note">
+            <span>●</span>
+            <span>I can analyze your category, products, images and prices.</span>
+          </div>
+        </div>
+        <!-- right: options -->
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="option-card selected">
+            <div class="oc-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L2 6.5L10 11L18 6.5L10 2Z" stroke="#1E1E2E" stroke-width="1.4" stroke-linejoin="round"/><path d="M2 10L10 14.5L18 10" stroke="#1E1E2E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 13.5L10 18L18 13.5" stroke="#1E1E2E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <h4>Content & design</h4>
+            <p>Keep style, content and product data</p>
+          </div>
+          <div class="option-card">
+            <div class="oc-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2C5.58 2 2 5.58 2 10C2 14.42 5.58 18 10 18C10.92 18 11.5 17.24 11.5 16.5C11.5 16.16 11.38 15.86 11.18 15.62C10.99 15.39 10.88 15.1 10.88 14.75C10.88 14.01 11.49 13.38 12.25 13.38H14C16.21 13.38 18 11.59 18 9.38C18 5.3 14.41 2 10 2Z" stroke="#1E1E2E" stroke-width="1.4"/><circle cx="6.5" cy="9.5" r="1" fill="#1E1E2E"/><circle cx="9" cy="6.5" r="1" fill="#1E1E2E"/><circle cx="13" cy="7" r="1" fill="#1E1E2E"/></svg></div>
+            <h4>Design only</h4>
+            <p>Create a new site in the same style.</p>
+          </div>
+        </div>
+      </div>
+      <div class="disclaimer">ⓘ Only use URLs where you have rights to the content.</div>
+    </div>
+    <div class="footer">
+      <button class="btn-cancel">Cancel</button>
+      <button class="btn-add">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW -->
+<div>
+  <h2>מוצע</h2>
+  <div class="modal">
+    <div class="new-head" style="padding: 22px 24px 14px; border-bottom: 1px solid #eee;">
+      <h3 style="font-size:18px;font-weight:700;color:#1E1E2E;">Create from URL</h3>
+      <p style="font-size:13px;color:#888;margin-top:4px;">Use any website as a starting point for your new site.</p>
+    </div>
+    <div class="new-body">
+      <div class="input-row">
+        <input placeholder="Paste any address or URL" style="border-radius:8px;" />
+        <button class="btn-add" style="white-space:nowrap;border-radius:8px;">Get</button>
+      </div>
+
+      <!-- Preview — full width, taller -->
+      <div class="new-preview">
+        <div class="new-browser-bar">
+          <div class="dot" style="background:#FF5F56"></div>
+          <div class="dot" style="background:#FFBD2E"></div>
+          <div class="dot" style="background:#27C93F"></div>
+          <div class="new-browser-url"></div>
+        </div>
+        <div class="new-preview-img" style="padding:0;height:160px;">
+          <img src="https://images-wixmp-530a50041672c69d335ba4cf.wixmp.com/templates/image/a132e872-a8c0-4baf-bd6d-6e2eb1d1f004.jpg/v1/fill/w_536%2Ch_302%2Cq_90%2Cusm_0.60_1.00_0.01/a132e872-a8c0-4baf-bd6d-6e2eb1d1f004.jpg" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" />
+        </div>
+        <div class="new-preview-footer">
+          <div class="new-preview-footer-left">
+            <span class="domain">wix.com</span>
+            <span class="insight">✦ Aria can extract style, content & product data</span>
+          </div>
+          <span class="badge">Shopify</span>
+        </div>
+      </div>
+
+      <!-- Options — toggle style, side by side, smaller -->
+      <div class="toggle-row">
+        <div class="toggle-opt sel">
+          <div class="to-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L2 6.5L10 11L18 6.5L10 2Z" stroke="#1E1E2E" stroke-width="1.4" stroke-linejoin="round"/><path d="M2 10L10 14.5L18 10" stroke="#1E1E2E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 13.5L10 18L18 13.5" stroke="#1E1E2E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="to-text">
+            <h4>Content & design</h4>
+            <p>Keep style, content and product data</p>
+          </div>
+        </div>
+        <div class="toggle-opt">
+          <div class="to-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2C5.58 2 2 5.58 2 10C2 14.42 5.58 18 10 18C10.92 18 11.5 17.24 11.5 16.5C11.5 16.16 11.38 15.86 11.18 15.62C10.99 15.39 10.88 15.1 10.88 14.75C10.88 14.01 11.49 13.38 12.25 13.38H14C16.21 13.38 18 11.59 18 9.38C18 5.3 14.41 2 10 2Z" stroke="#1E1E2E" stroke-width="1.4"/><circle cx="6.5" cy="9.5" r="1" fill="#1E1E2E"/><circle cx="9" cy="6.5" r="1" fill="#1E1E2E"/><circle cx="13" cy="7" r="1" fill="#1E1E2E"/></svg>
+          </div>
+          <div class="to-text">
+            <h4>Design only</h4>
+            <p>Create a new site in the same style.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="legal">ⓘ Only use URLs where you have rights to the content.</div>
+    </div>
+    <div class="footer">
+      <button class="btn-cancel">Cancel</button>
+      <button class="btn-add">Add reference →</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

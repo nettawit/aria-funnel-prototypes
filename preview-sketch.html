@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Preview Options</title>
+<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #EEF1FA; font-family: "Wix Madefor Text", sans-serif; padding: 40px; display: flex; gap: 32px; flex-wrap: wrap; align-items: flex-start; justify-content: center; }
+  .card { background: #fff; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,80,0.10); width: 380px; overflow: hidden; }
+  h2 { font-size: 12px; color: #888; font-weight: 600; text-align: center; padding: 14px 0 0; letter-spacing: .5px; text-transform: uppercase; }
+  .label { font-size: 11px; color: #aaa; text-align: center; padding: 8px 16px 14px; line-height: 1.5; }
+  .browser { border: 1px solid #E0E0EE; border-radius: 10px; margin: 0 16px 16px; overflow: hidden; }
+  .bar { height: 22px; background: #F3F4F6; display: flex; align-items: center; gap: 4px; padding: 0 10px; border-bottom: 1px solid #EBEBEB; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .url-bar { flex: 1; height: 12px; background: #E4E5EA; border-radius: 4px; margin-left: 8px; }
+  .footer { padding: 10px 14px; background: #fff; border-top: 1px solid #EBEBEB; display: flex; align-items: center; justify-content: space-between; }
+  .footer .domain { font-size: 13px; font-weight: 600; color: #32324D; }
+  .footer .insight { font-size: 11px; color: #2F5DFF; font-weight: 500; }
+  .footer .badge { background: #EDFAF3; border-radius: 4px; padding: 2px 8px; font-size: 10px; font-weight: 700; color: #1A8A5A; }
+</style>
+</head>
+<body>
+
+<!-- Option A: Current — top crop 148px -->
+<div>
+  <h2>A — עכשיו (top crop)</h2>
+  <p class="label">148px, objectPosition: top<br>רואים רק את ה-header של האתר</p>
+  <div class="card">
+    <div class="browser">
+      <div class="bar">
+        <div class="dot" style="background:#FF5F57"></div>
+        <div class="dot" style="background:#FEBC2E"></div>
+        <div class="dot" style="background:#28C840"></div>
+        <div class="url-bar"></div>
+      </div>
+      <div style="height:148px;overflow:hidden;">
+        <img src="https://image.thum.io/get/width/760/crop/800/https://www.ynet.co.il" style="width:100%;height:148px;object-fit:cover;object-position:top;display:block;" />
+      </div>
+      <div class="footer">
+        <div>
+          <div class="domain">www.ynet.co.il</div>
+          <div class="insight">I can analyze your category, products…</div>
+        </div>
+        <span class="badge">Shopify</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Option B: Taller — 220px -->
+<div>
+  <h2>B — גבוה יותר (220px)</h2>
+  <p class="label">220px, objectPosition: top<br>רואים יותר מהאתר, עדיין מתחיל מלמעלה</p>
+  <div class="card">
+    <div class="browser">
+      <div class="bar">
+        <div class="dot" style="background:#FF5F57"></div>
+        <div class="dot" style="background:#FEBC2E"></div>
+        <div class="dot" style="background:#28C840"></div>
+        <div class="url-bar"></div>
+      </div>
+      <div style="height:220px;overflow:hidden;">
+        <img src="https://image.thum.io/get/width/760/crop/800/https://www.ynet.co.il" style="width:100%;height:220px;object-fit:cover;object-position:top;display:block;" />
+      </div>
+      <div class="footer">
+        <div>
+          <div class="domain">www.ynet.co.il</div>
+          <div class="insight">I can analyze your category, products…</div>
+        </div>
+        <span class="badge">Shopify</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Option C: Zoom out — full page scaled down -->
+<div>
+  <h2>C — זום אאוט (full page)</h2>
+  <p class="label">iframe scaled to 35% — רואים את כל הפולד הראשון<br>כמו "thumbnail" אמיתי של האתר</p>
+  <div class="card">
+    <div class="browser">
+      <div class="bar">
+        <div class="dot" style="background:#FF5F57"></div>
+        <div class="dot" style="background:#FEBC2E"></div>
+        <div class="dot" style="background:#28C840"></div>
+        <div class="url-bar"></div>
+      </div>
+      <div style="height:148px;overflow:hidden;position:relative;background:#f5f5fa;">
+        <img src="https://image.thum.io/get/width/760/crop/1600/https://www.ynet.co.il" style="width:100%;height:148px;object-fit:cover;object-position:top;display:block;" />
+      </div>
+      <div class="footer">
+        <div>
+          <div class="domain">www.ynet.co.il</div>
+          <div class="insight">I can analyze your category, products…</div>
+        </div>
+        <span class="badge">Shopify</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Option D: Wider crop parameter -->
+<div>
+  <h2>D — crop רחב יותר (crop=600)</h2>
+  <p class="label">148px height, crop=600 בבקשה ל-thum.io<br>רואים יחס פרופורציה שונה של האתר</p>
+  <div class="card">
+    <div class="browser">
+      <div class="bar">
+        <div class="dot" style="background:#FF5F57"></div>
+        <div class="dot" style="background:#FEBC2E"></div>
+        <div class="dot" style="background:#28C840"></div>
+        <div class="url-bar"></div>
+      </div>
+      <div style="height:148px;overflow:hidden;">
+        <img src="https://image.thum.io/get/width/760/crop/600/https://www.ynet.co.il" style="width:100%;height:148px;object-fit:cover;object-position:top;display:block;" />
+      </div>
+      <div class="footer">
+        <div>
+          <div class="domain">www.ynet.co.il</div>
+          <div class="insight">I can analyze your category, products…</div>
+        </div>
+        <span class="badge">Shopify</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Option F: Full modal — narrow centered preview + options below -->
+<div>
+  <h2>F — מודל מלא: preview צר + options מתחת</h2>
+  <p class="label">preview באמצע, לא ברוחב מלא</p>
+  <div class="card" style="width:480px;border-radius:20px;">
+    <!-- header -->
+    <div style="padding:22px 24px 16px;border-bottom:1px solid #eee;display:flex;align-items:flex-start;justify-content:space-between;">
+      <div>
+        <div style="font-size:18px;font-weight:700;color:#1E1E2E;">Create from URL</div>
+        <div style="font-size:13px;color:#888;margin-top:4px;">Use any website as a starting point for your new site.</div>
+      </div>
+      <button style="border:0;background:transparent;cursor:pointer;color:#888;font-size:18px;padding:2px 6px;">×</button>
+    </div>
+    <!-- body -->
+    <div style="padding:18px 24px;display:flex;flex-direction:column;gap:14px;">
+      <!-- input -->
+      <div style="display:flex;gap:8px;">
+        <input value="www.ynet.co.il" readonly style="flex:1;height:36px;border:1.5px solid #116DFF;border-radius:8px;padding:0 12px;font-size:14px;font-family:inherit;outline:none;box-shadow:0 0 0 3px rgba(17,109,255,0.1);" />
+        <button style="height:36px;padding:0 18px;border:1px solid #C1C2C3;border-radius:8px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Re-scan</button>
+      </div>
+      <!-- preview — narrow, centered -->
+      <div style="display:flex;justify-content:center;">
+        <div style="width:68%;border:1px solid #E0E0EE;border-radius:10px;overflow:hidden;">
+          <div class="bar" style="height:22px;">
+            <div class="dot" style="background:#FF5F57"></div>
+            <div class="dot" style="background:#FEBC2E"></div>
+            <div class="dot" style="background:#28C840"></div>
+            <div class="url-bar"></div>
+          </div>
+          <div style="height:200px;overflow:hidden;">
+            <img src="https://image.thum.io/get/width/640/crop/800/https://www.ynet.co.il" style="width:100%;height:200px;object-fit:cover;object-position:top;display:block;" />
+          </div>
+          <div style="padding:9px 12px;border-top:1px solid #EBEBEB;display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:12px;font-weight:600;color:#32324D;">www.ynet.co.il</div>
+              <div style="font-size:10px;color:#2F5DFF;margin-top:2px;">I can analyze your category, products, images and prices.</div>
+            </div>
+            <span style="background:#EDFAF3;border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;color:#1A8A5A;flex-shrink:0;">Shopify</span>
+          </div>
+        </div>
+      </div>
+      <!-- options side by side -->
+      <div style="display:flex;gap:10px;">
+        <div style="position:relative;flex:1;border:1.5px solid #116DFF;border-radius:10px;padding:12px 14px;background:#EEF4FF;">
+          <span style="position:absolute;top:-8px;right:-8px;width:18px;height:18px;border-radius:50%;background:#116DFF;display:flex;align-items:center;justify-content:center;">
+            <svg width="10" height="10" viewBox="0 0 11 11" fill="none"><path d="M2 5.5L4.5 8L9 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <div style="margin-bottom:6px;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L2 6.5L10 11L18 6.5L10 2Z" stroke="#1E1E2E" stroke-width="1.4" stroke-linejoin="round"/><path d="M2 10L10 14.5L18 10" stroke="#1E1E2E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 13.5L10 18L18 13.5" stroke="#1E1E2E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div style="font-size:13px;font-weight:700;color:#32324D;">Content & design</div>
+          <div style="font-size:11px;color:#888;margin-top:2px;">Keep style, content and product data</div>
+        </div>
+        <div style="flex:1;border:1.5px solid #C1C2C3;border-radius:10px;padding:12px 14px;background:#fff;">
+          <div style="margin-bottom:6px;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2C5.58 2 2 5.58 2 10C2 14.42 5.58 18 10 18C10.92 18 11.5 17.24 11.5 16.5C11.5 16.16 11.38 15.86 11.18 15.62C10.99 15.39 10.88 15.1 10.88 14.75C10.88 14.01 11.49 13.38 12.25 13.38H14C16.21 13.38 18 11.59 18 9.38C18 5.3 14.41 2 10 2Z" stroke="#1E1E2E" stroke-width="1.4"/><circle cx="6.5" cy="9.5" r="1" fill="#1E1E2E"/><circle cx="9" cy="6.5" r="1" fill="#1E1E2E"/><circle cx="13" cy="7" r="1" fill="#1E1E2E"/></svg></div>
+          <div style="font-size:13px;font-weight:700;color:#32324D;">Design only</div>
+          <div style="font-size:11px;color:#888;margin-top:2px;">Create a new site in the same style.</div>
+        </div>
+      </div>
+      <!-- legal -->
+      <div style="background:#F3F4F8;border-radius:8px;padding:10px 14px;font-size:11px;color:#888;display:flex;gap:8px;align-items:center;">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;"><circle cx="8" cy="8" r="7" stroke="#888898" stroke-width="1.3"/><path d="M8 7.5V11" stroke="#888898" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="5.5" r="0.75" fill="#888898"/></svg>
+        Only use URLs where you have rights to the content.
+      </div>
+    </div>
+    <!-- footer -->
+    <div style="padding:12px 24px 20px;border-top:1px solid #eee;display:flex;justify-content:flex-end;gap:8px;">
+      <button style="height:36px;padding:0 18px;border:1px solid #C1C2C3;border-radius:20px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
+      <button style="height:36px;padding:0 20px;border:0;border-radius:20px;background:#116DFF;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- Option G: Full modal with E layout — narrow preview left, options right -->
+<div>
+  <h2>G — מודל מלא עם לייאוט E</h2>
+  <p class="label">preview צר שמאלה + options ימינה</p>
+  <div class="card" style="width:520px;border-radius:20px;">
+    <!-- header -->
+    <div style="padding:22px 24px 16px;border-bottom:1px solid #eee;display:flex;align-items:flex-start;justify-content:space-between;">
+      <div>
+        <div style="font-size:18px;font-weight:700;color:#1E1E2E;">Create from URL</div>
+        <div style="font-size:13px;color:#888;margin-top:4px;">Use any website as a starting point for your new site.</div>
+      </div>
+      <button style="border:0;background:transparent;cursor:pointer;color:#888;font-size:18px;padding:2px 6px;">×</button>
+    </div>
+    <!-- body -->
+    <div style="padding:18px 24px;display:flex;flex-direction:column;gap:14px;">
+      <!-- input -->
+      <div style="display:flex;gap:8px;">
+        <input value="www.ynet.co.il" readonly style="flex:1;height:36px;border:1.5px solid #116DFF;border-radius:8px;padding:0 12px;font-size:14px;font-family:inherit;outline:none;box-shadow:0 0 0 3px rgba(17,109,255,0.1);" />
+        <button style="height:36px;padding:0 18px;border:1px solid #C1C2C3;border-radius:8px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Re-scan</button>
+      </div>
+      <!-- two col: narrow preview + options -->
+      <div style="display:flex;gap:14px;align-items:stretch;">
+        <!-- preview narrow -->
+        <div style="flex:0 0 190px;">
+          <div style="border:1px solid #E0E0EE;border-radius:10px;overflow:hidden;height:100%;">
+            <div class="bar">
+              <div class="dot" style="background:#FF5F57"></div>
+              <div class="dot" style="background:#FEBC2E"></div>
+              <div class="dot" style="background:#28C840"></div>
+              <div class="url-bar"></div>
+            </div>
+            <div style="height:210px;overflow:hidden;">
+              <img src="https://image.thum.io/get/width/380/crop/800/https://www.ynet.co.il" style="width:100%;height:210px;object-fit:cover;object-position:top;display:block;" />
+            </div>
+            <div style="padding:9px 10px;border-top:1px solid #EBEBEB;">
+              <div style="font-size:12px;font-weight:600;color:#32324D;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">www.ynet.co.il</div>
+              <div style="font-size:10px;color:#2F5DFF;margin-top:2px;line-height:1.4;">I can analyze your category, products, images and prices.</div>
+            </div>
+          </div>
+        </div>
+        <!-- options right -->
+        <div style="flex:1;display:flex;flex-direction:column;gap:10px;justify-content:center;">
+          <div style="position:relative;border:1.5px solid #116DFF;border-radius:10px;padding:14px;background:#EEF4FF;">
+            <span style="position:absolute;top:-8px;right:-8px;width:18px;height:18px;border-radius:50%;background:#116DFF;display:flex;align-items:center;justify-content:center;">
+              <svg width="10" height="10" viewBox="0 0 11 11" fill="none"><path d="M2 5.5L4.5 8L9 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <div style="margin-bottom:8px;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L2 6.5L10 11L18 6.5L10 2Z" stroke="#1E1E2E" stroke-width="1.4" stroke-linejoin="round"/><path d="M2 10L10 14.5L18 10" stroke="#1E1E2E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 13.5L10 18L18 13.5" stroke="#1E1E2E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div style="font-size:13px;font-weight:700;color:#32324D;">Content & design</div>
+            <div style="font-size:11px;color:#888;margin-top:3px;line-height:1.4;">Keep style, content and product data</div>
+          </div>
+          <div style="border:1.5px solid #C1C2C3;border-radius:10px;padding:14px;background:#fff;">
+            <div style="margin-bottom:8px;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2C5.58 2 2 5.58 2 10C2 14.42 5.58 18 10 18C10.92 18 11.5 17.24 11.5 16.5C11.5 16.16 11.38 15.86 11.18 15.62C10.99 15.39 10.88 15.1 10.88 14.75C10.88 14.01 11.49 13.38 12.25 13.38H14C16.21 13.38 18 11.59 18 9.38C18 5.3 14.41 2 10 2Z" stroke="#1E1E2E" stroke-width="1.4"/><circle cx="6.5" cy="9.5" r="1" fill="#1E1E2E"/><circle cx="9" cy="6.5" r="1" fill="#1E1E2E"/><circle cx="13" cy="7" r="1" fill="#1E1E2E"/></svg></div>
+            <div style="font-size:13px;font-weight:700;color:#32324D;">Design only</div>
+            <div style="font-size:11px;color:#888;margin-top:3px;line-height:1.4;">Create a new site in the same style.</div>
+          </div>
+          <!-- Shopify badge -->
+          <span style="background:#EDFAF3;border-radius:4px;padding:3px 8px;font-size:10px;font-weight:700;color:#1A8A5A;align-self:flex-start;">Shopify</span>
+        </div>
+      </div>
+      <!-- legal -->
+      <div style="background:#F3F4F8;border-radius:8px;padding:10px 14px;font-size:11px;color:#888;display:flex;gap:8px;align-items:center;">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;"><circle cx="8" cy="8" r="7" stroke="#888898" stroke-width="1.3"/><path d="M8 7.5V11" stroke="#888898" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="5.5" r="0.75" fill="#888898"/></svg>
+        Only use URLs where you have rights to the content.
+      </div>
+    </div>
+    <!-- footer -->
+    <div style="padding:12px 24px 20px;border-top:1px solid #eee;display:flex;justify-content:flex-end;gap:8px;">
+      <button style="height:36px;padding:0 18px;border:1px solid #C1C2C3;border-radius:20px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
+      <button style="height:36px;padding:0 20px;border:0;border-radius:20px;background:#116DFF;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- Option E: B narrow — side layout -->
+<div>
+  <h2>E — B צר, לצד האופציות</h2>
+  <p class="label">preview צר (200px) לצד options<br>כמו הלייאוט המקורי אבל עם preview גבוה יותר</p>
+  <div class="card" style="width:500px;">
+    <div style="display:flex;gap:14px;padding:16px;align-items:stretch;">
+      <!-- preview narrow -->
+      <div style="flex:0 0 200px;">
+        <div class="browser" style="margin:0;height:100%;">
+          <div class="bar">
+            <div class="dot" style="background:#FF5F57"></div>
+            <div class="dot" style="background:#FEBC2E"></div>
+            <div class="dot" style="background:#28C840"></div>
+            <div class="url-bar"></div>
+          </div>
+          <div style="height:200px;overflow:hidden;">
+            <img src="https://image.thum.io/get/width/400/crop/800/https://www.ynet.co.il" style="width:100%;height:200px;object-fit:cover;object-position:top;display:block;" />
+          </div>
+          <div style="padding:8px 10px;border-top:1px solid #EBEBEB;">
+            <div style="font-size:12px;font-weight:600;color:#32324D;">www.ynet.co.il</div>
+            <div style="font-size:10px;color:#2F5DFF;margin-top:2px;">I can analyze your category…</div>
+          </div>
+        </div>
+      </div>
+      <!-- options -->
+      <div style="flex:1;display:flex;flex-direction:column;gap:10px;justify-content:center;">
+        <div style="border:1.5px solid #116DFF;border-radius:10px;padding:14px;background:#EEF4FF;position:relative;">
+          <span style="position:absolute;top:-8px;right:-8px;width:18px;height:18px;border-radius:50%;background:#116DFF;display:flex;align-items:center;justify-content:center;">
+            <svg width="10" height="10" viewBox="0 0 11 11" fill="none"><path d="M2 5.5L4.5 8L9 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="margin-bottom:6px;"><path d="M10 2L2 6.5L10 11L18 6.5L10 2Z" stroke="#1E1E2E" stroke-width="1.4" stroke-linejoin="round"/><path d="M2 10L10 14.5L18 10" stroke="#1E1E2E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 13.5L10 18L18 13.5" stroke="#1E1E2E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div style="font-size:13px;font-weight:700;color:#32324D;">Content & design</div>
+          <div style="font-size:11px;color:#888;margin-top:3px;">Keep style, content and product data</div>
+        </div>
+        <div style="border:1.5px solid #C1C2C3;border-radius:10px;padding:14px;background:#fff;">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="margin-bottom:6px;"><path d="M10 2C5.58 2 2 5.58 2 10C2 14.42 5.58 18 10 18C10.92 18 11.5 17.24 11.5 16.5C11.5 16.16 11.38 15.86 11.18 15.62C10.99 15.39 10.88 15.1 10.88 14.75C10.88 14.01 11.49 13.38 12.25 13.38H14C16.21 13.38 18 11.59 18 9.38C18 5.3 14.41 2 10 2Z" stroke="#1E1E2E" stroke-width="1.4"/><circle cx="6.5" cy="9.5" r="1" fill="#1E1E2E"/><circle cx="9" cy="6.5" r="1" fill="#1E1E2E"/><circle cx="13" cy="7" r="1" fill="#1E1E2E"/></svg>
+          <div style="font-size:13px;font-weight:700;color:#32324D;">Design only</div>
+          <div style="font-size:11px;color:#888;margin-top:3px;">Create a new site in the same style.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
