@@ -895,10 +895,20 @@ function DropRow({ icon, icon2, bg, fg, title, desc, onClick, hover }) {
   return (
     <button onClick={onClick} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
     style={{ display: 'flex', alignItems: 'flex-start', gap: 12, width: '100%', boxSizing: 'border-box', padding: 10, borderRadius: 10, border: 0, background: on ? '#F4F7FF' : 'transparent', cursor: 'pointer', textAlign: 'left' }}>
-      <span style={{ width: 34, height: 34, borderRadius: 8, background: bg, color: fg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, gap: 3 }}>
-        <HIc name={icon} size={icon2 ? 13 : 16} color={fg} />
-        {icon2 && <HIc name={icon2} size={13} color={fg} />}
-      </span>
+      {icon2 ? (
+        <span style={{ position: 'relative', width: 44, height: 34, flexShrink: 0 }}>
+          <span style={{ position: 'absolute', left: 0, top: 4, width: 26, height: 26, borderRadius: 7, background: bg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.10)' }}>
+            <HIc name={icon} size={13} color={fg} />
+          </span>
+          <span style={{ position: 'absolute', left: 16, top: 4, width: 26, height: 26, borderRadius: 7, background: bg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.13)' }}>
+            <HIc name={icon2} size={13} color={fg} />
+          </span>
+        </span>
+      ) : (
+        <span style={{ width: 34, height: 34, borderRadius: 8, background: bg, color: fg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <HIc name={icon} size={16} color={fg} />
+        </span>
+      )}
       <span style={{ flex: 1, minWidth: 0 }}>
         <span style={{ display: 'block', fontSize: 13, fontWeight: 600, color: H_INK }}>{title}</span>
         <span style={{ display: 'block', fontSize: 11, color: H_MUTED, marginTop: 2 }}>{desc}</span>
