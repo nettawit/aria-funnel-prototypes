@@ -278,7 +278,7 @@ function FolderChip({ files, onRemoveFile }) {
   const [open, setOpen] = hs(false);
   return (
     <span style={{ position: 'relative' }}>
-      <button onClick={() => setOpen(o => !o)} style={{ height: 36, padding: '0 12px', borderRadius: 8, background: open ? '#EEF4FF' : '#F5F6FA', border: `1px solid ${open ? '#116DFF' : '#E0E0E8'}`, color: open ? '#116DFF' : '#32324D', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, transition: 'background 120ms, border-color 120ms, color 120ms', fontFamily: 'inherit' }}>
+      <button onClick={() => setOpen(o => !o)} style={{ height: 36, padding: '0 12px', borderRadius: 'var(--wds-button-border-radius-medium, 8px)', background: open ? '#EEF4FF' : '#F5F6FA', border: `1px solid ${open ? '#116DFF' : '#E0E0E8'}`, color: open ? '#116DFF' : '#32324D', fontSize: 14, fontWeight: 530, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, transition: 'background 120ms, border-color 120ms, color 120ms', fontFamily: 'var(--wds-font-family-default, "Wix Madefor Text", sans-serif)' }}>
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 3.5C1 2.67 1.67 2 2.5 2H5.25L6.75 3.5H11.5C12.33 3.5 13 4.17 13 5V10.5C13 11.33 12.33 12 11.5 12H2.5C1.67 12 1 11.33 1 10.5V3.5Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/></svg>
         +{files.length} more
       </button>
@@ -611,7 +611,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
             {/* greeting */}
             <div style={{ position: 'relative', marginBottom: 32 }}>
               {screen === 'ready' &&
-                <button onClick={() => setScreen('text')} style={{ position: 'absolute', top: -36, left: 0, display: 'inline-flex', alignItems: 'center', gap: 4, background: 'transparent', border: '1px solid rgba(0,0,0,0.14)', borderRadius: 20, padding: '5px 12px', fontSize: 12, fontWeight: 500, color: H_MUTED, cursor: 'pointer', fontFamily: 'inherit' }}>← Back</button>
+                <button onClick={() => setScreen('text')} className="hbtn hbtn-secondary" style={{ ...hBtnSecondary('small'), position: 'absolute', top: -36, left: 0, border: '1px solid rgba(0,0,0,0.14)', color: H_MUTED, background: 'transparent' }}>← Back</button>
               }
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
               <HAria size={55} style={{ flexShrink: 0, marginTop: 2 }} className="aria-avatar" />
@@ -851,8 +851,8 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                       </TBrowser>
                       {/* WIX Harmony badge removed */}
                       <div className="hf-scrim" style={{ position: 'absolute', inset: 0, zIndex: 2, background: 'rgba(255,255,255,0.55)', backdropFilter: 'blur(2px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: 0, transition: 'opacity 180ms ease', pointerEvents: 'none' }}>
-                        <button style={{ height: 36, width: 96, background: '#1E1E2E', color: '#fff', border: 0, borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Edit</button>
-                        <button style={{ height: 36, width: 96, background: 'transparent', color: '#1E1E2E', border: '1px solid #1E1E2E', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>View</button>
+                        <button className="hbtn" style={{ ...hBtn('medium'), width: 96, background: '#1E1E2E', color: '#fff' }}>Edit</button>
+                        <button className="hbtn hbtn-secondary" style={{ ...hBtn('medium'), width: 96, background: 'transparent', color: '#1E1E2E', border: '1px solid #1E1E2E' }}>View</button>
                         <span style={{ position: 'absolute', bottom: 10, left: 12, fontSize: 12, fontWeight: 500, color: '#32324D' }}>Info</span>
                       </div>
                     </div>
@@ -862,7 +862,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
               </div>
               {!transitioning && !showMore &&
                 <div style={{ textAlign: 'center', marginTop: 24 }}>
-                  <button onClick={() => setShowMore(true)} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 24px', border: '1px solid rgba(0,0,0,0.12)', borderRadius: 24, background: 'rgba(255,255,255,0.7)', fontSize: 13, fontWeight: 500, color: H_INK, cursor: 'pointer', fontFamily: 'inherit', backdropFilter: 'blur(8px)' }}>
+                  <button onClick={() => setShowMore(true)} className="hbtn hbtn-secondary" style={{ ...hBtnSecondary('medium'), background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(8px)', border: '1px solid rgba(0,0,0,0.12)', color: H_INK }}>
                     Show more templates <HIc name="chevronRight" size={13} color={H_MUTED} />
                   </button>
                 </div>
@@ -1042,7 +1042,7 @@ function AssetsModal({ onClose, onAdd }) {
               <button onClick={() => removeAt(i)} style={{ border: 0, background: 'transparent', cursor: 'pointer', color: '#AAAAAA', fontSize: 15, lineHeight: 1 }}>×</button>
             </div>
           )}
-          <button onClick={() => inputRef.current && inputRef.current.click()} style={{ alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 12px', border: '1px solid #E0E0EC', borderRadius: 8, background: '#fff', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12, fontWeight: 600, color: H_BLUE }}><HIc name="plus" size={13} color={H_BLUE} /> Add more</button>
+          <button onClick={() => inputRef.current && inputRef.current.click()} className="hbtn hbtn-secondary" style={{ ...hBtnSecondary('small'), alignSelf: 'flex-start', color: H_BLUE, border: '1px solid #E0E0EC' }}><HIc name="plus" size={13} color={H_BLUE} /> Add more</button>
         </div>
         }
 
