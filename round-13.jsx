@@ -893,11 +893,11 @@ function FanIcon({ bg, fg, icon, icon2, size = 1 }) {
   const w = Math.round(29 * size), h = Math.round(29 * size), r = Math.round(7 * size);
   const gap = Math.round(17 * size);
   return (
-    <span style={{ position: 'relative', width: Math.round(44 * size) + gap - 17, height: Math.round(34 * size), flexShrink: 0, transform: 'rotate(10deg)', display: 'inline-block' }}>
-      <span style={{ position: 'absolute', left: 0, top: Math.round(4 * size), width: w, height: h, borderRadius: r, background: bg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.10)' }}>
+    <span style={{ position: 'relative', width: Math.round(44 * size) + gap - 17, height: Math.round(34 * size), flexShrink: 0, display: 'inline-block' }}>
+      <span style={{ position: 'absolute', left: 0, top: Math.round(4 * size), width: w, height: h, borderRadius: r, background: bg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.10)', transform: 'rotate(-10deg)', transformOrigin: 'bottom center' }}>
         <HIc name={icon} size={Math.round(13 * size)} color={fg} />
       </span>
-      <span style={{ position: 'absolute', left: gap, top: Math.round(4 * size), width: w, height: h, borderRadius: r, background: bg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 1px 5px rgba(0,0,0,0.13)' }}>
+      <span style={{ position: 'absolute', left: gap, top: Math.round(4 * size), width: w, height: h, borderRadius: r, background: bg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 1px 5px rgba(0,0,0,0.13)', transform: 'rotate(10deg)', transformOrigin: 'bottom center' }}>
         <HIc name={icon2} size={Math.round(13 * size)} color={fg} />
       </span>
     </span>
