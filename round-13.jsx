@@ -19,18 +19,19 @@ const HIc = ({ name, size = 16, color }) => {
   return <i style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: size, height: size, color: color || 'inherit', lineHeight: 0 }} dangerouslySetInnerHTML={{ __html: svg }} />;
 };
 
-/* Harmony button base styles — matched to WDS stylable.css (v1.286.0)
-   WDS exact specs: border-radius 1000px (pill) | fw:530 | medium h:36 fs:16 p:0 24px
-   large h:42 p:0 30px | small h:30 fs:14 p:0 18px | tiny h:24 fs:12 p:0 12px */
+/* Harmony button base styles — Harmony Design System tokens (tokens-harmony.css)
+   border-radius: --wds-button-border-radius-medium = 8px (wds-border-radius-400)
+                  --wds-button-border-radius-small  = 6px (wds-border-radius-300)
+   fw:530 | medium h:36 fs:16 p:0 24px | large h:42 p:0 30px | small h:30 fs:14 | tiny h:24 fs:12 */
 const hBtn = (size = 'medium') => {
   const sizes = {
-    tiny:   { height: 24, padding: '0 12px', fontSize: 12, fontWeight: 530 },
-    small:  { height: 30, padding: '0 18px', fontSize: 14, fontWeight: 530 },
-    medium: { height: 36, padding: '0 24px', fontSize: 16, fontWeight: 530 },
-    large:  { height: 42, padding: '0 30px', fontSize: 16, fontWeight: 530 },
+    tiny:   { height: 24, padding: '0 12px', fontSize: 12, fontWeight: 530, borderRadius: 'var(--wds-button-border-radius-tiny, 6px)' },
+    small:  { height: 30, padding: '0 18px', fontSize: 14, fontWeight: 530, borderRadius: 'var(--wds-button-border-radius-small, 6px)' },
+    medium: { height: 36, padding: '0 24px', fontSize: 16, fontWeight: 530, borderRadius: 'var(--wds-button-border-radius-medium, 8px)' },
+    large:  { height: 42, padding: '0 30px', fontSize: 16, fontWeight: 530, borderRadius: 'var(--wds-button-border-radius-large, 8px)' },
   };
   const s = sizes[size] || sizes.medium;
-  return { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, height: s.height, padding: s.padding, fontSize: s.fontSize, fontWeight: s.fontWeight, borderRadius: 1000, cursor: 'pointer', fontFamily: 'var(--wds-font-family-default, "Wix Madefor Text", sans-serif)', border: 0, boxSizing: 'border-box', whiteSpace: 'nowrap', lineHeight: '24px' };
+  return { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, height: s.height, padding: s.padding, fontSize: s.fontSize, fontWeight: s.fontWeight, borderRadius: s.borderRadius, cursor: 'pointer', fontFamily: 'var(--wds-font-family-default, "Wix Madefor Text", sans-serif)', border: 0, boxSizing: 'border-box', whiteSpace: 'nowrap', lineHeight: '24px' };
 };
 // Note: spread these as style={hBtnPrimary()} + className="hbtn" etc.
 // Helper that returns {style, className} for JSX spread
@@ -769,7 +770,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                       </button>
                     ); })()}
                     {showContinueTip && ((!prompt.trim() && !asset && !refs.length && !imported) || continuing) && (
-                      <div style={{ position: 'absolute', bottom: 'calc(100% + 8px)', right: 0, background: '#000624', color: '#fff', borderRadius: 8, padding: '8px 12px', fontSize: 12, fontWeight: 400, whiteSpace: 'nowrap', boxShadow: '0 6px 6px 0 rgba(22,45,61,0.06), 0 0 18px 0 rgba(22,45,61,0.12)', pointerEvents: 'none', zIndex: 100 }}>
+                      <div style={{ position: 'absolute', bottom: 'calc(100% + 8px)', right: 0, background: '#000624', color: '#fff', borderRadius: 'var(--wds-tooltip-border-radius, 6px)', padding: '8px 12px', fontSize: 12, fontWeight: 400, whiteSpace: 'nowrap', boxShadow: '0 6px 6px 0 rgba(22,45,61,0.06), 0 0 18px 0 rgba(22,45,61,0.12)', pointerEvents: 'none', zIndex: 100 }}>
                         Start typing to give Aria a starting point
                         <span style={{ position: 'absolute', bottom: -5, right: 20, width: 10, height: 10, background: '#000624', transform: 'rotate(45deg)', borderRadius: 2 }} />
                       </div>
