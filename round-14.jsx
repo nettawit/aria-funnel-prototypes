@@ -439,6 +439,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
   const [refHover, setRefHover] = hs(false);
   const [scanPct, setScanPct] = hs(60);
   const [showMore, setShowMore] = hs(false);
+  const [tplSearch, setTplSearch] = hs('');
   const [ideasSet, setIdeasSet] = hs(0);
   const textareaRef = hr(null);
   const [dragOver, setDragOver] = hs(false);
@@ -760,26 +761,22 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                   <span style={{ display: 'inline-flex', alignItems: 'center', height: 'var(--wds-badge-size-tiny, 20px)', padding: '0 var(--wds-badge-padding-horizontal-tiny, 6px)', borderRadius: 'var(--wds-badge-border-radius-tiny, 4px)', background: '#DFF994', fontSize: 12, fontWeight: 600, lineHeight: 1, color: '#2D8A4E', flexShrink: 0 }}>Beta</span>
                 </button>
                 <div style={{ flex: 1 }} />
-                {ready ?
-                <button className="hbtn" onClick={() => onGenerate && onGenerate(prompt)} style={{ ...hBtnPrimary('medium') }}>Generate site with Aria <HIc name="arrowUp" size={14} color="#fff" /></button> :
-                transitioning ?
-                <button disabled className="hbtn" style={{ ...hBtnPrimary('medium'), opacity: 0.5, cursor: 'not-allowed' }}>Thinking… <span style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.4)', borderTopColor: '#fff', display: 'inline-block', animation: 'h-spin 0.8s linear infinite' }} /></button> :
                 <span style={{ position: 'relative', display: 'inline-flex' }}
                     onMouseEnter={() => { const d = (!prompt.trim() && !asset && !refs.length && !imported) || continuing; if (d) setShowContinueTip(true); }}
                     onMouseLeave={() => setShowContinueTip(false)}>
-                    {(() => { const isDisabled = (!prompt.trim() && !asset && !refs.length && !imported) || continuing; return (
-                      <button className="hbtn" onClick={!isDisabled ? handleContinue : undefined} disabled={isDisabled}
-                        style={{ ...hBtnPrimary('medium'), opacity: isDisabled ? 0.4 : 1, cursor: isDisabled ? 'not-allowed' : 'pointer', minWidth: 172, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, pointerEvents: isDisabled ? 'none' : 'auto' }}>
-                        {continuing ? <><span style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.4)', borderTopColor: '#fff', display: 'inline-block', animation: 'h-spin 0.8s linear infinite' }} />Loading…</> : 'Continue with Aria →'}
-                      </button>
-                    ); })()}
-                    {showContinueTip && ((!prompt.trim() && !asset && !refs.length && !imported) || continuing) && (
-                      <div style={{ position: 'absolute', bottom: 'calc(100% + 8px)', right: 0, background: '#000624', color: '#fff', borderRadius: 'var(--wds-tooltip-border-radius, 6px)', padding: '8px 12px', fontSize: 12, fontWeight: 400, whiteSpace: 'nowrap', boxShadow: '0 6px 6px 0 rgba(22,45,61,0.06), 0 0 18px 0 rgba(22,45,61,0.12)', pointerEvents: 'none', zIndex: 100 }}>
-                        Start typing to give Aria a starting point
-                        <span style={{ position: 'absolute', bottom: -5, right: 20, width: 10, height: 10, background: '#000624', transform: 'rotate(45deg)', borderRadius: 2 }} />
-                      </div>
-                    )}
-                  </span>}
+                  {(() => { const isDisabled = (!prompt.trim() && !asset && !refs.length && !imported) || continuing; return (
+                    <button className="hbtn" onClick={!isDisabled ? () => { setContinuing(true); setTimeout(() => { setContinuing(false); onGenerate && onGenerate(prompt); }, 600); } : undefined} disabled={isDisabled}
+                      style={{ ...hBtnPrimary('medium'), opacity: isDisabled ? 0.4 : 1, cursor: isDisabled ? 'not-allowed' : 'pointer', minWidth: 152, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, pointerEvents: isDisabled ? 'none' : 'auto' }}>
+                      {continuing ? <><span style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.4)', borderTopColor: '#fff', display: 'inline-block', animation: 'h-spin 0.8s linear infinite' }} />Loading…</> : 'Generate site'}
+                    </button>
+                  ); })()}
+                  {showContinueTip && (!prompt.trim() && !asset && !refs.length && !imported) && (
+                    <div style={{ position: 'absolute', bottom: 'calc(100% + 8px)', right: 0, background: '#000624', color: '#fff', borderRadius: 'var(--wds-tooltip-border-radius, 6px)', padding: '8px 12px', fontSize: 12, fontWeight: 400, whiteSpace: 'nowrap', boxShadow: '0 6px 6px 0 rgba(22,45,61,0.06), 0 0 18px 0 rgba(22,45,61,0.12)', pointerEvents: 'none', zIndex: 100 }}>
+                      Start typing to give Aria a starting point
+                      <span style={{ position: 'absolute', bottom: -5, right: 20, width: 10, height: 10, background: '#000624', transform: 'rotate(45deg)', borderRadius: 2 }} />
+                    </div>
+                  )}
+                </span>
               </div>
             </div>
 
@@ -823,48 +820,55 @@ function HomeFlow({ start = 'empty', onGenerate }) {
             <div style={{ marginTop: 28, background: 'rgba(255,255,255,0.5)', borderRadius: 16, padding: '28px 32px 32px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 18 }}>
                 <div style={{ fontSize: 20, fontWeight: 600, color: H_INK }}>
-                  {ready ? 'Or start with a relevant template for your business' : 'Or you can start with stunning templates'}
+                  {'Or start with a stunning template'}
                 </div>
                 <a href="https://www.wix.com/website/templates" target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, color: H_BLUE, fontWeight: 500, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>See all <HIc name="chevronRight" size={14} color={H_BLUE} /></a>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
-                {transitioning ? [0,1,2,3,4,5,6,7,8].map(i =>
-                  <div key={i}>
-                    <div style={{ height: 188, borderRadius: 12, background: 'linear-gradient(90deg,#e8eaf6 25%,#d0d4f0 50%,#e8eaf6 75%)', backgroundSize: '200% 100%', animation: `h-shimmer ${1.2 + (i % 3) * 0.15}s linear infinite`, border: '1px solid #E0E4F8' }} />
-                    <div style={{ marginTop: 10, height: 16, borderRadius: 6, background: 'linear-gradient(90deg,#e8eaf6 25%,#d0d4f0 50%,#e8eaf6 75%)', backgroundSize: '200% 100%', animation: 'h-shimmer 1.4s linear infinite', width: '60%' }} />
-                  </div>
-                ) :
-                (() => {
-                  const allTpls = ready ? (() => {
-                    const p = prompt.toLowerCase();
-                    if (/boutique|fashion|clothing|apparel/.test(p)) return TPL_FASHION;
-                    if (/wellness|yoga|fitness|gym|health|spa|therapy/.test(p)) return TPL_WELLNESS;
-                    if (/restaurant|cafe|bakery|food|catering|bar/.test(p)) return TPL_FOOD;
-                    if (/shop|store|ecommerce|product/.test(p)) return TPL_STORE;
-                    if (/portfolio|studio|design|creative|art|photo/.test(p)) return TPL_PORTFOLIO;
-                    if (/consultancy|consulting|agency|construction|remodel|landscap|service/.test(p)) return TPL_BUSINESS;
-                    return TPL_GENERAL;
-                  })() : TPL_GENERAL;
-                  const visible = showMore ? allTpls : allTpls.slice(0, 9);
-                  return visible;
-                })().map(([name, imgId], i) =>
-                <div key={i}>
-                    <div className="hf-tcard" style={{ position: 'relative', height: 188, borderRadius: 12, border: `1px solid ${ready ? '#C8D4FF' : '#E8E8F0'}`, overflow: 'hidden', boxShadow: '0 2px 10px rgba(80,80,140,0.06)', cursor: 'pointer' }}>
-                      <TBrowser bar={ready ? '#F0F2FF' : '#fff'}>
-                        <TplImg id={imgId} />
-                      </TBrowser>
-                      {/* WIX Harmony badge removed */}
-                      <div className="hf-scrim" style={{ position: 'absolute', inset: 0, zIndex: 2, background: 'rgba(255,255,255,0.55)', backdropFilter: 'blur(2px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: 0, transition: 'opacity 180ms ease', pointerEvents: 'none' }}>
-                        <button className="hbtn" style={{ ...hBtn('medium'), width: 96, background: '#1E1E2E', color: '#fff' }}>Edit</button>
-                        <button className="hbtn hbtn-secondary" style={{ ...hBtn('medium'), width: 96, background: 'transparent', color: '#1E1E2E', border: '1px solid #1E1E2E' }}>View</button>
-                        <span style={{ position: 'absolute', bottom: 10, left: 12, fontSize: 12, fontWeight: 500, color: '#32324D' }}>Info</span>
-                      </div>
-                    </div>
-                    <div style={{ fontSize: 14, color: H_INK, marginTop: 10 }}>{name}</div>
-                  </div>
+              {/* Search bar */}
+              <div style={{ position: 'relative', marginBottom: 20 }}>
+                <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', display: 'flex', alignItems: 'center' }}>
+                  <HIc name="search" size={16} color="#9A9AB0" />
+                </span>
+                <input
+                  className="h-input"
+                  type="text"
+                  value={tplSearch}
+                  onChange={e => { setTplSearch(e.target.value); setShowMore(true); }}
+                  placeholder="Search templates…"
+                  style={{ width: '100%', boxSizing: 'border-box', height: 38, borderRadius: 8, border: '1px solid #E0E0E0', background: '#fff', paddingLeft: 40, paddingRight: 14, fontSize: 14, color: H_INK, fontFamily: 'inherit', outline: 'none' }}
+                />
+                {tplSearch && (
+                  <button onClick={() => setTplSearch('')} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 4, color: '#9A9AB0' }}>
+                    <HIc name="close" size={14} color="#9A9AB0" />
+                  </button>
                 )}
               </div>
-              {!transitioning && !showMore &&
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
+                {(() => {
+                  const ALL_TPL_POOL = [...TPL_GENERAL, ...TPL_FASHION, ...TPL_WELLNESS, ...TPL_FOOD, ...TPL_PORTFOLIO, ...TPL_STORE, ...TPL_BUSINESS];
+                  const deduped = ALL_TPL_POOL.filter((item, idx, arr) => arr.findIndex(x => x[0] === item[0]) === idx);
+                  const q = tplSearch.trim();
+                  const basePool = q ? deduped.filter(([n]) => n.toLowerCase().includes(q.toLowerCase())) : TPL_GENERAL;
+                  const visible = (q || showMore) ? basePool : basePool.slice(0, 9);
+                  if (!visible.length) return [<div key="empty" style={{ gridColumn: '1/-1', textAlign: 'center', padding: '32px 0', color: H_MUTED, fontSize: 14 }}>No templates found for "{tplSearch}"</div>];
+                  return visible.map(([name, imgId], i) =>
+                    <div key={i}>
+                      <div className="hf-tcard" style={{ position: 'relative', height: 188, borderRadius: 12, border: '1px solid #E8E8F0', overflow: 'hidden', boxShadow: '0 2px 10px rgba(80,80,140,0.06)', cursor: 'pointer' }}>
+                        <TBrowser bar='#fff'>
+                          <TplImg id={imgId} />
+                        </TBrowser>
+                        <div className="hf-scrim" style={{ position: 'absolute', inset: 0, zIndex: 2, background: 'rgba(255,255,255,0.55)', backdropFilter: 'blur(2px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: 0, transition: 'opacity 180ms ease', pointerEvents: 'none' }}>
+                          <button className="hbtn" style={{ ...hBtn('medium'), width: 96, background: '#1E1E2E', color: '#fff' }}>Edit</button>
+                          <button className="hbtn hbtn-secondary" style={{ ...hBtn('medium'), width: 96, background: 'transparent', color: '#1E1E2E', border: '1px solid #1E1E2E' }}>View</button>
+                          <span style={{ position: 'absolute', bottom: 10, left: 12, fontSize: 12, fontWeight: 500, color: '#32324D' }}>Info</span>
+                        </div>
+                      </div>
+                      <div style={{ fontSize: 14, color: H_INK, marginTop: 10 }}>{name}</div>
+                    </div>
+                  );
+                })()}
+              </div>
+              {!showMore && !tplSearch.trim() &&
                 <div style={{ textAlign: 'center', marginTop: 24 }}>
                   <button onClick={() => setShowMore(true)} className="hbtn hbtn-secondary" style={{ ...hBtnSecondary('medium'), background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(8px)', border: '1px solid rgba(0,0,0,0.12)', color: H_INK }}>
                     Show more templates <HIc name="chevronRight" size={13} color={H_MUTED} />
