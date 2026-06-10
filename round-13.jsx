@@ -20,18 +20,17 @@ const HIc = ({ name, size = 16, color }) => {
 };
 
 /* Harmony button base styles — matched to WDS stylable.css (v1.286.0)
-   WDS exact specs: medium h:36 fs:16 fw:530 p:0 24px | large h:42 | small h:30 | tiny h:24
-   font-weight 530 = WDS variable-font axis between 500–600 (confirmed from storybook CSS)
-   border-radius kept at 6-8px (non-pill) per prototype design */
+   WDS exact specs: border-radius 1000px (pill) | fw:530 | medium h:36 fs:16 p:0 24px
+   large h:42 p:0 30px | small h:30 fs:14 p:0 18px | tiny h:24 fs:12 p:0 12px */
 const hBtn = (size = 'medium') => {
   const sizes = {
-    tiny:   { height: 24, padding: '0 12px', fontSize: 12, fontWeight: 530, borderRadius: 6 },
-    small:  { height: 30, padding: '0 18px', fontSize: 14, fontWeight: 530, borderRadius: 6 },
-    medium: { height: 36, padding: '0 24px', fontSize: 16, fontWeight: 530, borderRadius: 8 },
-    large:  { height: 42, padding: '0 30px', fontSize: 16, fontWeight: 530, borderRadius: 8 },
+    tiny:   { height: 24, padding: '0 12px', fontSize: 12, fontWeight: 530 },
+    small:  { height: 30, padding: '0 18px', fontSize: 14, fontWeight: 530 },
+    medium: { height: 36, padding: '0 24px', fontSize: 16, fontWeight: 530 },
+    large:  { height: 42, padding: '0 30px', fontSize: 16, fontWeight: 530 },
   };
   const s = sizes[size] || sizes.medium;
-  return { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, height: s.height, padding: s.padding, fontSize: s.fontSize, fontWeight: s.fontWeight, borderRadius: s.borderRadius, cursor: 'pointer', fontFamily: 'var(--wds-font-family-default, "Wix Madefor Text", sans-serif)', border: 0, boxSizing: 'border-box', whiteSpace: 'nowrap', lineHeight: '24px' };
+  return { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, height: s.height, padding: s.padding, fontSize: s.fontSize, fontWeight: s.fontWeight, borderRadius: 1000, cursor: 'pointer', fontFamily: 'var(--wds-font-family-default, "Wix Madefor Text", sans-serif)', border: 0, boxSizing: 'border-box', whiteSpace: 'nowrap', lineHeight: '24px' };
 };
 // Note: spread these as style={hBtnPrimary()} + className="hbtn" etc.
 // Helper that returns {style, className} for JSX spread
@@ -770,9 +769,9 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                       </button>
                     ); })()}
                     {showContinueTip && ((!prompt.trim() && !asset && !refs.length && !imported) || continuing) && (
-                      <div style={{ position: 'absolute', bottom: 'calc(100% + 8px)', right: 0, background: '#32324D', color: '#fff', borderRadius: 8, padding: '8px 12px', fontSize: 12, fontWeight: 500, whiteSpace: 'nowrap', boxShadow: '0 4px 16px rgba(0,0,0,0.18)', pointerEvents: 'none', zIndex: 100 }}>
+                      <div style={{ position: 'absolute', bottom: 'calc(100% + 8px)', right: 0, background: '#000624', color: '#fff', borderRadius: 8, padding: '8px 12px', fontSize: 12, fontWeight: 400, whiteSpace: 'nowrap', boxShadow: '0 6px 6px 0 rgba(22,45,61,0.06), 0 0 18px 0 rgba(22,45,61,0.12)', pointerEvents: 'none', zIndex: 100 }}>
                         Start typing to give Aria a starting point
-                        <span style={{ position: 'absolute', bottom: -5, right: 20, width: 10, height: 10, background: '#32324D', transform: 'rotate(45deg)', borderRadius: 2 }} />
+                        <span style={{ position: 'absolute', bottom: -5, right: 20, width: 10, height: 10, background: '#000624', transform: 'rotate(45deg)', borderRadius: 2 }} />
                       </div>
                     )}
                   </span>}
@@ -968,7 +967,7 @@ const addB    = hBtnPrimary('medium');
 
 function ModalHead({ icon, iconBg, iconFg, iconEl, title, sub, badge, onClose, onBack, spin }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '20px 22px 16px', borderBottom: '1px solid #EEEEEE' }}>
+    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '22px 22px 16px', borderBottom: '1px solid #EEEEEE' }}>
       {onBack && <button onClick={onBack} onMouseEnter={(e) => e.currentTarget.style.color = '#1E1E2E'} onMouseLeave={(e) => e.currentTarget.style.color = '#888898'} style={{ border: 0, background: 'transparent', cursor: 'pointer', color: '#888898', paddingRight: 10, display: 'inline-flex', alignItems: 'center', marginTop: 10 }}><HIc name="chevronLeft" size={16} color="currentColor" /></button>}
       {iconEl ? <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>{iconEl}</span> : (icon || spin) ? (
       <span style={{ width: 40, height: 40, borderRadius: 10, background: iconBg, color: iconFg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
