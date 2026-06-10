@@ -988,9 +988,15 @@ function AssetsModal({ onClose, onAdd }) {
         </div>
         }
 
-      <div style={{ marginTop: 12, background: '#F0F2FF', borderRadius: 8, padding: '10px 12px', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-        <span style={{ flexShrink: 0, marginTop: 1 }}><HIc name="sparkle" size={14} color={H_BLUE} /></span>
-        <span style={{ fontSize: 12, color: H_BLUE, lineHeight: 1.5 }}>Aria extracts content from your files — she'll pull out text, images, and media to help build your site.</span>
+      <div style={{ marginTop: 12, background: '#F0F2FF', borderRadius: 8, padding: '10px 12px' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 5 }}>
+          <span style={{ flexShrink: 0, marginTop: 1 }}><HIc name="sparkle" size={14} color={H_BLUE} /></span>
+          <span style={{ fontSize: 12, color: H_BLUE, lineHeight: 1.5 }}>Anything you'd put on your site — images, logos, docs</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+          <span style={{ flexShrink: 0, marginTop: 1 }}><HIc name="sparkle" size={14} color={H_BLUE} /></span>
+          <span style={{ fontSize: 12, color: H_BLUE, lineHeight: 1.5 }}>Aria will extract the content and visuals for you</span>
+        </div>
       </div>
     </div>
     <div style={{ padding: '12px 20px 16px', borderTop: '1px solid #F0F0F8', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
