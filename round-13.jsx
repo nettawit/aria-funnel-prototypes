@@ -1237,15 +1237,17 @@ function ImportFlow({ onClose, onImport }) {
   const Opt = ({ id, title, sub, icon }) => {
     const on = sel === id;
     return (
-      <button onClick={() => setSel(id)} style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 8, width: '100%', boxSizing: 'border-box', textAlign: 'left', border: `1px solid ${on ? '#116DFF' : '#C1C2C3'}`, borderRadius: 8, padding: '12px', background: on ? '#EEF4FF' : '#fff', cursor: 'pointer', transition: 'border-color 120ms, background 120ms' }}>
+      <button onClick={() => setSel(id)} style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10, boxSizing: 'border-box', textAlign: 'left', border: `1.5px solid ${on ? '#116DFF' : '#C1C2C3'}`, borderRadius: 10, padding: '12px 14px', background: on ? '#EEF4FF' : '#fff', cursor: 'pointer', transition: 'border-color 120ms, background 120ms', fontFamily: 'inherit' }}>
         {on && (
-          <span style={{ position: 'absolute', top: -9, right: -9, width: 20, height: 20, borderRadius: '50%', background: '#116DFF', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 0 2px #fff' }}>
-            <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5L4.5 8L9 3" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          <span style={{ position: 'absolute', top: -8, right: -8, width: 18, height: 18, borderRadius: '50%', background: '#116DFF', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 0 2px #fff' }}>
+            <svg width="10" height="10" viewBox="0 0 11 11" fill="none"><path d="M2 5.5L4.5 8L9 3" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </span>
         )}
-        {icon}
-        <span style={{ display: 'block', fontSize: 14, fontWeight: 600, color: '#32324D', marginTop: 2 }}>{title}</span>
-        <span style={{ display: 'block', fontSize: 12, color: H_MUTED, lineHeight: 1.4 }}>{sub}</span>
+        <span style={{ flexShrink: 0 }}>{icon}</span>
+        <span>
+          <span style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#32324D' }}>{title}</span>
+          <span style={{ display: 'block', fontSize: 11, color: H_MUTED, marginTop: 2, lineHeight: 1.4 }}>{sub}</span>
+        </span>
       </button>
     );
   };
@@ -1295,30 +1297,34 @@ function ImportFlow({ onClose, onImport }) {
 
       {/* results */}
       {phase === 'results' &&
-        <div style={{ display: 'flex', gap: 14, alignItems: 'stretch' }}>
-
-          {/* LEFT — site preview */}
-          <div style={{ flex: '0 0 220px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <div style={{ border: '1px solid #E0E0EE', borderRadius: 10, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-              {/* browser bar */}
-              <div style={{ height: 16, background: '#F3F4F6', display: 'flex', alignItems: 'center', gap: 4, padding: '0 8px', flexShrink: 0, borderBottom: '1px solid #EBEBEB' }}>
-                {['#FF5F57','#FEBC2E','#28C840'].map((c) => <span key={c} style={{ width: 6, height: 6, borderRadius: '50%', background: c }} />)}
-              </div>
-              <div style={{ height: 108, background: '#E8EAF0' }} />
-              <div style={{ padding: '8px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, borderTop: '1px solid #EBEBEB' }}>
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#32324D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{host}</span>
-                <span style={{ background: '#EDFAF3', borderRadius: 4, padding: '2px 7px', fontSize: 10, fontWeight: 700, color: '#1A8A5A', flexShrink: 0 }}>Shopify</span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, animation: 'h-fade 300ms ease' }}>
+          {/* full-width preview */}
+          <div style={{ border: '1px solid #E0E0EE', borderRadius: 12, overflow: 'hidden' }}>
+            {/* browser bar */}
+            <div style={{ height: 22, background: '#F3F4F6', display: 'flex', alignItems: 'center', gap: 4, padding: '0 10px', borderBottom: '1px solid #EBEBEB' }}>
+              {['#FF5F57','#FEBC2E','#28C840'].map((c) => <span key={c} style={{ width: 7, height: 7, borderRadius: '50%', background: c }} />)}
+              <span style={{ flex: 1, height: 12, background: '#E4E5EA', borderRadius: 4, marginLeft: 8 }} />
+            </div>
+            {/* screenshot */}
+            <div style={{ height: 148, background: '#E8EAF0', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg,#EEF4FF 0%,#E4EAFF 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style={{ opacity: 0.35 }}><rect x="3" y="3" width="18" height="18" rx="2" stroke="#6B7AE8" strokeWidth="1.5"/><circle cx="8.5" cy="8.5" r="1.5" fill="#6B7AE8"/><path d="M3 15L8 10L13 15M11 13L15 9L21 15" stroke="#6B7AE8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </div>
             </div>
-            {/* Aria note */}
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 7 }}>
-              <HAria size={15} style={{ marginTop: 1, flexShrink: 0 }} />
-              <span style={{ fontSize: 12, color: '#666677', lineHeight: 1.5 }}>I can analyze your category, products, images and prices.</span>
+            {/* footer row */}
+            <div style={{ padding: '10px 14px', background: '#fff', borderTop: '1px solid #EBEBEB', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 0 }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#32324D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{host}</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
+                  <HAria size={13} style={{ flexShrink: 0 }} />
+                  <span style={{ fontSize: 11, color: H_BLUE, fontWeight: 500 }}>I can analyze your category, products, images and prices.</span>
+                </span>
+              </div>
+              <span style={{ background: '#EDFAF3', borderRadius: 4, padding: '2px 8px', fontSize: 10, fontWeight: 700, color: '#1A8A5A', flexShrink: 0 }}>Shopify</span>
             </div>
           </div>
-
-          {/* RIGHT — options */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {/* options — side by side */}
+          <div style={{ display: 'flex', gap: 10 }}>
             <Opt id="both" title="Content & design" sub="Keep style, content and product data" icon={<IconLayers />} />
             <Opt id="design" title="Design only" sub="Create a new site in the same style." icon={<IconPalette />} />
           </div>
