@@ -848,8 +848,8 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                       </TBrowser>
                       {/* WIX Harmony badge removed */}
                       <div className="hf-scrim" style={{ position: 'absolute', inset: 0, zIndex: 2, background: 'rgba(255,255,255,0.55)', backdropFilter: 'blur(2px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: 0, transition: 'opacity 180ms ease', pointerEvents: 'none' }}>
-                        <button style={{ height: 30, padding: '0 16px', background: '#1E1E2E', color: '#fff', border: 0, borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', minWidth: 120 }}>Edit</button>
-                        <button style={{ height: 30, padding: '0 16px', background: 'transparent', color: '#1E1E2E', border: '1px solid #1E1E2E', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', minWidth: 120 }}>View</button>
+                        <button style={{ height: 36, padding: '0 20px', background: '#1E1E2E', color: '#fff', border: 0, borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Edit</button>
+                        <button style={{ height: 36, padding: '0 20px', background: 'transparent', color: '#1E1E2E', border: '1px solid #1E1E2E', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>View</button>
                         <span style={{ position: 'absolute', bottom: 10, left: 12, fontSize: 12, fontWeight: 500, color: '#32324D' }}>Info</span>
                       </div>
                     </div>
