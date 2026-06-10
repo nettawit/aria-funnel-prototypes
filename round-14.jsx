@@ -824,21 +824,18 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                 </div>
                 <a href="https://www.wix.com/website/templates" target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, color: H_BLUE, fontWeight: 500, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>See all <HIc name="chevronRight" size={14} color={H_BLUE} /></a>
               </div>
-              {/* Search bar */}
-              <div style={{ position: 'relative', marginBottom: 20 }}>
-                <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', display: 'flex', alignItems: 'center' }}>
-                  <HIc name="search" size={16} color="#9A9AB0" />
-                </span>
+              {/* Search bar — underline style */}
+              <div style={{ position: 'relative', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 10, borderBottom: '2px solid #3B4EF5', paddingBottom: 8 }}>
+                <HIc name="search" size={18} color="#6B7280" />
                 <input
-                  className="h-input"
                   type="text"
                   value={tplSearch}
                   onChange={e => { setTplSearch(e.target.value); setShowMore(true); }}
-                  placeholder="Search templates…"
-                  style={{ width: '100%', boxSizing: 'border-box', height: 38, borderRadius: 8, border: '1px solid #E0E0E0', background: '#fff', paddingLeft: 40, paddingRight: 14, fontSize: 14, color: H_INK, fontFamily: 'inherit', outline: 'none' }}
+                  placeholder="Search all templates..."
+                  style={{ flex: 1, border: 'none', background: 'transparent', fontSize: 16, color: H_INK, fontFamily: 'inherit', outline: 'none', padding: 0 }}
                 />
                 {tplSearch && (
-                  <button onClick={() => setTplSearch('')} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 4, color: '#9A9AB0' }}>
+                  <button onClick={() => setTplSearch('')} style={{ background: 'none', border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 2, color: '#9A9AB0' }}>
                     <HIc name="close" size={14} color="#9A9AB0" />
                   </button>
                 )}
