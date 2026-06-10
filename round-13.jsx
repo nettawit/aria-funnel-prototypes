@@ -19,20 +19,24 @@ const HIc = ({ name, size = 16, color }) => {
   return <i style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: size, height: size, color: color || 'inherit', lineHeight: 0 }} dangerouslySetInnerHTML={{ __html: svg }} />;
 };
 
-/* Harmony button base styles — Harmony Design System tokens (tokens-harmony.css)
-   border-radius: --wds-button-border-radius-medium = 8px (wds-border-radius-400)
-                  --wds-button-border-radius-small  = 6px (wds-border-radius-300)
-   fw:530 | medium h:36 fs:16 p:0 24px | large h:42 p:0 30px | small h:30 fs:14 | tiny h:24 fs:12 */
-const hBtn = (size = 'medium') => {
-  const sizes = {
-    tiny:   { height: 24, padding: '0 12px', fontSize: 12, fontWeight: 530, borderRadius: 'var(--wds-button-border-radius-tiny, 6px)' },
-    small:  { height: 30, padding: '0 18px', fontSize: 14, fontWeight: 530, borderRadius: 'var(--wds-button-border-radius-small, 6px)' },
-    medium: { height: 36, padding: '0 24px', fontSize: 16, fontWeight: 530, borderRadius: 'var(--wds-button-border-radius-medium, 8px)' },
-    large:  { height: 42, padding: '0 30px', fontSize: 16, fontWeight: 530, borderRadius: 'var(--wds-button-border-radius-large, 8px)' },
-  };
-  const s = sizes[size] || sizes.medium;
-  return { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, height: s.height, padding: s.padding, fontSize: s.fontSize, fontWeight: s.fontWeight, borderRadius: s.borderRadius, cursor: 'pointer', fontFamily: 'var(--wds-font-family-default, "Wix Madefor Text", sans-serif)', border: 0, boxSizing: 'border-box', whiteSpace: 'nowrap', lineHeight: '24px' };
-};
+/* Harmony button base styles — fully token-driven from tokens-harmony.css
+   ALL values come from CSS variables so they auto-match the loaded Harmony theme.
+   Fallbacks are the resolved Harmony token values:
+     tiny:   h:24 fs:12 fw:600 ph:12 lh:16 r:6
+     small:  h:30 fs:12 fw:600 ph:16 lh:16 r:6
+     medium: h:38 fs:14 fw:600 ph:20 lh:24 r:8
+     large:  h:46 fs:16 fw:600 ph:24 lh:24 r:8  */
+const hBtn = (size = 'medium') => ({
+  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+  height: `var(--wds-button-size-${size}, ${({tiny:24,small:30,medium:38,large:46})[size]||38}px)`,
+  padding: `0 var(--wds-button-padding-horizontal-${size}, ${({tiny:12,small:16,medium:20,large:24})[size]||20}px)`,
+  fontSize: `var(--wds-button-font-size-${size}, ${({tiny:12,small:12,medium:14,large:16})[size]||14}px)`,
+  fontWeight: `var(--wds-button-font-weight-${size}, 600)`,
+  lineHeight: `var(--wds-button-font-line-height-${size}, ${({tiny:16,small:16,medium:24,large:24})[size]||24}px)`,
+  borderRadius: `var(--wds-button-border-radius-${size}, ${({tiny:6,small:6,medium:8,large:8})[size]||8}px)`,
+  fontFamily: 'var(--wds-font-family-default, "Wix Madefor Text", sans-serif)',
+  cursor: 'pointer', border: 0, boxSizing: 'border-box', whiteSpace: 'nowrap',
+});
 // Note: spread these as style={hBtnPrimary()} + className="hbtn" etc.
 // Helper that returns {style, className} for JSX spread
 const hBtnPrimary   = (size = 'medium') => ({ ...hBtn(size), background: '#2F5DFF', color: '#fff' });
