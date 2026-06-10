@@ -736,7 +736,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                   {ov === 'dropdown' &&
                   <div style={{ position: 'absolute', bottom: 'calc(100% + 12px)', left: 0, width: 280, background: '#fff', border: '0.5px solid rgba(0,0,0,0.10)', borderRadius: 14, boxShadow: '0 4px 24px rgba(0,0,0,0.10)', padding: 6, zIndex: 30, animation: 'h-menu 160ms ease-out' }}>
                       <div style={{ fontSize: 10, fontWeight: 600, color: '#AAAAAA', textTransform: 'uppercase', letterSpacing: '0.08em', padding: '8px 10px 4px' }}>Add to your prompt</div>
-                      <DropRow icon="image" bg="#FFF0E8" fg="#C05B2A" title="Add photos or files" desc="Upload anything you want on your site" onClick={() => setOv('assets')} />
+                      <DropRow icon="image" icon2="document" bg="#FFF0E8" fg="#C05B2A" title="Add photos or files" desc="Upload anything you want on your site" onClick={() => setOv('assets')} />
                       <DropRow icon="link" bg="#EDE9FF" fg="#6040D0" title="Add a reference site" desc="Give Aria a look & feel to start from" onClick={() => setOv('url')} />
                       <span style={{ position: 'absolute', left: 22, bottom: -7, width: 14, height: 14, background: '#fff', borderRight: '0.5px solid rgba(0,0,0,0.10)', borderBottom: '0.5px solid rgba(0,0,0,0.10)', transform: 'rotate(45deg)' }} />
                     </div>
@@ -889,13 +889,16 @@ function HomeFlow({ start = 'empty', onGenerate }) {
 
 }
 
-function DropRow({ icon, bg, fg, title, desc, onClick, hover }) {
+function DropRow({ icon, icon2, bg, fg, title, desc, onClick, hover }) {
   const [h, setH] = hs(false);
   const on = hover || h;
   return (
     <button onClick={onClick} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
     style={{ display: 'flex', alignItems: 'flex-start', gap: 12, width: '100%', boxSizing: 'border-box', padding: 10, borderRadius: 10, border: 0, background: on ? '#F4F7FF' : 'transparent', cursor: 'pointer', textAlign: 'left' }}>
-      <span style={{ width: 34, height: 34, borderRadius: 8, background: bg, color: fg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><HIc name={icon} size={16} color={fg} /></span>
+      <span style={{ width: 34, height: 34, borderRadius: 8, background: bg, color: fg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, gap: 3 }}>
+        <HIc name={icon} size={icon2 ? 13 : 16} color={fg} />
+        {icon2 && <HIc name={icon2} size={13} color={fg} />}
+      </span>
       <span style={{ flex: 1, minWidth: 0 }}>
         <span style={{ display: 'block', fontSize: 13, fontWeight: 600, color: H_INK }}>{title}</span>
         <span style={{ display: 'block', fontSize: 11, color: H_MUTED, marginTop: 2 }}>{desc}</span>
@@ -1135,10 +1138,7 @@ function UrlModal({ onClose, onAdd, onBack }) {
             <span style={{ flex: 1, height: 1, background: '#F0F0F8' }} />
           </div>
           <button onClick={() => {}} style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', boxSizing: 'border-box', textAlign: 'left', padding: '12px 14px', border: '1px solid #E0E0EC', borderRadius: 10, background: '#fff', cursor: 'pointer', fontFamily: 'inherit' }}>
-            <span style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, width: 40, height: 32, flexShrink: 0 }}>
-              <span style={{ borderRadius: 3, background: '#E4DDFF' }} /><span style={{ borderRadius: 3, background: '#C8D4FF' }} />
-              <span style={{ borderRadius: 3, background: '#D4EAD4' }} /><span style={{ borderRadius: 3, background: '#FFE8CC' }} />
-            </span>
+            <img src="wix-inspo.jpg" style={{ width: 56, height: 40, borderRadius: 6, objectFit: 'cover', flexShrink: 0 }} />
             <span style={{ flex: 1, minWidth: 0 }}>
               <span style={{ display: 'block', fontSize: 13, fontWeight: 600, color: H_INK }}>Wix Inspirations</span>
               <span style={{ display: 'block', fontSize: 11, color: H_MUTED, marginTop: 2 }}>Browse curated sites by style &amp; category</span>
