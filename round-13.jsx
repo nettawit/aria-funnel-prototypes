@@ -1097,14 +1097,13 @@ function UrlModal({ onClose, onAdd, onBack }) {
     <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
       {/* URL input row — always visible */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        <label style={{ fontSize: 13, fontWeight: 500, color: '#32324D' }}>Website URL</label>
         <div style={{ display: 'flex', gap: 8 }}>
           <input
             className="h-input"
             value={url}
             onChange={(e) => { setUrl(e.target.value); if (phase === 'error') setPhase('url'); }}
             onKeyDown={(e) => e.key === 'Enter' && fetch_()}
-            placeholder="e.g. www.example.com"
+            placeholder="Paste any address or URL"
             style={{ ...hInput, flex: 1, width: 'auto' }}
           />
           <button
@@ -1259,9 +1258,8 @@ function ImportFlow({ onClose, onImport }) {
     <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 18 }}>
       {/* URL label + input */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        <label style={{ fontSize: 14, fontWeight: 500, color: '#32324D' }}>Website URL</label>
         <div style={{ display: 'flex', gap: 8 }}>
-          <input className="h-input" value={url} onChange={(e) => { setUrl(e.target.value); if (phase === 'error') setPhase('url'); }} onKeyDown={(e) => e.key === 'Enter' && scan()} placeholder="e.g., www.example.com" style={{ ...hInput, flex: 1, width: 'auto', borderColor: phase === 'error' ? '#D32F2F' : undefined }} />
+          <input className="h-input" value={url} onChange={(e) => { setUrl(e.target.value); if (phase === 'error') setPhase('url'); }} onKeyDown={(e) => e.key === 'Enter' && scan()} placeholder="Paste any address or URL" style={{ ...hInput, flex: 1, width: 'auto', borderColor: phase === 'error' ? '#D32F2F' : undefined }} />
           <button className={phase === 'url' || phase === 'error' ? 'hbtn' : 'hbtn hbtn-secondary'} onClick={scan} style={{ ...(phase === 'url' || phase === 'error' ? hBtnPrimary('medium') : hBtnSecondary('medium')), flexShrink: 0 }}>{phase === 'url' || phase === 'error' ? 'Scan' : 'Re-scan'}</button>
         </div>
       </div>
