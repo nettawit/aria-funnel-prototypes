@@ -1125,7 +1125,7 @@ function UrlModal({ onClose, onAdd, onBack }) {
             disabled={!url.trim()}
             style={{ ...hBtnPrimary('medium'), flexShrink: 0, opacity: url.trim() ? 1 : 0.4, cursor: url.trim() ? 'pointer' : 'not-allowed' }}
           >
-            {phase === 'results' ? 'Re-get' : 'Get'}
+            {phase === 'results' ? 'Refresh' : 'Get'}
           </button>
         </div>
         {phase === 'error' && (
