@@ -14,53 +14,54 @@ body { font-family: 'Wix Madefor Text', sans-serif; overflow: hidden; height: 10
 
 /* ══ EDITOR CHROME ══ */
 .editor-chrome {
-  height: 52px; background: #fff; border-bottom: 1px solid #E0E0E8;
-  display: flex; align-items: center; padding: 0 16px; flex-shrink: 0; z-index: 10;
+  height: 44px; background: #fff; border-bottom: 1px solid #E5E5EA;
+  display: flex; align-items: center; padding: 0 12px; flex-shrink: 0; z-index: 10;
+  gap: 2px;
 }
-.chrome-logo { font-family: 'Wix Madefor Display',sans-serif; font-size: 20px; font-weight: 800; color: #0F0F1A; margin-right: 10px; }
-.chrome-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg,#6B46FF,#E040FB); display:flex;align-items:center;justify-content:center; font-size:12px;color:#fff;font-weight:600; }
-.chrome-div { width:1px;height:20px;background:#E0E0E8;margin:0 8px; }
-.chrome-btn { display:flex;align-items:center;gap:3px;padding:5px 10px;border-radius:6px;font-size:13px;font-weight:500;color:#444;background:transparent;border:none;cursor:pointer; }
+.chrome-logo { font-family: 'Wix Madefor Display',sans-serif; font-size: 18px; font-weight: 800; color: #0F0F1A; margin-right: 8px; }
+.chrome-avatar { width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg,#6B46FF,#E040FB); display:flex;align-items:center;justify-content:center; font-size:10px;color:#fff;font-weight:600; flex-shrink:0; }
+.chrome-div { width:1px;height:16px;background:#E5E5EA;margin:0 6px; }
+.chrome-btn { display:flex;align-items:center;gap:3px;padding:4px 8px;border-radius:5px;font-size:12px;font-weight:500;color:#555;background:transparent;border:none;cursor:pointer; }
 .chrome-btn:hover { background:#F5F5F8; }
-.chrome-caret { display:inline-block;width:8px;height:8px;border-right:1.5px solid #999;border-bottom:1.5px solid #999;transform:rotate(45deg) translateY(-2px); }
+.chrome-caret { display:inline-block;width:7px;height:7px;border-right:1.5px solid #AAA;border-bottom:1.5px solid #AAA;transform:rotate(45deg) translateY(-2px); }
 .chrome-center { flex:1;display:flex;justify-content:center; }
-.chrome-fit { font-size:13px;color:#666;display:flex;align-items:center;gap:3px;padding:5px 8px;border-radius:6px;cursor:pointer; }
-.chrome-right { display:flex;align-items:center;gap:6px; }
-.btn-upgrade { color:#6B46FF;font-size:13px;font-weight:600;background:none;border:none;cursor:pointer;padding:5px 8px; }
-.btn-preview { padding:6px 14px;background:none;border:1px solid #D0D0DC;border-radius:8px;font-size:13px;font-weight:500;color:#333;cursor:pointer; }
-.btn-publish { padding:6px 14px;border:none;border-radius:8px;font-size:13px;font-weight:600;color:#fff;cursor:not-allowed;background:#CCCCDD; }
+.chrome-fit { font-size:12px;color:#777;display:flex;align-items:center;gap:3px;padding:4px 8px;border-radius:5px;cursor:pointer; }
+.chrome-right { display:flex;align-items:center;gap:4px; }
+.btn-upgrade { color:#6B46FF;font-size:12px;font-weight:600;background:none;border:none;cursor:pointer;padding:4px 8px; }
+.btn-preview { padding:5px 12px;background:none;border:1px solid #D5D5DC;border-radius:7px;font-size:12px;font-weight:500;color:#333;cursor:pointer; }
+.btn-publish { padding:5px 12px;border:none;border-radius:7px;font-size:12px;font-weight:600;color:#fff;cursor:not-allowed;background:#CACAD8; }
 .btn-publish.active { background:#6B46FF;cursor:pointer; }
 
 /* ══ EDITOR BODY LAYOUT ══ */
 .editor-body { flex:1;display:flex;overflow:hidden;position:relative; }
-.editor-surface { flex:1;background:#E8EAF0;position:relative;overflow:hidden; }
+.editor-surface { flex:1;background:#ECEEF4;position:relative;overflow:hidden; }
 
 /* ══ ARIA CHAT PANEL ══ */
 .aria-panel {
-  width: 340px; flex-shrink: 0;
-  background: #fff; border-left: 1px solid #E0E0E8;
+  width: 290px; flex-shrink: 0;
+  background: #fff; border-left: 1px solid #E5E5EA;
   display: flex; flex-direction: column;
 }
-.aria-panel-header { padding:16px 20px 12px;border-bottom:1px solid #F0F0F5;font-size:14px;font-weight:600;color:#0F0F1A; }
-.aria-msgs { flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px; }
-.msg-user { align-self:flex-end;background:#F5F3FF;color:#0F0F1A;border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:14px;max-width:82%;line-height:1.5; }
-.msg-aria { font-size:14px;color:#333;line-height:1.6; }
+.aria-panel-header { padding:12px 16px 10px;border-bottom:1px solid #F2F2F5;font-size:13px;font-weight:600;color:#0F0F1A; }
+.aria-msgs { flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px; }
+.msg-user { align-self:flex-end;background:#F3F0FF;color:#0F0F1A;border-radius:14px 14px 3px 14px;padding:9px 12px;font-size:13px;max-width:85%;line-height:1.5; }
+.msg-aria { font-size:13px;color:#333;line-height:1.6; }
 .aria-q {
-  background:#fff;border:1px solid #E5E5EA;border-radius:14px;padding:14px;margin-top:4px;
+  background:#FAFAFA;border:1px solid #EBEBF0;border-radius:12px;padding:12px;margin-top:4px;
 }
-.aria-q-label { font-size:13px;font-weight:600;color:#0F0F1A;margin-bottom:3px; }
-.aria-q-sub { font-size:12px;color:#AAA;margin-bottom:11px; }
-.aria-opts { display:flex;flex-direction:column;gap:7px; }
-.aria-opt { display:flex;align-items:center;gap:9px;padding:9px 11px;border:1.5px solid #E5E5EA;border-radius:9px;font-size:13px;color:#333;cursor:pointer;transition:all 0.15s; }
+.aria-q-label { font-size:12px;font-weight:600;color:#0F0F1A;margin-bottom:2px; }
+.aria-q-sub { font-size:11px;color:#BBB;margin-bottom:10px; }
+.aria-opts { display:flex;flex-direction:column;gap:6px; }
+.aria-opt { display:flex;align-items:center;gap:8px;padding:8px 10px;border:1.5px solid #E8E8EF;border-radius:8px;font-size:12px;color:#333;cursor:pointer;transition:all 0.15s;background:#fff; }
 .aria-opt:hover { border-color:#6B46FF;background:#F8F5FF;color:#6B46FF; }
 .aria-opt.sel { border-color:#6B46FF;background:#F3EEFF;color:#6B46FF; }
-.aria-free { margin-top:8px;border:1.5px solid #E5E5EA;border-radius:9px;overflow:hidden; }
-.aria-free input { width:100%;border:none;outline:none;padding:9px 12px;font-family:inherit;font-size:13px;color:#333;background:#FAFAFA; }
+.aria-free { margin-top:7px;border:1.5px solid #E8E8EF;border-radius:8px;overflow:hidden; }
+.aria-free input { width:100%;border:none;outline:none;padding:8px 10px;font-family:inherit;font-size:12px;color:#333;background:#FAFAFA; }
 .aria-free input::placeholder { color:#CCC; }
-.aria-panel-footer { display:flex;align-items:center;justify-content:space-between;padding:12px 16px 14px;border-top:1px solid #F0F0F5; }
-.btn-skip { background:none;border:none;font-size:13px;color:#AAA;cursor:pointer; }
-.btn-next { background:#6B46FF;color:#fff;border:none;border-radius:10px;padding:9px 20px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer; }
-.btn-next:hover { background:#5836E8; }
+.aria-panel-footer { display:flex;align-items:center;justify-content:space-between;padding:10px 14px 12px;border-top:1px solid #F2F2F5; }
+.btn-skip { background:none;border:none;font-size:12px;color:#BBB;cursor:pointer; }
+.btn-next { background:#116DFF;color:#fff;border:none;border-radius:8px;padding:8px 18px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer; }
+.btn-next:hover { background:#0055DD; }
 
 /* ══ S1 PROMPT ══ */
 #s1 { background:#fff;align-items:center;justify-content:center; }
@@ -114,95 +115,86 @@ body { font-family: 'Wix Madefor Text', sans-serif; overflow: hidden; height: 10
 .btn-go:hover { background:#5836E8; }
 
 /* ══ S4 BRAND BOOK ON SURFACE ══ */
-#s4 .editor-surface { background:#111; }
+#s4 .editor-surface { background:#1C1C28; }
 .bb-surface-inner {
   position:absolute;inset:0;overflow-y:auto;
-  padding:36px 40px 80px;
+  padding:28px 32px 80px;
   display:flex;flex-direction:column;gap:0;
 }
 .bb-biz-name {
   font-family:'Wix Madefor Display',sans-serif;
-  font-size:48px;font-weight:800;color:#fff;
-  letter-spacing:-2px;line-height:1;
-  margin-bottom:28px;
+  font-size:38px;font-weight:800;color:#fff;
+  letter-spacing:-1.5px;line-height:1;
+  margin-bottom:22px;
 }
 .bb-section-row {
   display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:14px;
+  margin-bottom:10px;
 }
-.bb-section-label { font-size:12px;font-weight:600;color:rgba(255,255,255,0.4); }
-.bb-section-num { font-size:12px;font-weight:600;color:rgba(255,255,255,0.2); }
-.bb-grid { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:44px;position:relative; }
+.bb-section-label { font-size:11px;font-weight:600;color:rgba(255,255,255,0.4);letter-spacing:0.04em; }
+.bb-section-num { font-size:11px;font-weight:600;color:rgba(255,255,255,0.18); }
+.bb-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:32px;position:relative; }
 
 .bb-card {
-  background:#1E1E1E;border-radius:16px;padding:22px;position:relative;overflow:visible;
+  background:#272736;border-radius:12px;padding:16px;position:relative;overflow:visible;
 }
-.bb-card-label { font-size:11px;font-weight:600;color:rgba(255,255,255,0.3);margin-bottom:14px;letter-spacing:0.04em; }
+.bb-card-label { font-size:10px;font-weight:600;color:rgba(255,255,255,0.3);margin-bottom:12px;letter-spacing:0.05em;text-transform:uppercase; }
 
 /* Palette */
-.palette-grid { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
-.palette-swatch { height:76px;border-radius:10px;cursor:pointer;transition:transform 0.15s; }
+.palette-grid { display:grid;grid-template-columns:1fr 1fr;gap:6px; }
+.palette-swatch { height:60px;border-radius:8px;cursor:pointer;transition:transform 0.15s; }
 .palette-swatch:hover { transform:scale(1.03); }
 
 /* Font pack */
-.font-pack { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
-.font-item { background:#161616;border-radius:10px;padding:16px 14px; }
-.font-preview { font-size:52px;line-height:1;color:#fff;margin-bottom:6px; }
+.font-pack { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
+.font-item { background:#1C1C2A;border-radius:8px;padding:12px 10px; }
+.font-preview { font-size:42px;line-height:1;color:#fff;margin-bottom:4px; }
 .font-name { font-size:10px;color:rgba(255,255,255,0.3); }
 
 /* Visual profile */
-.vp-tags { display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.06); }
-.vp-tag { padding:6px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);cursor:pointer;transition:all 0.15s; }
-.vp-tag:hover { border-color:rgba(255,255,255,0.35);color:#fff; }
+.vp-tags { display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06); }
+.vp-tag { padding:4px 10px;border-radius:16px;font-size:11px;font-weight:500;border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.55);cursor:pointer;transition:all 0.15s; }
+.vp-tag:hover { border-color:rgba(255,255,255,0.3);color:#fff; }
 
 /* Pages */
-.pages-list { display:flex;flex-direction:column;gap:6px; }
-.page-row { display:flex;align-items:center;gap:9px;padding:9px 11px;background:#161616;border-radius:9px;cursor:pointer;transition:background 0.15s; }
-.page-row:hover { background:#252525; }
-.page-name { font-size:13px;font-weight:500;color:rgba(255,255,255,0.8);flex:1; }
-.page-type { font-size:11px;color:rgba(255,255,255,0.22); }
+.pages-list { display:flex;flex-direction:column;gap:5px; }
+.page-row { display:flex;align-items:center;gap:8px;padding:8px 10px;background:#1C1C2A;border-radius:8px;cursor:pointer;transition:background 0.15s; }
+.page-row:hover { background:#2E2E42; }
+.page-name { font-size:12px;font-weight:500;color:rgba(255,255,255,0.8);flex:1; }
+.page-type { font-size:10px;color:rgba(255,255,255,0.2); }
 
 /* Apps */
-.apps-grid { display:grid;grid-template-columns:1fr 1fr;gap:7px; }
-.app-chip { display:flex;align-items:center;gap:8px;padding:9px 11px;background:#161616;border-radius:9px;cursor:pointer;transition:background 0.15s; }
-.app-chip:hover { background:#252525; }
-.app-name { font-size:12px;font-weight:500;color:rgba(255,255,255,0.65); }
+.apps-grid { display:grid;grid-template-columns:1fr 1fr;gap:6px; }
+.app-chip { display:flex;align-items:center;gap:7px;padding:8px 10px;background:#1C1C2A;border-radius:8px;cursor:pointer;transition:background 0.15s; }
+.app-chip:hover { background:#2E2E42; }
+.app-name { font-size:11px;font-weight:500;color:rgba(255,255,255,0.6); }
 
 /* Aria bubble */
 .aria-bubble {
-  position:absolute;bottom:-18px;left:22px;
+  position:absolute;bottom:-14px;left:16px;
   background:#6B46FF;color:#fff;
-  border-radius:12px 12px 12px 2px;
-  padding:8px 12px;font-size:12px;line-height:1.4;
-  max-width:270px;
-  box-shadow:0 4px 18px rgba(107,70,255,0.35);
+  border-radius:10px 10px 10px 2px;
+  padding:7px 10px;font-size:11px;line-height:1.4;
+  max-width:240px;
+  box-shadow:0 4px 16px rgba(107,70,255,0.4);
   z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:5px;
 }
-.aria-bubble::before { content:'✦';font-size:8px;opacity:0.7;margin-right:3px; }
+.aria-bubble::before { content:'✦';font-size:8px;opacity:0.7;margin-right:2px; }
 .ab-btn {
   display:inline-flex;align-items:center;
   background:rgba(255,255,255,0.18);
-  border:1px solid rgba(255,255,255,0.22);
-  border-radius:7px;padding:3px 8px;font-size:11px;cursor:pointer;
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:6px;padding:2px 7px;font-size:10px;cursor:pointer;
   transition:background 0.15s;white-space:nowrap;
 }
 .ab-btn:hover { background:rgba(255,255,255,0.28); }
 
-/* S4 Aria panel dark */
-#s4 .aria-panel { background:#1A1A1A;border-left:1px solid rgba(255,255,255,0.06); }
-#s4 .aria-panel-header { border-bottom:1px solid rgba(255,255,255,0.06); }
-#s4 .aria-panel-header span { color:rgba(255,255,255,0.9); display:block; }
-#s4 .aria-panel-header small { font-size:12px;color:rgba(255,255,255,0.3);font-weight:400; }
-#s4 .aria-msgs .msg-aria-d { background:#242424;border-radius:12px;padding:12px 14px;font-size:13px;color:rgba(255,255,255,0.7);line-height:1.6; }
-#s4 .aria-msgs .msg-aria-d strong { color:#A78BFF; }
-#s4 .aria-msgs .msg-user-d { align-self:flex-end;background:#6B46FF;color:#fff;border-radius:12px 12px 2px 12px;padding:10px 14px;font-size:13px;max-width:80%;line-height:1.5; }
-.aria-panel-foot-dark { border-top:1px solid rgba(255,255,255,0.06);padding:12px 14px;display:flex;gap:8px; }
-.aria-panel-foot-dark input { flex:1;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:13px;color:#fff;outline:none;background:rgba(255,255,255,0.05);transition:border-color 0.15s; }
-.aria-panel-foot-dark input:focus { border-color:#6B46FF; }
-.aria-panel-foot-dark input::placeholder { color:rgba(255,255,255,0.2); }
-.aria-dark-send { width:34px;height:34px;background:#6B46FF;border:none;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+/* S4 Aria panel */
+#s4 .aria-panel { background:#1E1E2C;border-left:1px solid rgba(255,255,255,0.06); }
+#s4 .aria-panel-header { border-bottom:1px solid rgba(255,255,255,0.06);padding:12px 14px 10px; }
+.aria-dark-send { width:30px;height:30px;background:#6B46FF;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
 .aria-dark-send:hover { background:#5836E8; }
-.aria-dark-send svg { width:13px;height:13px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+.aria-dark-send svg { width:12px;height:12px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
 
 /* ══ S5 SITE GENERATED ══ */
 #s5 .editor-surface { background:#E8EAF0;display:flex;align-items:center;justify-content:center; }
@@ -493,29 +485,29 @@ body { font-family: 'Wix Madefor Text', sans-serif; overflow: hidden; height: 10
     <!-- Aria chat panel — dark -->
     <div class="aria-panel">
       <div class="aria-panel-header">
-        <span style="display:block;font-size:14px;font-weight:600;color:rgba(255,255,255,0.9);">Ask Aria</span>
-        <small style="font-size:12px;color:rgba(255,255,255,0.35);font-weight:400;">Edit anything on your brand book</small>
+        <span style="display:block;font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);">Ask Aria</span>
+        <span style="font-size:11px;color:rgba(255,255,255,0.3);">Edit anything on your brand book</span>
       </div>
       <div class="aria-msgs" id="s4-msgs">
-        <div class="msg-aria-d" style="background:#242424;border-radius:12px;padding:12px 14px;font-size:13px;color:rgba(255,255,255,0.7);line-height:1.6;">
+        <div style="background:#2E2E3E;border-radius:10px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,0.65);line-height:1.6;">
           Here's your <strong style="color:#A78BFF;">brand book</strong> — the foundation I'll build from. Everything is editable.
         </div>
-        <div class="msg-aria-d" style="background:#242424;border-radius:12px;padding:12px 14px;font-size:13px;color:rgba(255,255,255,0.7);line-height:1.6;">
-          I chose <strong style="color:#A78BFF;">earthy warm tones</strong> and Wix Madefor based on what you told me. Happy with the direction?
+        <div style="background:#2E2E3E;border-radius:10px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,0.65);line-height:1.6;">
+          I chose <strong style="color:#A78BFF;">earthy warm tones</strong> and Wix Madefor. Happy with the direction?
         </div>
-        <div class="msg-user-d" style="align-self:flex-end;background:#6B46FF;color:#fff;border-radius:12px 12px 2px 12px;padding:10px 14px;font-size:13px;max-width:80%;line-height:1.5;">
+        <div style="align-self:flex-end;background:#6B46FF;color:#fff;border-radius:10px 10px 2px 10px;padding:8px 12px;font-size:12px;max-width:82%;line-height:1.5;">
           Can you make the palette more minimal?
         </div>
-        <div class="msg-aria-d" style="background:#242424;border-radius:12px;padding:12px 14px;font-size:13px;color:rgba(255,255,255,0.7);line-height:1.6;">
-          Sure — 3 core colors: dark, warm gold, off-white. Updated on the left ✓
+        <div style="background:#2E2E3E;border-radius:10px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,0.65);line-height:1.6;">
+          Done — 3 core colors: dark, warm gold, off-white. Updated on the left ✓
         </div>
       </div>
-      <div style="border-top:1px solid rgba(255,255,255,0.06);padding:12px 16px 14px;display:flex;flex-direction:column;gap:10px;">
-        <div style="display:flex;gap:8px;">
-          <input type="text" placeholder="Change colors, fonts, pages…" style="flex:1;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:13px;color:#fff;outline:none;background:rgba(255,255,255,0.05);">
+      <div style="border-top:1px solid rgba(255,255,255,0.06);padding:10px 12px 12px;display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;gap:6px;">
+          <input type="text" placeholder="Change colors, fonts, pages…" style="flex:1;border:1.5px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 10px;font-family:inherit;font-size:12px;color:#fff;outline:none;background:rgba(255,255,255,0.06);">
           <button class="aria-dark-send"><svg viewBox="0 0 14 14"><path d="M1 7h12M7 1l6 6-6 6"/></svg></button>
         </div>
-        <button onclick="goTo(5)" style="width:100%;background:#6B46FF;color:#fff;border:none;border-radius:10px;padding:11px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;">
+        <button onclick="goTo(5)" style="width:100%;background:#116DFF;color:#fff;border:none;border-radius:8px;padding:10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;">
           ✦ Generate my site →
         </button>
       </div>
