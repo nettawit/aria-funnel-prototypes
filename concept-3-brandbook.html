@@ -152,42 +152,88 @@ body { font-family: 'Wix Madefor Text', sans-serif; overflow: hidden; height: 10
   50% { opacity: 1; }
 }
 
-/* ══ S3 FORK MODAL OVERLAY ══ */
-.fork-overlay {
-  position:absolute;inset:0;
-  background:rgba(15,15,26,0.5);
-  backdrop-filter:blur(4px);
-  display:flex;align-items:center;justify-content:center;
-  z-index:30;
+/* ══ S3 CHOOSE ON SURFACE ══ */
+.choose-surface {
+  position:absolute;inset:0;overflow-y:auto;
+  padding:28px 32px 40px;
+  display:flex;flex-direction:column;gap:0;
 }
-.fork-modal {
-  background:#fff;border-radius:24px;
-  width:600px;overflow:hidden;
-  box-shadow:0 24px 80px rgba(0,0,0,0.22);
+.choose-label {
+  font-size:11px;font-weight:600;color:rgba(0,0,0,0.35);
+  letter-spacing:0.06em;text-transform:uppercase;
+  margin-bottom:16px;
 }
-.fork-modal-top { padding:28px 32px 0; }
-.fork-kicker { font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#6B46FF;margin-bottom:8px; }
-.fork-title { font-family:'Wix Madefor Display',sans-serif;font-size:24px;font-weight:800;color:#0F0F1A;margin-bottom:6px; }
-.fork-sub { font-size:14px;color:#999;margin-bottom:24px; }
-.fork-cards { display:grid;grid-template-columns:1fr 1fr;gap:0; }
-.fork-card {
-  padding:24px 28px 28px;cursor:pointer;
-  border-top:1.5px solid #F0F0F5;
-  transition:background 0.15s;
+.choose-options {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-bottom:16px;
 }
-.fork-card:first-child { border-right:1px solid #F0F0F5; }
-.fork-card:hover { background:#FAFAFA; }
-.fork-card.sel { background:#F8F5FF; }
-.fork-card-icon { font-size:28px;margin-bottom:10px; }
-.fork-card-name { font-family:'Wix Madefor Display',sans-serif;font-size:17px;font-weight:800;color:#0F0F1A;margin-bottom:6px; }
-.fork-card-desc { font-size:13px;color:#888;line-height:1.5; }
-.fork-card-tag { display:inline-block;margin-top:10px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600; }
-.fork-a .fork-card-tag { background:#F0EBFF;color:#6B46FF; }
-.fork-b .fork-card-tag { background:#FFF0E6;color:#E0781E; }
-.fork-foot { padding:20px 32px;border-top:1px solid #F0F0F5;display:flex;justify-content:flex-end;gap:10px; }
-.btn-back { background:none;border:1px solid #E5E5EA;border-radius:10px;padding:9px 18px;font-family:inherit;font-size:13px;color:#666;cursor:pointer; }
-.btn-go { background:#6B46FF;color:#fff;border:none;border-radius:10px;padding:9px 22px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer; }
-.btn-go:hover { background:#5836E8; }
+/* Blank canvas card */
+.choose-blank {
+  border:2px dashed rgba(0,0,0,0.18);
+  border-radius:12px;
+  aspect-ratio:3/4;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:8px;cursor:pointer;
+  background:rgba(255,255,255,0.5);
+  transition:all 0.15s;
+  position:relative;
+}
+.choose-blank:hover { border-color:#116DFF;background:rgba(17,109,255,0.04); }
+.choose-blank.sel { border-color:#116DFF;border-style:solid;background:rgba(17,109,255,0.06); }
+.choose-blank-icon { font-size:24px;opacity:0.35; }
+.choose-blank-label { font-size:12px;font-weight:600;color:rgba(0,0,0,0.4); }
+.choose-blank-sub { font-size:11px;color:rgba(0,0,0,0.25);text-align:center;padding:0 8px; }
+
+/* Template cards */
+.choose-tpl {
+  border:2px solid transparent;
+  border-radius:12px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:all 0.15s;
+  background:#fff;
+  box-shadow:0 2px 12px rgba(0,0,0,0.08);
+  display:flex;flex-direction:column;
+}
+.choose-tpl:hover { border-color:#116DFF;box-shadow:0 4px 20px rgba(17,109,255,0.15); transform:translateY(-2px); }
+.choose-tpl.sel { border-color:#116DFF;box-shadow:0 4px 20px rgba(17,109,255,0.2); }
+.tpl-thumb {
+  width:100%;aspect-ratio:3/4;
+  display:flex;flex-direction:column;
+  overflow:hidden;position:relative;
+}
+.tpl-thumb-nav {
+  height:20px;display:flex;align-items:center;
+  padding:0 8px;justify-content:space-between;
+}
+.tpl-thumb-logo { font-size:8px;font-weight:800; }
+.tpl-thumb-links { display:flex;gap:5px; }
+.tpl-thumb-links span { font-size:7px;opacity:0.5; }
+.tpl-thumb-hero {
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px;
+  padding:8px;
+}
+.tpl-thumb-title { font-weight:800;text-align:center;line-height:1.2; }
+.tpl-thumb-sub { font-size:7px;opacity:0.5;text-align:center; }
+.tpl-thumb-btn { border-radius:4px;padding:3px 8px;font-size:7px;font-weight:700;margin-top:2px; }
+.tpl-thumb-bottom { height:24px;display:flex;align-items:center;gap:4px;padding:0 8px; }
+.tpl-thumb-pill { height:10px;border-radius:4px;background:rgba(255,255,255,0.15); }
+.tpl-info { padding:8px 10px;border-top:1px solid #F0F0F5; }
+.tpl-info-name { font-size:11px;font-weight:600;color:#0F0F1A; }
+.tpl-info-cat { font-size:10px;color:#AAA; }
+
+.choose-more {
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:600;color:#116DFF;
+  background:none;border:1.5px solid rgba(17,109,255,0.25);
+  border-radius:8px;padding:7px 14px;cursor:pointer;
+  transition:all 0.15s;align-self:flex-start;
+}
+.choose-more:hover { background:rgba(17,109,255,0.05);border-color:#116DFF; }
 
 /* ══ S4 BRAND BOOK ON SURFACE ══ */
 #s4 .editor-surface { background:#1C1C28; }
@@ -436,15 +482,15 @@ body { font-family: 'Wix Madefor Text', sans-serif; overflow: hidden; height: 10
   </div>
 </div>
 
-<!-- ══ S3 FORK MODAL OVER EDITOR ══ -->
+<!-- ══ S3 CHOOSE ON SURFACE ══ -->
 <div class="screen" id="s3">
-  <div class="editor-chrome" style="opacity:0.5;pointer-events:none;">
+  <div class="editor-chrome">
     <span class="chrome-logo">wix</span>
     <div class="chrome-avatar">G</div>
     <div class="chrome-div"></div>
-    <button class="chrome-btn">Goody</button>
-    <button class="chrome-btn">Brand</button>
-    <div class="chrome-center"><div class="chrome-fit">Fit (96%)</div></div>
+    <button class="chrome-btn">Goody <span class="chrome-caret"></span></button>
+    <button class="chrome-btn">Brand <span class="chrome-caret"></span></button>
+    <div class="chrome-center"><div class="chrome-fit">Fit (96%) <span class="chrome-caret"></span></div></div>
     <div class="chrome-right">
       <button class="btn-upgrade">Upgrade</button>
       <button class="btn-preview">Preview</button>
@@ -452,42 +498,107 @@ body { font-family: 'Wix Madefor Text', sans-serif; overflow: hidden; height: 10
     </div>
   </div>
   <div class="editor-body">
-    <!-- Editor surface behind modal (blurred) -->
-    <div class="editor-surface" style="filter:blur(2px);opacity:0.5;"></div>
-    <!-- Aria panel behind modal (blurred) -->
-    <div class="aria-panel" style="filter:blur(2px);opacity:0.4;pointer-events:none;">
-      <div class="aria-panel-header">Ask Aria</div>
-      <div class="aria-msgs">
-        <div class="msg-user">I need a site for my bakery</div>
-        <div class="msg-aria">I've learned enough to get started. Choose how you'd like to build…</div>
+    <div class="editor-surface">
+      <div class="choose-surface">
+        <div class="choose-label">Choose how to start your site</div>
+        <div class="choose-options">
+
+          <!-- Blank canvas -->
+          <div class="choose-blank sel" id="cho-blank" onclick="selChoose('cho-blank');goTo(4)">
+            <div class="choose-blank-icon">＋</div>
+            <div class="choose-blank-label">Blank canvas</div>
+            <div class="choose-blank-sub">Build with Aria from scratch</div>
+          </div>
+
+          <!-- Template 1 -->
+          <div class="choose-tpl" id="cho-t1" onclick="selChoose('cho-t1');goTo(4)">
+            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1A1A2E,#3D2A00);">
+              <div class="tpl-thumb-nav" style="color:#fff;">
+                <span class="tpl-thumb-logo">Goody</span>
+                <div class="tpl-thumb-links"><span>Menu</span><span>Story</span></div>
+              </div>
+              <div class="tpl-thumb-hero">
+                <div class="tpl-thumb-title" style="font-size:11px;color:#fff;">Baked with love</div>
+                <div class="tpl-thumb-sub">Sourdough · Tel Aviv</div>
+                <div class="tpl-thumb-btn" style="background:#E8C97E;color:#1A1A2E;">Order →</div>
+              </div>
+              <div class="tpl-thumb-bottom">
+                <div class="tpl-thumb-pill" style="width:36px;"></div>
+                <div class="tpl-thumb-pill" style="width:28px;"></div>
+                <div class="tpl-thumb-pill" style="width:44px;"></div>
+              </div>
+            </div>
+            <div class="tpl-info">
+              <div class="tpl-info-name">Artisan Dark</div>
+              <div class="tpl-info-cat">Bakery · Café</div>
+            </div>
+          </div>
+
+          <!-- Template 2 -->
+          <div class="choose-tpl" id="cho-t2" onclick="selChoose('cho-t2');goTo(4)">
+            <div class="tpl-thumb" style="background:#F5F0E8;">
+              <div class="tpl-thumb-nav" style="color:#1A1A2E;">
+                <span class="tpl-thumb-logo" style="color:#1A1A2E;">Goody</span>
+                <div class="tpl-thumb-links"><span style="color:#555;">Menu</span><span style="color:#555;">About</span></div>
+              </div>
+              <div class="tpl-thumb-hero">
+                <div class="tpl-thumb-title" style="font-size:10px;color:#1A1A2E;">Fresh Every Morning</div>
+                <div class="tpl-thumb-sub" style="color:#888;">Seasonal pastries</div>
+                <div class="tpl-thumb-btn" style="background:#1A1A2E;color:#fff;">Explore →</div>
+              </div>
+              <div class="tpl-thumb-bottom" style="background:rgba(0,0,0,0.04);">
+                <div class="tpl-thumb-pill" style="width:36px;background:rgba(0,0,0,0.12);"></div>
+                <div class="tpl-thumb-pill" style="width:28px;background:rgba(0,0,0,0.12);"></div>
+                <div class="tpl-thumb-pill" style="width:44px;background:rgba(0,0,0,0.12);"></div>
+              </div>
+            </div>
+            <div class="tpl-info">
+              <div class="tpl-info-name">Natural Light</div>
+              <div class="tpl-info-cat">Bakery · Food</div>
+            </div>
+          </div>
+
+          <!-- Template 3 -->
+          <div class="choose-tpl" id="cho-t3" onclick="selChoose('cho-t3');goTo(4)">
+            <div class="tpl-thumb" style="background:#2D1B4E;">
+              <div class="tpl-thumb-nav" style="color:#fff;">
+                <span class="tpl-thumb-logo">Goody</span>
+                <div class="tpl-thumb-links"><span>Shop</span><span>Story</span></div>
+              </div>
+              <div class="tpl-thumb-hero">
+                <div class="tpl-thumb-title" style="font-size:10px;color:#fff;">Crafted Daily</div>
+                <div class="tpl-thumb-sub">Premium · Minimal</div>
+                <div class="tpl-thumb-btn" style="background:#C8A2E8;color:#2D1B4E;">Discover →</div>
+              </div>
+              <div class="tpl-thumb-bottom">
+                <div class="tpl-thumb-pill" style="width:36px;"></div>
+                <div class="tpl-thumb-pill" style="width:28px;"></div>
+                <div class="tpl-thumb-pill" style="width:44px;"></div>
+              </div>
+            </div>
+            <div class="tpl-info">
+              <div class="tpl-info-name">Premium Dark</div>
+              <div class="tpl-info-cat">Bakery · Boutique</div>
+            </div>
+          </div>
+
+        </div>
+        <button class="choose-more">See more templates →</button>
       </div>
     </div>
-    <!-- Fork modal overlay -->
-    <div class="fork-overlay">
-      <div class="fork-modal">
-        <div class="fork-modal-top">
-          <div class="fork-kicker">Aria is ready</div>
-          <div class="fork-title">How should we build your site?</div>
-          <div class="fork-sub">Choose your path — you can always change later.</div>
+
+    <!-- Aria panel -->
+    <div class="aria-panel">
+      <div class="aria-panel-header">Ask Aria</div>
+      <div class="aria-msgs">
+        <div class="msg-aria">I've learned about your bakery. Pick a starting point — or build from scratch with me.</div>
+        <div class="msg-aria" style="background:#F7F7FA;border-radius:10px;padding:10px 12px;font-size:12px;color:#555;">
+          💡 All 3 templates are already customized with your brand name, colors and content.
         </div>
-        <div class="fork-cards">
-          <div class="fork-card fork-a" id="fka" onclick="selFork('fka')">
-            <div class="fork-card-icon">✦</div>
-            <div class="fork-card-name">Taylor Made</div>
-            <div class="fork-card-desc">Aria designs everything from scratch, tailored to your brand. We build it together.</div>
-            <span class="fork-card-tag">Custom design</span>
-          </div>
-          <div class="fork-card fork-b" id="fkb" onclick="selFork('fkb')">
-            <div class="fork-card-icon">🗂</div>
-            <div class="fork-card-name">Start from Template</div>
-            <div class="fork-card-desc">3 templates curated for your business, pre-filled with your brand.</div>
-            <span class="fork-card-tag">Head start</span>
-          </div>
-        </div>
-        <div class="fork-foot">
-          <button class="btn-back" onclick="goTo(2)">← Back</button>
-          <button class="btn-go" onclick="goTo(4)">Continue →</button>
-        </div>
+      </div>
+      <div class="aria-panel-footer">
+        <button class="btn-skip" onclick="goTo(2)">← Back</button>
+        <button class="btn-next" onclick="goTo(4)">Continue →</button>
       </div>
     </div>
   </div>
@@ -736,8 +847,8 @@ function sel(el, g) {
   el.classList.add('sel');
 }
 
-function selFork(id) {
-  document.querySelectorAll('.fork-card').forEach(c => c.classList.remove('sel'));
+function selChoose(id) {
+  document.querySelectorAll('.choose-blank,.choose-tpl').forEach(c => c.classList.remove('sel'));
   document.getElementById(id).classList.add('sel');
 }
 
