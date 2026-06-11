@@ -7,334 +7,237 @@
 <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Wix+Madefor+Display:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Wix Madefor Text', sans-serif; background: #fff; overflow: hidden; height: 100vh; }
+body { font-family: 'Wix Madefor Text', sans-serif; overflow: hidden; height: 100vh; }
 
 .screen { position: absolute; inset: 0; display: none; flex-direction: column; opacity: 0; transition: opacity 0.3s ease; }
 .screen.active { display: flex; opacity: 1; }
 
-/* ══════════════════════════════
-   EDITOR CHROME (shared)
-══════════════════════════════ */
+/* ══ EDITOR CHROME ══ */
 .editor-chrome {
   height: 52px; background: #fff; border-bottom: 1px solid #E0E0E8;
-  display: flex; align-items: center; padding: 0 16px; gap: 0; flex-shrink: 0; z-index: 10;
+  display: flex; align-items: center; padding: 0 16px; flex-shrink: 0; z-index: 10;
 }
-.chrome-logo { font-family: 'Wix Madefor Display', sans-serif; font-size: 20px; font-weight: 800; color: #0F0F1A; margin-right: 8px; }
+.chrome-logo { font-family: 'Wix Madefor Display',sans-serif; font-size: 20px; font-weight: 800; color: #0F0F1A; margin-right: 10px; }
 .chrome-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg,#6B46FF,#E040FB); display:flex;align-items:center;justify-content:center; font-size:12px;color:#fff;font-weight:600; }
-.chrome-divider { width:1px;height:20px;background:#E0E0E8;margin:0 8px; }
-.chrome-btn { display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:6px;font-size:13px;font-weight:500;color:#444;background:transparent;border:none;cursor:pointer; }
+.chrome-div { width:1px;height:20px;background:#E0E0E8;margin:0 8px; }
+.chrome-btn { display:flex;align-items:center;gap:3px;padding:5px 10px;border-radius:6px;font-size:13px;font-weight:500;color:#444;background:transparent;border:none;cursor:pointer; }
 .chrome-btn:hover { background:#F5F5F8; }
+.chrome-caret { display:inline-block;width:8px;height:8px;border-right:1.5px solid #999;border-bottom:1.5px solid #999;transform:rotate(45deg) translateY(-2px); }
 .chrome-center { flex:1;display:flex;justify-content:center; }
-.chrome-fit { font-size:13px;color:#666;display:flex;align-items:center;gap:4px;padding:5px 8px;border-radius:6px;cursor:pointer; }
+.chrome-fit { font-size:13px;color:#666;display:flex;align-items:center;gap:3px;padding:5px 8px;border-radius:6px;cursor:pointer; }
 .chrome-right { display:flex;align-items:center;gap:6px; }
 .btn-upgrade { color:#6B46FF;font-size:13px;font-weight:600;background:none;border:none;cursor:pointer;padding:5px 8px; }
-.btn-preview { padding:6px 16px;background:none;border:1px solid #D0D0DC;border-radius:8px;font-size:13px;font-weight:500;color:#333;cursor:pointer; }
-.btn-publish { padding:6px 16px;background:#CCCCDD;border:none;border-radius:8px;font-size:13px;font-weight:600;color:#fff;cursor:not-allowed; }
-.btn-publish.live { background:#6B46FF; cursor:pointer; }
-.chevron { display:inline-block;width:10px;height:10px;border-right:1.5px solid #999;border-bottom:1.5px solid #999;transform:rotate(45deg) translateY(-3px);margin-left:4px; }
+.btn-preview { padding:6px 14px;background:none;border:1px solid #D0D0DC;border-radius:8px;font-size:13px;font-weight:500;color:#333;cursor:pointer; }
+.btn-publish { padding:6px 14px;border:none;border-radius:8px;font-size:13px;font-weight:600;color:#fff;cursor:not-allowed;background:#CCCCDD; }
+.btn-publish.active { background:#6B46FF;cursor:pointer; }
 
-/* ══════════════════════════════
-   S1 — PROMPT
-══════════════════════════════ */
-#s1 { background:#fff; align-items:center; justify-content:center; }
-.prompt-wrap { display:flex;flex-direction:column;align-items:center;gap:36px;width:100%;max-width:660px;padding:0 24px; }
-.prompt-eyebrow { font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#B0B0C0; }
-.prompt-heading { font-family:'Wix Madefor Display',sans-serif;font-size:44px;font-weight:800;color:#0F0F1A;text-align:center;line-height:1.12;letter-spacing:-1.5px; }
-.prompt-heading em { color:#6B46FF;font-style:normal; }
-.prompt-box { width:100%;background:#F7F7F9;border:1.5px solid #E5E5EA;border-radius:20px;padding:20px 20px 16px; transition:border-color 0.2s,box-shadow 0.2s; }
-.prompt-box:focus-within { border-color:#6B46FF;box-shadow:0 0 0 3px rgba(107,70,255,0.1); }
-.prompt-box textarea { width:100%;background:transparent;border:none;outline:none;resize:none;font-family:inherit;font-size:18px;color:#0F0F1A;line-height:1.5;min-height:72px; }
-.prompt-box textarea::placeholder { color:#C0C0CC; }
-.prompt-box-footer { display:flex;align-items:center;justify-content:flex-end;padding-top:12px;border-top:1px solid #EBEBF0;margin-top:12px; }
-.btn-generate { background:#6B46FF;color:#fff;border:none;border-radius:12px;padding:12px 28px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.15s; display:flex;align-items:center;gap:8px; }
-.btn-generate:hover { background:#5836E8; }
+/* ══ EDITOR BODY LAYOUT ══ */
+.editor-body { flex:1;display:flex;overflow:hidden;position:relative; }
+.editor-surface { flex:1;background:#E8EAF0;position:relative;overflow:hidden; }
 
-/* ══════════════════════════════
-   S2 — EDITOR + COMPOSER
-══════════════════════════════ */
-#s2 { background:#E8EAF0; }
-.editor-body { flex:1;display:flex;overflow:hidden; }
-.canvas-area { flex:1;position:relative; }
-.composer-panel { width:360px;background:#fff;border-left:1px solid #E0E0E8;display:flex;flex-direction:column;flex-shrink:0; }
-.composer-header { padding:16px 20px 12px;border-bottom:1px solid #F0F0F5;font-size:14px;font-weight:600;color:#0F0F1A; }
-.composer-messages { flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px; }
-.msg-user { align-self:flex-end;background:#F5F3FF;color:#0F0F1A;border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:14px;max-width:80%;line-height:1.5; }
-.msg-aria { align-self:flex-start;font-size:14px;color:#333;line-height:1.6;max-width:90%; }
-.composer-question { background:#fff;border:1px solid #E0E0E8;border-radius:16px;padding:16px;margin-top:4px; }
-.q-label { font-size:13px;font-weight:600;color:#0F0F1A;margin-bottom:4px; }
-.q-sub { font-size:12px;color:#999;margin-bottom:12px; }
-.q-options { display:flex;flex-direction:column;gap:8px; }
-.q-option { display:flex;align-items:center;gap:10px;padding:9px 12px;border:1.5px solid #E5E5EA;border-radius:10px;font-size:13px;color:#333;cursor:pointer;transition:all 0.15s;background:#fff; }
-.q-option:hover { border-color:#6B46FF;background:#F8F5FF;color:#6B46FF; }
-.q-option.selected { border-color:#6B46FF;background:#F3EEFF;color:#6B46FF; }
-.q-free { margin-top:8px;border:1.5px solid #E5E5EA;border-radius:10px;overflow:hidden; }
-.q-free input { width:100%;border:none;outline:none;padding:9px 12px;font-family:inherit;font-size:13px;color:#333;background:#FAFAFA; }
-.q-free input::placeholder { color:#C0C0CC; }
-.composer-actions { display:flex;align-items:center;justify-content:space-between;padding:12px 16px 16px;border-top:1px solid #F0F0F5; }
-.btn-skip { background:none;border:none;font-size:13px;color:#999;cursor:pointer; }
-.btn-next { background:#6B46FF;color:#fff;border:none;border-radius:10px;padding:9px 22px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer; }
+/* ══ ARIA CHAT PANEL ══ */
+.aria-panel {
+  width: 340px; flex-shrink: 0;
+  background: #fff; border-left: 1px solid #E0E0E8;
+  display: flex; flex-direction: column;
+}
+.aria-panel-header { padding:16px 20px 12px;border-bottom:1px solid #F0F0F5;font-size:14px;font-weight:600;color:#0F0F1A; }
+.aria-msgs { flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px; }
+.msg-user { align-self:flex-end;background:#F5F3FF;color:#0F0F1A;border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:14px;max-width:82%;line-height:1.5; }
+.msg-aria { font-size:14px;color:#333;line-height:1.6; }
+.aria-q {
+  background:#fff;border:1px solid #E5E5EA;border-radius:14px;padding:14px;margin-top:4px;
+}
+.aria-q-label { font-size:13px;font-weight:600;color:#0F0F1A;margin-bottom:3px; }
+.aria-q-sub { font-size:12px;color:#AAA;margin-bottom:11px; }
+.aria-opts { display:flex;flex-direction:column;gap:7px; }
+.aria-opt { display:flex;align-items:center;gap:9px;padding:9px 11px;border:1.5px solid #E5E5EA;border-radius:9px;font-size:13px;color:#333;cursor:pointer;transition:all 0.15s; }
+.aria-opt:hover { border-color:#6B46FF;background:#F8F5FF;color:#6B46FF; }
+.aria-opt.sel { border-color:#6B46FF;background:#F3EEFF;color:#6B46FF; }
+.aria-free { margin-top:8px;border:1.5px solid #E5E5EA;border-radius:9px;overflow:hidden; }
+.aria-free input { width:100%;border:none;outline:none;padding:9px 12px;font-family:inherit;font-size:13px;color:#333;background:#FAFAFA; }
+.aria-free input::placeholder { color:#CCC; }
+.aria-panel-footer { display:flex;align-items:center;justify-content:space-between;padding:12px 16px 14px;border-top:1px solid #F0F0F5; }
+.btn-skip { background:none;border:none;font-size:13px;color:#AAA;cursor:pointer; }
+.btn-next { background:#6B46FF;color:#fff;border:none;border-radius:10px;padding:9px 20px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer; }
 .btn-next:hover { background:#5836E8; }
 
-/* ══════════════════════════════
-   S3 — SPLIT FORK ON SURFACE
-══════════════════════════════ */
-#s3 { background:#E8EAF0; }
-.fork-surface { flex:1;display:grid;grid-template-columns:1fr 1fr;overflow:hidden; }
-.fork-half {
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:48px 40px;cursor:pointer;
-  transition:all 0.25s;
-  position:relative;overflow:hidden;
+/* ══ S1 PROMPT ══ */
+#s1 { background:#fff;align-items:center;justify-content:center; }
+.prompt-wrap { display:flex;flex-direction:column;align-items:center;gap:36px;width:100%;max-width:640px;padding:0 24px; }
+.prompt-eyebrow { font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#C0C0CC; }
+.prompt-title { font-family:'Wix Madefor Display',sans-serif;font-size:44px;font-weight:800;color:#0F0F1A;text-align:center;line-height:1.12;letter-spacing:-1.5px; }
+.prompt-title em { color:#6B46FF;font-style:normal; }
+.prompt-box { width:100%;background:#F7F7F9;border:1.5px solid #E8E8EF;border-radius:20px;padding:20px 20px 14px;transition:border-color 0.2s,box-shadow 0.2s; }
+.prompt-box:focus-within { border-color:#6B46FF;box-shadow:0 0 0 3px rgba(107,70,255,0.1); }
+.prompt-box textarea { width:100%;background:transparent;border:none;outline:none;resize:none;font-family:inherit;font-size:18px;color:#0F0F1A;line-height:1.5;min-height:70px; }
+.prompt-box textarea::placeholder { color:#C8C8D4; }
+.prompt-box-foot { display:flex;justify-content:flex-end;padding-top:12px;border-top:1px solid #EBEBF0;margin-top:10px; }
+.btn-gen { background:#6B46FF;color:#fff;border:none;border-radius:12px;padding:11px 26px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer; }
+.btn-gen:hover { background:#5836E8; }
+
+/* ══ S3 FORK MODAL OVERLAY ══ */
+.fork-overlay {
+  position:absolute;inset:0;
+  background:rgba(15,15,26,0.5);
+  backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;
+  z-index:30;
 }
-.fork-half-a { background:#1A1A2E;border-right:1px solid rgba(255,255,255,0.08); }
-.fork-half-b { background:#FFF8F2;border-left:1px solid #E8E0D8; }
-.fork-half:hover { transform:scale(1.01); }
-.fork-half-a:hover { background:#22224A; }
-.fork-half-b:hover { background:#FFF2E6; }
-.fork-half-a.chosen { background:#2D1F6E; }
-.fork-half-b.chosen { background:#FFF0E0; }
-
-.fork-half-content { display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center;max-width:280px;z-index:1; }
-.fork-icon { width:72px;height:72px;border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:32px; }
-.fork-half-a .fork-icon { background:rgba(107,70,255,0.3); }
-.fork-half-b .fork-icon { background:#FFE4C4; }
-.fork-kicker { font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase; }
-.fork-half-a .fork-kicker { color:rgba(255,255,255,0.4); }
-.fork-half-b .fork-kicker { color:#C0956A; }
-.fork-half-title { font-family:'Wix Madefor Display',sans-serif;font-size:30px;font-weight:800;line-height:1.1; }
-.fork-half-a .fork-half-title { color:#fff; }
-.fork-half-b .fork-half-title { color:#1A1A2E; }
-.fork-half-desc { font-size:15px;line-height:1.6; }
-.fork-half-a .fork-half-desc { color:rgba(255,255,255,0.55); }
-.fork-half-b .fork-half-desc { color:#888; }
-.fork-cta-btn { padding:12px 28px;border-radius:14px;font-family:inherit;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all 0.15s;margin-top:8px; }
-.fork-half-a .fork-cta-btn { background:#6B46FF;color:#fff; }
-.fork-half-a .fork-cta-btn:hover { background:#7C5CFF; }
-.fork-half-b .fork-cta-btn { background:#1A1A2E;color:#fff; }
-.fork-half-b .fork-cta-btn:hover { background:#2D2D50; }
-
-/* Aria label floating center */
-.fork-aria-label {
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  background:#fff;border-radius:20px;padding:10px 18px;
-  font-size:12px;font-weight:600;color:#6B46FF;
-  box-shadow:0 4px 20px rgba(0,0,0,0.15);
-  white-space:nowrap;z-index:10;
-  border:1.5px solid rgba(107,70,255,0.2);
+.fork-modal {
+  background:#fff;border-radius:24px;
+  width:600px;overflow:hidden;
+  box-shadow:0 24px 80px rgba(0,0,0,0.22);
 }
+.fork-modal-top { padding:28px 32px 0; }
+.fork-kicker { font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#6B46FF;margin-bottom:8px; }
+.fork-title { font-family:'Wix Madefor Display',sans-serif;font-size:24px;font-weight:800;color:#0F0F1A;margin-bottom:6px; }
+.fork-sub { font-size:14px;color:#999;margin-bottom:24px; }
+.fork-cards { display:grid;grid-template-columns:1fr 1fr;gap:0; }
+.fork-card {
+  padding:24px 28px 28px;cursor:pointer;
+  border-top:1.5px solid #F0F0F5;
+  transition:background 0.15s;
+}
+.fork-card:first-child { border-right:1px solid #F0F0F5; }
+.fork-card:hover { background:#FAFAFA; }
+.fork-card.sel { background:#F8F5FF; }
+.fork-card-icon { font-size:28px;margin-bottom:10px; }
+.fork-card-name { font-family:'Wix Madefor Display',sans-serif;font-size:17px;font-weight:800;color:#0F0F1A;margin-bottom:6px; }
+.fork-card-desc { font-size:13px;color:#888;line-height:1.5; }
+.fork-card-tag { display:inline-block;margin-top:10px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600; }
+.fork-a .fork-card-tag { background:#F0EBFF;color:#6B46FF; }
+.fork-b .fork-card-tag { background:#FFF0E6;color:#E0781E; }
+.fork-foot { padding:20px 32px;border-top:1px solid #F0F0F5;display:flex;justify-content:flex-end;gap:10px; }
+.btn-back { background:none;border:1px solid #E5E5EA;border-radius:10px;padding:9px 18px;font-family:inherit;font-size:13px;color:#666;cursor:pointer; }
+.btn-go { background:#6B46FF;color:#fff;border:none;border-radius:10px;padding:9px 22px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer; }
+.btn-go:hover { background:#5836E8; }
 
-/* ══════════════════════════════
-   S4 — TAYLOR MADE BRAND BOOK
-   Dark editorial, Aria on surface
-══════════════════════════════ */
-#s4 { background:#111111; }
-.bb-body { flex:1;display:flex;overflow:hidden; }
-.bb-surface {
-  flex:1;overflow-y:auto;
-  padding:40px 48px 120px;
+/* ══ S4 BRAND BOOK ON SURFACE ══ */
+#s4 .editor-surface { background:#111; }
+.bb-surface-inner {
+  position:absolute;inset:0;overflow-y:auto;
+  padding:36px 40px 80px;
   display:flex;flex-direction:column;gap:0;
 }
-
-/* Aria side panel (dark) */
-.bb-aria-panel {
-  width:340px;flex-shrink:0;
-  background:#1A1A1A;
-  border-left:1px solid rgba(255,255,255,0.06);
-  display:flex;flex-direction:column;
-}
-.bb-aria-header {
-  padding:16px 20px 12px;
-  border-bottom:1px solid rgba(255,255,255,0.06);
-}
-.bb-aria-title { font-size:13px;font-weight:600;color:rgba(255,255,255,0.9); }
-.bb-aria-sub { font-size:12px;color:rgba(255,255,255,0.3);margin-top:2px; }
-.bb-aria-msgs {
-  flex:1;overflow-y:auto;padding:20px;
-  display:flex;flex-direction:column;gap:14px;
-}
-.bb-msg-aria {
-  background:#242424;border-radius:12px;
-  padding:12px 14px;font-size:13px;
-  color:rgba(255,255,255,0.75);line-height:1.6;
-}
-.bb-msg-aria strong { color:#A78BFF; }
-.bb-msg-user {
-  align-self:flex-end;
-  background:#6B46FF;color:#fff;
-  border-radius:12px 12px 2px 12px;
-  padding:10px 14px;font-size:13px;max-width:80%;line-height:1.5;
-}
-.bb-aria-input {
-  border-top:1px solid rgba(255,255,255,0.06);
-  padding:12px 16px;display:flex;gap:8px;align-items:flex-end;
-}
-.bb-aria-input input {
-  flex:1;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;
-  padding:9px 12px;font-family:inherit;font-size:13px;
-  color:#fff;outline:none;background:rgba(255,255,255,0.05);
-  transition:border-color 0.15s;
-}
-.bb-aria-input input:focus { border-color:#6B46FF; }
-.bb-aria-input input::placeholder { color:rgba(255,255,255,0.2); }
-.bb-aria-send {
-  width:34px;height:34px;background:#6B46FF;border:none;border-radius:10px;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.bb-aria-send:hover { background:#5836E8; }
-.bb-aria-send svg { width:14px;height:14px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
-.bb-business-name {
+.bb-biz-name {
   font-family:'Wix Madefor Display',sans-serif;
-  font-size:52px;font-weight:800;color:#fff;
+  font-size:48px;font-weight:800;color:#fff;
   letter-spacing:-2px;line-height:1;
-  margin-bottom:32px;
+  margin-bottom:28px;
 }
-.bb-section-header {
+.bb-section-row {
   display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:16px;
+  margin-bottom:14px;
 }
-.bb-section-label { font-size:13px;font-weight:600;color:rgba(255,255,255,0.5); }
-.bb-section-num { font-size:13px;font-weight:600;color:rgba(255,255,255,0.25); }
-
-/* Card row: two cards side by side */
-.bb-row { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:40px;position:relative; }
-.bb-row.single { grid-template-columns:1fr; }
+.bb-section-label { font-size:12px;font-weight:600;color:rgba(255,255,255,0.4); }
+.bb-section-num { font-size:12px;font-weight:600;color:rgba(255,255,255,0.2); }
+.bb-grid { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:44px;position:relative; }
 
 .bb-card {
-  background:#1E1E1E;
-  border-radius:16px;
-  padding:24px;
-  position:relative;
-  overflow:visible;
+  background:#1E1E1E;border-radius:16px;padding:22px;position:relative;overflow:visible;
 }
+.bb-card-label { font-size:11px;font-weight:600;color:rgba(255,255,255,0.3);margin-bottom:14px;letter-spacing:0.04em; }
 
-/* Color palette — large 2x3 grid */
+/* Palette */
 .palette-grid { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
-.palette-swatch { height:80px;border-radius:10px;cursor:pointer;transition:transform 0.15s; }
-.palette-swatch:hover { transform:scale(1.02); }
+.palette-swatch { height:76px;border-radius:10px;cursor:pointer;transition:transform 0.15s; }
+.palette-swatch:hover { transform:scale(1.03); }
 
 /* Font pack */
-.font-pack { display:grid;grid-template-columns:1fr 1fr;gap:12px; }
-.font-item { background:#161616;border-radius:12px;padding:18px 16px;display:flex;flex-direction:column;gap:8px; }
-.font-preview { font-size:56px;line-height:1;color:#fff; }
-.font-name { font-size:11px;color:rgba(255,255,255,0.35);font-weight:500; }
+.font-pack { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+.font-item { background:#161616;border-radius:10px;padding:16px 14px; }
+.font-preview { font-size:52px;line-height:1;color:#fff;margin-bottom:6px; }
+.font-name { font-size:10px;color:rgba(255,255,255,0.3); }
 
-/* Visual profile tags */
-.vp-tags { display:flex;flex-wrap:wrap;gap:8px;margin-top:4px; }
-.vp-tag {
-  padding:7px 14px;border-radius:20px;
-  font-size:13px;font-weight:500;
-  border:1px solid rgba(255,255,255,0.15);
-  color:rgba(255,255,255,0.7);
-  cursor:pointer;transition:all 0.15s;
-}
-.vp-tag:hover { border-color:rgba(255,255,255,0.4);color:#fff; }
+/* Visual profile */
+.vp-tags { display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.06); }
+.vp-tag { padding:6px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);cursor:pointer;transition:all 0.15s; }
+.vp-tag:hover { border-color:rgba(255,255,255,0.35);color:#fff; }
 
-/* Pages list dark */
+/* Pages */
 .pages-list { display:flex;flex-direction:column;gap:6px; }
-.page-row {
-  display:flex;align-items:center;gap:10px;
-  padding:10px 12px;background:#161616;border-radius:10px;
-  cursor:pointer;transition:background 0.15s;
-}
+.page-row { display:flex;align-items:center;gap:9px;padding:9px 11px;background:#161616;border-radius:9px;cursor:pointer;transition:background 0.15s; }
 .page-row:hover { background:#252525; }
 .page-name { font-size:13px;font-weight:500;color:rgba(255,255,255,0.8);flex:1; }
-.page-type { font-size:11px;color:rgba(255,255,255,0.25); }
+.page-type { font-size:11px;color:rgba(255,255,255,0.22); }
 
-/* Apps dark */
-.apps-grid { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
-.app-chip { display:flex;align-items:center;gap:8px;padding:10px 12px;background:#161616;border-radius:10px;cursor:pointer;transition:background 0.15s; }
+/* Apps */
+.apps-grid { display:grid;grid-template-columns:1fr 1fr;gap:7px; }
+.app-chip { display:flex;align-items:center;gap:8px;padding:9px 11px;background:#161616;border-radius:9px;cursor:pointer;transition:background 0.15s; }
 .app-chip:hover { background:#252525; }
-.app-name { font-size:12px;font-weight:500;color:rgba(255,255,255,0.7); }
+.app-name { font-size:12px;font-weight:500;color:rgba(255,255,255,0.65); }
 
 /* Aria bubble */
 .aria-bubble {
-  position:absolute;bottom:-16px;left:24px;
+  position:absolute;bottom:-18px;left:22px;
   background:#6B46FF;color:#fff;
   border-radius:12px 12px 12px 2px;
-  padding:9px 14px;font-size:12px;line-height:1.4;
-  max-width:280px;
-  box-shadow:0 4px 20px rgba(107,70,255,0.35);
-  z-index:10;display:flex;flex-wrap:wrap;align-items:center;gap:6px;
+  padding:8px 12px;font-size:12px;line-height:1.4;
+  max-width:270px;
+  box-shadow:0 4px 18px rgba(107,70,255,0.35);
+  z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:5px;
 }
-.aria-bubble::before { content:'✦';font-size:9px;opacity:0.7;margin-right:2px; }
-.aria-reply {
+.aria-bubble::before { content:'✦';font-size:8px;opacity:0.7;margin-right:3px; }
+.ab-btn {
   display:inline-flex;align-items:center;
   background:rgba(255,255,255,0.18);
-  border:1px solid rgba(255,255,255,0.25);
-  border-radius:8px;padding:3px 9px;font-size:11px;cursor:pointer;
+  border:1px solid rgba(255,255,255,0.22);
+  border-radius:7px;padding:3px 8px;font-size:11px;cursor:pointer;
+  transition:background 0.15s;white-space:nowrap;
+}
+.ab-btn:hover { background:rgba(255,255,255,0.28); }
+
+/* S4 Aria panel dark */
+#s4 .aria-panel { background:#1A1A1A;border-left:1px solid rgba(255,255,255,0.06); }
+#s4 .aria-panel-header { border-bottom:1px solid rgba(255,255,255,0.06); }
+#s4 .aria-panel-header span { color:rgba(255,255,255,0.9); display:block; }
+#s4 .aria-panel-header small { font-size:12px;color:rgba(255,255,255,0.3);font-weight:400; }
+#s4 .aria-msgs .msg-aria-d { background:#242424;border-radius:12px;padding:12px 14px;font-size:13px;color:rgba(255,255,255,0.7);line-height:1.6; }
+#s4 .aria-msgs .msg-aria-d strong { color:#A78BFF; }
+#s4 .aria-msgs .msg-user-d { align-self:flex-end;background:#6B46FF;color:#fff;border-radius:12px 12px 2px 12px;padding:10px 14px;font-size:13px;max-width:80%;line-height:1.5; }
+.aria-panel-foot-dark { border-top:1px solid rgba(255,255,255,0.06);padding:12px 14px;display:flex;gap:8px; }
+.aria-panel-foot-dark input { flex:1;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:13px;color:#fff;outline:none;background:rgba(255,255,255,0.05);transition:border-color 0.15s; }
+.aria-panel-foot-dark input:focus { border-color:#6B46FF; }
+.aria-panel-foot-dark input::placeholder { color:rgba(255,255,255,0.2); }
+.aria-dark-send { width:34px;height:34px;background:#6B46FF;border:none;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+.aria-dark-send:hover { background:#5836E8; }
+.aria-dark-send svg { width:13px;height:13px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+
+/* ══ S5 SITE GENERATED ══ */
+#s5 .editor-surface { background:#E8EAF0;display:flex;align-items:center;justify-content:center; }
+.site-canvas {
+  width:72%;max-width:720px;height:88%;
+  background:#fff;border-radius:2px;
+  box-shadow:0 8px 40px rgba(0,0,0,0.15);
+  overflow:hidden;display:flex;flex-direction:column;
+}
+.site-nav { display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid #F0F0F0; }
+.site-nav-logo { font-family:'Wix Madefor Display',sans-serif;font-size:18px;font-weight:800;color:#1A1A2E; }
+.site-nav-links { display:flex;gap:20px; }
+.site-nav-links span { font-size:13px;color:#666; }
+.site-nav-cta { background:#1A1A2E;color:#fff;border-radius:7px;padding:6px 16px;font-size:12px;font-weight:600; }
+.site-hero { flex:1;background:linear-gradient(160deg,#1A1A2E 0%,#3D2A00 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:32px; }
+.site-hero-title { font-family:'Wix Madefor Display',sans-serif;font-size:36px;font-weight:800;color:#fff;text-align:center;line-height:1.15; }
+.site-hero-sub { font-size:14px;color:rgba(255,255,255,0.55);text-align:center; }
+.site-hero-btn { background:#E8C97E;color:#1A1A2E;border-radius:9px;padding:11px 24px;font-size:14px;font-weight:700;margin-top:6px; }
+.site-products { display:flex;gap:12px;padding:20px 28px;border-top:1px solid #F5F5F5; }
+.site-product { flex:1;background:#F8F6F2;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#888; }
+
+#s5 .aria-panel-header span { color:#0F0F1A; display:block; }
+#s5 .aria-panel-header small { font-size:12px;color:#AAA;font-weight:400; }
+.s5-msgs .msg-aria { font-size:14px;color:#333;line-height:1.6; }
+.s5-msgs .msg-aria strong { color:#6B46FF; }
+.s5-generate-btn {
+  margin:0 16px 16px;
+  background:#6B46FF;color:#fff;border:none;border-radius:12px;
+  padding:14px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;
+  width:calc(100% - 32px);
   transition:background 0.15s;
 }
-.aria-reply:hover { background:rgba(255,255,255,0.28); }
+.s5-generate-btn:hover { background:#5836E8; }
 
-/* Aria bottom bar (dark) */
-.aria-bar {
-  position:fixed;bottom:0;left:0;right:0;
-  background:rgba(17,17,17,0.96);
-  backdrop-filter:blur(12px);
-  border-top:1px solid rgba(255,255,255,0.08);
-  padding:12px 48px 18px;
-  display:flex;align-items:center;gap:12px;
-  z-index:50;
-}
-.aria-bar-avatar { width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#6B46FF,#E040FB);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0; }
-.aria-bar input {
-  flex:1;border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;
-  padding:10px 14px;font-family:inherit;font-size:14px;
-  color:#fff;outline:none;background:rgba(255,255,255,0.06);
-  transition:border-color 0.15s;
-}
-.aria-bar input:focus { border-color:#6B46FF; }
-.aria-bar input::placeholder { color:rgba(255,255,255,0.25); }
-.aria-bar-send { width:38px;height:38px;background:#6B46FF;border:none;border-radius:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.15s; }
-.aria-bar-send:hover { background:#5836E8; }
-.aria-bar-send svg { width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
-
-/* ══════════════════════════════
-   S5 — TEMPLATE PATH
-   Dark + homepage preview + domain
-══════════════════════════════ */
-#s5 { background:#111111; }
-.tpl-surface { flex:1;overflow-y:auto;padding:40px 48px 120px;display:flex;flex-direction:column;gap:0; }
-
-/* Homepage preview card */
-.homepage-card { background:#1E1E1E;border-radius:16px;overflow:hidden;margin-bottom:40px; }
-.homepage-card-header { padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between; }
-.homepage-card-title { font-size:13px;font-weight:600;color:rgba(255,255,255,0.5); }
-.homepage-tag { background:rgba(5,150,105,0.2);color:#34D399;font-size:11px;font-weight:600;border-radius:6px;padding:3px 8px; }
-.homepage-preview { height:240px;background:linear-gradient(160deg,#1A1A2E 0%,#2D1F6E 100%);display:flex;flex-direction:column; }
-.hp-nav { display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid rgba(255,255,255,0.08); }
-.hp-nav-logo { font-family:'Wix Madefor Display',sans-serif;font-size:16px;font-weight:800;color:#fff; }
-.hp-nav-links { display:flex;gap:16px; }
-.hp-nav-links span { font-size:11px;color:rgba(255,255,255,0.5); }
-.hp-hero { flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px; }
-.hp-hero-title { font-family:'Wix Madefor Display',sans-serif;font-size:26px;font-weight:800;color:#fff;text-align:center; }
-.hp-hero-sub { font-size:12px;color:rgba(255,255,255,0.5);text-align:center; }
-.hp-hero-btn { background:#E8C97E;color:#1A1A2E;border-radius:8px;padding:7px 18px;font-size:12px;font-weight:700;margin-top:4px; }
-.hp-cards-row { display:flex;gap:8px;padding:12px 24px;background:rgba(0,0,0,0.2); }
-.hp-mini-card { flex:1;background:rgba(255,255,255,0.07);border-radius:8px;height:36px;display:flex;align-items:center;justify-content:center; }
-.hp-mini-card span { font-size:10px;color:rgba(255,255,255,0.4); }
-
-/* Domain offer bar (dark) */
-.domain-bar {
-  position:fixed;bottom:0;left:0;right:0;
-  background:rgba(17,17,17,0.97);
-  border-top:1px solid rgba(255,255,255,0.08);
-  padding:16px 48px;
-  display:flex;align-items:center;gap:16px;
-  z-index:50;
-  box-shadow:0 -4px 24px rgba(0,0,0,0.3);
-}
-.domain-icon { font-size:24px; }
-.domain-text { flex:1; }
-.domain-text strong { font-size:15px;font-weight:700;color:#fff;display:block; }
-.domain-text span { font-size:13px;color:rgba(255,255,255,0.4); }
-.btn-domain { background:#6B46FF;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap; }
-.btn-domain:hover { background:#5836E8; }
-.btn-later { background:none;border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:12px 20px;font-family:inherit;font-size:14px;color:rgba(255,255,255,0.5);cursor:pointer;white-space:nowrap; }
-
-/* ══════════════════════════════
-   CONCEPT NAV
-══════════════════════════════ */
+/* ══ CONCEPT NAV ══ */
 #concept-nav {
   position:fixed;bottom:24px;right:24px;
   display:flex;align-items:center;gap:8px;
@@ -346,53 +249,41 @@ body { font-family: 'Wix Madefor Text', sans-serif; background: #fff; overflow: 
 }
 #concept-nav a { text-decoration:none;font-size:12px;font-weight:600;color:#666;padding:4px 8px;border-radius:20px;transition:all 0.15s;font-family:inherit; }
 #concept-nav a:hover { background:#F0F3FF;color:#2F5BFF; }
-#concept-nav .nav-div { width:1px;height:16px;background:rgba(0,0,0,0.1); }
+#concept-nav .ndiv { width:1px;height:16px;background:rgba(0,0,0,0.1); }
 
-/* screen step dots */
-.step-dots {
-  position:fixed;bottom:72px;left:50%;transform:translateX(-50%);
-  display:flex;gap:6px;z-index:100;
-}
-.step-dot {
-  width:6px;height:6px;border-radius:50%;background:rgba(0,0,0,0.2);
-  transition:all 0.2s;cursor:pointer;
-}
+/* screen dots */
+.step-dots { position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:100; }
+.step-dot { width:6px;height:6px;border-radius:50%;background:rgba(0,0,0,0.2);transition:all 0.2s;cursor:pointer; }
 .step-dot.active { background:#6B46FF;width:18px;border-radius:3px; }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════
-  S1 — PROMPT
-══════════════════ -->
+<!-- ══ S1 PROMPT ══ -->
 <div class="screen active" id="s1">
-  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;">
     <div class="prompt-wrap">
       <div class="prompt-eyebrow">Wix · Aria</div>
-      <h1 class="prompt-heading">Tell Aria about<br><em>your business</em></h1>
+      <h1 class="prompt-title">Tell Aria about<br><em>your business</em></h1>
       <div class="prompt-box">
         <textarea placeholder="e.g. I run a small bakery in Tel Aviv specializing in sourdough and seasonal pastries…" rows="3"></textarea>
-        <div class="prompt-box-footer">
-          <button class="btn-generate" onclick="goTo(2)">
-            Generate site &nbsp;→
-          </button>
+        <div class="prompt-box-foot">
+          <button class="btn-gen" onclick="goTo(2)">Generate site →</button>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════
-  S2 — EDITOR + COMPOSER
-══════════════════ -->
+<!-- ══ S2 EDITOR + ONBOARDING ══ -->
 <div class="screen" id="s2">
   <div class="editor-chrome">
     <span class="chrome-logo">wix</span>
     <div class="chrome-avatar">G</div>
-    <div class="chrome-divider"></div>
-    <button class="chrome-btn">Goody <span class="chevron"></span></button>
-    <button class="chrome-btn">Brand <span class="chevron"></span></button>
-    <div class="chrome-center"><div class="chrome-fit">Fit (96%) <span class="chevron"></span></div></div>
+    <div class="chrome-div"></div>
+    <button class="chrome-btn">Goody <span class="chrome-caret"></span></button>
+    <button class="chrome-btn">Brand <span class="chrome-caret"></span></button>
+    <div class="chrome-center"><div class="chrome-fit">Fit (96%) <span class="chrome-caret"></span></div></div>
     <div class="chrome-right">
       <button class="btn-upgrade">Upgrade</button>
       <button class="btn-preview">Preview</button>
@@ -400,25 +291,25 @@ body { font-family: 'Wix Madefor Text', sans-serif; background: #fff; overflow: 
     </div>
   </div>
   <div class="editor-body">
-    <div class="canvas-area"></div>
-    <div class="composer-panel">
-      <div class="composer-header">Ask Aria</div>
-      <div class="composer-messages">
+    <div class="editor-surface"></div>
+    <div class="aria-panel">
+      <div class="aria-panel-header">Ask Aria</div>
+      <div class="aria-msgs">
         <div class="msg-user">I need a site for my bakery</div>
-        <div class="msg-aria">Love it! Let me get to know your business so I can build something that's really yours.</div>
-        <div class="composer-question">
-          <div class="q-label">What's the vibe of your bakery?</div>
-          <div class="q-sub">Help Aria nail your aesthetic</div>
-          <div class="q-options" id="q1">
-            <div class="q-option" onclick="sel(this,'q1')">🌿 Wholesome & natural</div>
-            <div class="q-option" onclick="sel(this,'q1')">✨ Premium & elegant</div>
-            <div class="q-option" onclick="sel(this,'q1')">🎨 Playful & colorful</div>
-            <div class="q-option" onclick="sel(this,'q1')">🏠 Cozy & neighborhood</div>
+        <div class="msg-aria">Love it — let me get to know your business so we build something that's really yours.</div>
+        <div class="aria-q">
+          <div class="aria-q-label">What's your bakery's vibe?</div>
+          <div class="aria-q-sub">Help Aria nail your aesthetic</div>
+          <div class="aria-opts" id="q1">
+            <div class="aria-opt" onclick="sel(this,'q1')">🌿 Wholesome & natural</div>
+            <div class="aria-opt" onclick="sel(this,'q1')">✨ Premium & elegant</div>
+            <div class="aria-opt" onclick="sel(this,'q1')">🎨 Playful & colorful</div>
+            <div class="aria-opt" onclick="sel(this,'q1')">🏠 Cozy & neighborhood</div>
           </div>
-          <div class="q-free"><input type="text" placeholder="Describe in your own words…"></div>
+          <div class="aria-free"><input type="text" placeholder="Or describe in your own words…"></div>
         </div>
       </div>
-      <div class="composer-actions">
+      <div class="aria-panel-footer">
         <button class="btn-skip">Skip</button>
         <button class="btn-next" onclick="goTo(3)">Next →</button>
       </div>
@@ -426,14 +317,12 @@ body { font-family: 'Wix Madefor Text', sans-serif; background: #fff; overflow: 
   </div>
 </div>
 
-<!-- ══════════════════
-  S3 — SPLIT FORK ON SURFACE
-══════════════════ -->
+<!-- ══ S3 FORK MODAL OVER EDITOR ══ -->
 <div class="screen" id="s3">
-  <div class="editor-chrome" style="opacity:0.6;pointer-events:none;">
+  <div class="editor-chrome" style="opacity:0.5;pointer-events:none;">
     <span class="chrome-logo">wix</span>
     <div class="chrome-avatar">G</div>
-    <div class="chrome-divider"></div>
+    <div class="chrome-div"></div>
     <button class="chrome-btn">Goody</button>
     <button class="chrome-btn">Brand</button>
     <div class="chrome-center"><div class="chrome-fit">Fit (96%)</div></div>
@@ -443,287 +332,252 @@ body { font-family: 'Wix Madefor Text', sans-serif; background: #fff; overflow: 
       <button class="btn-publish">Publish</button>
     </div>
   </div>
-  <div class="fork-surface">
-    <!-- Aria label in center -->
-    <div class="fork-aria-label">✦ Aria is ready — choose your path</div>
-
-    <!-- Left: Taylor Made -->
-    <div class="fork-half fork-half-a" onclick="goTo(4)" id="fork-a">
-      <div class="fork-half-content">
-        <div class="fork-icon">✦</div>
-        <div class="fork-kicker">Custom</div>
-        <div class="fork-half-title">Taylor Made</div>
-        <div class="fork-half-desc">Aria designs everything from scratch, tailored to your brand. We build it together, piece by piece.</div>
-        <button class="fork-cta-btn">Build together →</button>
+  <div class="editor-body">
+    <!-- Editor surface behind modal (blurred) -->
+    <div class="editor-surface" style="filter:blur(2px);opacity:0.5;"></div>
+    <!-- Aria panel behind modal (blurred) -->
+    <div class="aria-panel" style="filter:blur(2px);opacity:0.4;pointer-events:none;">
+      <div class="aria-panel-header">Ask Aria</div>
+      <div class="aria-msgs">
+        <div class="msg-user">I need a site for my bakery</div>
+        <div class="msg-aria">I've learned enough to get started. Choose how you'd like to build…</div>
       </div>
     </div>
-
-    <!-- Right: Template -->
-    <div class="fork-half fork-half-b" onclick="goTo(5)" id="fork-b">
-      <div class="fork-half-content">
-        <div class="fork-icon">🗂</div>
-        <div class="fork-kicker">Head start</div>
-        <div class="fork-half-title">Start from Template</div>
-        <div class="fork-half-desc">Pick from 3 templates curated for your business. Pre-filled with your brand, ready to launch.</div>
-        <button class="fork-cta-btn">See my templates →</button>
+    <!-- Fork modal overlay -->
+    <div class="fork-overlay">
+      <div class="fork-modal">
+        <div class="fork-modal-top">
+          <div class="fork-kicker">Aria is ready</div>
+          <div class="fork-title">How should we build your site?</div>
+          <div class="fork-sub">Choose your path — you can always change later.</div>
+        </div>
+        <div class="fork-cards">
+          <div class="fork-card fork-a" id="fka" onclick="selFork('fka')">
+            <div class="fork-card-icon">✦</div>
+            <div class="fork-card-name">Taylor Made</div>
+            <div class="fork-card-desc">Aria designs everything from scratch, tailored to your brand. We build it together.</div>
+            <span class="fork-card-tag">Custom design</span>
+          </div>
+          <div class="fork-card fork-b" id="fkb" onclick="selFork('fkb')">
+            <div class="fork-card-icon">🗂</div>
+            <div class="fork-card-name">Start from Template</div>
+            <div class="fork-card-desc">3 templates curated for your business, pre-filled with your brand.</div>
+            <span class="fork-card-tag">Head start</span>
+          </div>
+        </div>
+        <div class="fork-foot">
+          <button class="btn-back" onclick="goTo(2)">← Back</button>
+          <button class="btn-go" onclick="goTo(4)">Continue →</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════
-  S4 — TAYLOR MADE: BRAND BOOK
-  Dark editorial, Aria on surface
-══════════════════ -->
+<!-- ══ S4 BRAND BOOK ON SURFACE + CHAT ══ -->
 <div class="screen" id="s4">
   <div class="editor-chrome">
     <span class="chrome-logo">wix</span>
     <div class="chrome-avatar">G</div>
-    <div class="chrome-divider"></div>
-    <button class="chrome-btn">Goody <span class="chevron"></span></button>
-    <button class="chrome-btn">Brand <span class="chevron"></span></button>
-    <div class="chrome-center"><div class="chrome-fit">Fit (96%) <span class="chevron"></span></div></div>
+    <div class="chrome-div"></div>
+    <button class="chrome-btn">Goody <span class="chrome-caret"></span></button>
+    <button class="chrome-btn">Brand <span class="chrome-caret"></span></button>
+    <div class="chrome-center"><div class="chrome-fit">Fit (96%) <span class="chrome-caret"></span></div></div>
     <div class="chrome-right">
       <button class="btn-upgrade">Upgrade</button>
       <button class="btn-preview">Preview</button>
       <button class="btn-publish">Publish</button>
     </div>
   </div>
+  <div class="editor-body">
+    <!-- Dark surface with brand book cards -->
+    <div class="editor-surface">
+      <div class="bb-surface-inner">
 
-  <div class="bb-body">
-  <div class="bb-surface">
+        <div class="bb-biz-name">Goody Bakery</div>
 
-    <div class="bb-business-name">Goody Bakery</div>
+        <!-- Brand section -->
+        <div class="bb-section-row">
+          <span class="bb-section-label">Brand</span>
+          <span class="bb-section-num">03</span>
+        </div>
+        <div class="bb-grid">
+          <!-- Font pack -->
+          <div class="bb-card">
+            <div class="bb-card-label">Font pack</div>
+            <div class="font-pack">
+              <div class="font-item">
+                <div class="font-preview" style="font-family:'Wix Madefor Display';">Aa</div>
+                <div class="font-name">Wix Madefor Display</div>
+              </div>
+              <div class="font-item">
+                <div class="font-preview" style="font-style:italic;">Aa</div>
+                <div class="font-name">Wix Madefor Text</div>
+              </div>
+            </div>
+            <div class="vp-tags">
+              <span class="vp-tag">Warm</span>
+              <span class="vp-tag">Artisan</span>
+              <span class="vp-tag">Approachable</span>
+            </div>
+            <div class="aria-bubble">
+              Madefor for that warm, crafted feel.
+              <span class="ab-btn">✓ Keep</span>
+              <span class="ab-btn">Try others</span>
+            </div>
+          </div>
+          <!-- Color palette -->
+          <div class="bb-card">
+            <div class="bb-card-label">Color palette</div>
+            <div class="palette-grid">
+              <div class="palette-swatch" style="background:#C85A1A;"></div>
+              <div class="palette-swatch" style="background:#D4C44A;"></div>
+              <div class="palette-swatch" style="background:#8C7B6B;"></div>
+              <div class="palette-swatch" style="background:#7A8C7E;"></div>
+              <div class="palette-swatch" style="background:#F5F0E8;"></div>
+              <div class="palette-swatch" style="background:#E8E0D0;"></div>
+            </div>
+            <div class="aria-bubble" style="left:auto;right:22px;">
+              Earthy & warm — natural tones for a bakery.
+              <span class="ab-btn">✓ Love it</span>
+              <span class="ab-btn">Change</span>
+            </div>
+          </div>
+        </div>
 
-    <!-- Brand section header -->
-    <div class="bb-section-header">
-      <span class="bb-section-label">Brand</span>
-      <span class="bb-section-num">03</span>
+        <!-- Site section -->
+        <div class="bb-section-row" style="margin-top:12px;">
+          <span class="bb-section-label">Site</span>
+          <span class="bb-section-num">04</span>
+        </div>
+        <div class="bb-grid">
+          <!-- Pages -->
+          <div class="bb-card">
+            <div class="bb-card-label">Site structure</div>
+            <div class="pages-list">
+              <div class="page-row"><span>🏠</span><span class="page-name">Home</span><span class="page-type">Main</span></div>
+              <div class="page-row"><span>🍞</span><span class="page-name">Menu</span><span class="page-type">Catalog</span></div>
+              <div class="page-row"><span>📖</span><span class="page-name">Our Story</span><span class="page-type">About</span></div>
+              <div class="page-row"><span>📍</span><span class="page-name">Find Us</span><span class="page-type">Contact</span></div>
+            </div>
+            <div class="aria-bubble">
+              4 pages — tight and focused. Add a shop?
+              <span class="ab-btn">Add shop</span>
+              <span class="ab-btn">Looks right</span>
+            </div>
+          </div>
+          <!-- Apps & Goals -->
+          <div class="bb-card">
+            <div class="bb-card-label">Apps & goals</div>
+            <div class="apps-grid">
+              <div class="app-chip"><span>📅</span><span class="app-name">Bookings</span></div>
+              <div class="app-chip"><span>📷</span><span class="app-name">Gallery</span></div>
+              <div class="app-chip"><span>📝</span><span class="app-name">Forms</span></div>
+              <div class="app-chip"><span>⭐</span><span class="app-name">Reviews</span></div>
+            </div>
+            <div class="vp-tags" style="margin-top:12px;padding-top:12px;">
+              <span class="vp-tag" style="border-color:rgba(232,200,126,0.3);color:#E8C97E;">📈 Grow orders</span>
+              <span class="vp-tag" style="border-color:rgba(52,211,153,0.3);color:#34D399;">🤝 Build loyalty</span>
+            </div>
+            <div class="aria-bubble" style="left:auto;right:22px;">
+              Added Bookings for pre-orders. OK?
+              <span class="ab-btn">✓ Yes</span>
+              <span class="ab-btn">Change</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
 
-    <!-- Row 1: Font pack + Color palette -->
-    <div class="bb-row" style="margin-bottom:52px;">
-
-      <!-- Font pack -->
-      <div class="bb-card">
-        <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.35);margin-bottom:14px;letter-spacing:0.04em;">Font pack</div>
-        <div class="font-pack">
-          <div class="font-item">
-            <div class="font-preview" style="font-family:'Wix Madefor Display';">Aa</div>
-            <div class="font-name">Wix Madefor Display</div>
-          </div>
-          <div class="font-item">
-            <div class="font-preview" style="font-style:italic;font-weight:400;">Aa</div>
-            <div class="font-name">Wix Madefor Text</div>
-          </div>
+    <!-- Aria chat panel — dark -->
+    <div class="aria-panel">
+      <div class="aria-panel-header">
+        <span style="display:block;font-size:14px;font-weight:600;color:rgba(255,255,255,0.9);">Ask Aria</span>
+        <small style="font-size:12px;color:rgba(255,255,255,0.35);font-weight:400;">Edit anything on your brand book</small>
+      </div>
+      <div class="aria-msgs" id="s4-msgs">
+        <div class="msg-aria-d" style="background:#242424;border-radius:12px;padding:12px 14px;font-size:13px;color:rgba(255,255,255,0.7);line-height:1.6;">
+          Here's your <strong style="color:#A78BFF;">brand book</strong> — the foundation I'll build from. Everything is editable.
         </div>
-        <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);">
-          <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.35);margin-bottom:10px;">Visual profile</div>
-          <div class="vp-tags">
-            <span class="vp-tag">Warm</span>
-            <span class="vp-tag">Artisan</span>
-            <span class="vp-tag">Approachable</span>
-            <span class="vp-tag">Craft-focused</span>
-          </div>
+        <div class="msg-aria-d" style="background:#242424;border-radius:12px;padding:12px 14px;font-size:13px;color:rgba(255,255,255,0.7);line-height:1.6;">
+          I chose <strong style="color:#A78BFF;">earthy warm tones</strong> and Wix Madefor based on what you told me. Happy with the direction?
         </div>
-        <div class="aria-bubble">
-          Picked Madefor for that warm, crafted feel — matches your vibe.
-          <span class="aria-reply">✓ Keep</span>
-          <span class="aria-reply">Try others</span>
+        <div class="msg-user-d" style="align-self:flex-end;background:#6B46FF;color:#fff;border-radius:12px 12px 2px 12px;padding:10px 14px;font-size:13px;max-width:80%;line-height:1.5;">
+          Can you make the palette more minimal?
+        </div>
+        <div class="msg-aria-d" style="background:#242424;border-radius:12px;padding:12px 14px;font-size:13px;color:rgba(255,255,255,0.7);line-height:1.6;">
+          Sure — 3 core colors: dark, warm gold, off-white. Updated on the left ✓
         </div>
       </div>
-
-      <!-- Color palette -->
-      <div class="bb-card">
-        <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.35);margin-bottom:14px;letter-spacing:0.04em;">Color palette</div>
-        <div class="palette-grid">
-          <div class="palette-swatch" style="background:#C85A1A;"></div>
-          <div class="palette-swatch" style="background:#D4C44A;"></div>
-          <div class="palette-swatch" style="background:#8C7B6B;"></div>
-          <div class="palette-swatch" style="background:#7A8C7E;"></div>
-          <div class="palette-swatch" style="background:#F5F0E8;"></div>
-          <div class="palette-swatch" style="background:#E8E0D0;"></div>
+      <div style="border-top:1px solid rgba(255,255,255,0.06);padding:12px 16px 14px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;gap:8px;">
+          <input type="text" placeholder="Change colors, fonts, pages…" style="flex:1;border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:13px;color:#fff;outline:none;background:rgba(255,255,255,0.05);">
+          <button class="aria-dark-send"><svg viewBox="0 0 14 14"><path d="M1 7h12M7 1l6 6-6 6"/></svg></button>
         </div>
-        <div class="aria-bubble" style="left:auto;right:24px;">
-          Earthy and warm — natural tones for a bakery.
-          <span class="aria-reply">✓ Love it</span>
-          <span class="aria-reply">Change</span>
-        </div>
+        <button onclick="goTo(5)" style="width:100%;background:#6B46FF;color:#fff;border:none;border-radius:10px;padding:11px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;">
+          ✦ Generate my site →
+        </button>
       </div>
-
-    </div>
-
-    <!-- Row 2: Pages + Apps -->
-    <div class="bb-section-header" style="margin-top:8px;">
-      <span class="bb-section-label">Site</span>
-      <span class="bb-section-num">04</span>
-    </div>
-    <div class="bb-row" style="margin-bottom:52px;">
-
-      <!-- Pages -->
-      <div class="bb-card">
-        <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.35);margin-bottom:14px;">Site structure</div>
-        <div class="pages-list">
-          <div class="page-row"><span>🏠</span><span class="page-name">Home</span><span class="page-type">Main</span></div>
-          <div class="page-row"><span>🍞</span><span class="page-name">Menu</span><span class="page-type">Catalog</span></div>
-          <div class="page-row"><span>📖</span><span class="page-name">Our Story</span><span class="page-type">About</span></div>
-          <div class="page-row"><span>📍</span><span class="page-name">Find Us</span><span class="page-type">Contact</span></div>
-        </div>
-        <div class="aria-bubble">
-          4 pages — tight and focused. Add a shop page?
-          <span class="aria-reply">Add shop</span>
-          <span class="aria-reply">Looks right</span>
-        </div>
-      </div>
-
-      <!-- Apps & Goals -->
-      <div class="bb-card">
-        <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.35);margin-bottom:14px;">Apps & goals</div>
-        <div class="apps-grid">
-          <div class="app-chip"><span>📅</span><span class="app-name">Bookings</span></div>
-          <div class="app-chip"><span>📷</span><span class="app-name">Gallery</span></div>
-          <div class="app-chip"><span>📝</span><span class="app-name">Forms</span></div>
-          <div class="app-chip"><span>⭐</span><span class="app-name">Reviews</span></div>
-        </div>
-        <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.06);">
-          <div class="vp-tags">
-            <span class="vp-tag" style="border-color:rgba(232,200,126,0.3);color:#E8C97E;">📈 Grow orders</span>
-            <span class="vp-tag" style="border-color:rgba(52,211,153,0.3);color:#34D399;">🤝 Build loyalty</span>
-          </div>
-        </div>
-        <div class="aria-bubble" style="left:auto;right:24px;">
-          Added Bookings — so customers can pre-order. OK?
-          <span class="aria-reply">✓ Yes</span>
-          <span class="aria-reply">Change</span>
-        </div>
-      </div>
-
     </div>
 
   </div>
-
-  <!-- Aria side panel -->
-  <div class="bb-aria-panel">
-    <div class="bb-aria-header">
-      <div class="bb-aria-title">Ask Aria</div>
-      <div class="bb-aria-sub">Edit anything on your brand book</div>
-    </div>
-    <div class="bb-aria-msgs">
-      <div class="bb-msg-aria">
-        Here's your <strong>brand book</strong> — the foundation I'll build from. Everything is editable.
-      </div>
-      <div class="bb-msg-aria">
-        I chose <strong>earthy warm tones</strong> and Wix Madefor based on your bakery description. Happy with the direction?
-      </div>
-      <div class="bb-msg-user">Can you make the palette a bit more minimal?</div>
-      <div class="bb-msg-aria">
-        Sure — I'll pull back to 3 core colors: dark, warm gold, and off-white. Want me to update?
-      </div>
-    </div>
-    <div class="bb-aria-input">
-      <input type="text" placeholder="Change colors, fonts, pages…">
-      <button class="bb-aria-send"><svg viewBox="0 0 14 14"><path d="M1 7h12M7 1l6 6-6 6"/></svg></button>
-    </div>
-  </div>
-  </div><!-- /bb-body -->
 </div>
 
-<!-- ══════════════════
-  S5 — TEMPLATE: PRE-FILLED + DOMAIN
-══════════════════ -->
+<!-- ══ S5 SITE GENERATED ══ -->
 <div class="screen" id="s5">
   <div class="editor-chrome">
     <span class="chrome-logo">wix</span>
     <div class="chrome-avatar">G</div>
-    <div class="chrome-divider"></div>
-    <button class="chrome-btn">Goody <span class="chevron"></span></button>
-    <button class="chrome-btn">Brand <span class="chevron"></span></button>
-    <div class="chrome-center"><div class="chrome-fit">Fit (96%) <span class="chevron"></span></div></div>
+    <div class="chrome-div"></div>
+    <button class="chrome-btn">Goody <span class="chrome-caret"></span></button>
+    <button class="chrome-btn">Brand <span class="chrome-caret"></span></button>
+    <div class="chrome-center"><div class="chrome-fit">Fit (96%) <span class="chrome-caret"></span></div></div>
     <div class="chrome-right">
       <button class="btn-upgrade">Upgrade</button>
       <button class="btn-preview">Preview</button>
-      <button class="btn-publish live">Publish</button>
+      <button class="btn-publish active">Publish</button>
     </div>
   </div>
-
-  <div class="tpl-surface">
-
-    <div class="bb-business-name">Goody Bakery</div>
-
-    <div class="bb-section-header">
-      <span class="bb-section-label">Homepage — ready</span>
-      <span class="homepage-tag">✓ From template</span>
-    </div>
-
-    <!-- Homepage preview -->
-    <div class="homepage-card" style="margin-bottom:40px;">
-      <div class="homepage-preview">
-        <div class="hp-nav">
-          <div class="hp-nav-logo">Goody</div>
-          <div class="hp-nav-links"><span>Menu</span><span>Story</span><span>Find us</span></div>
-          <div style="background:#E8C97E;color:#1A1A2E;font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;">Order</div>
+  <div class="editor-body">
+    <div class="editor-surface">
+      <div class="site-canvas">
+        <div class="site-nav">
+          <div class="site-nav-logo">Goody</div>
+          <div class="site-nav-links"><span>Menu</span><span>Our Story</span><span>Find Us</span></div>
+          <div class="site-nav-cta">Order now</div>
         </div>
-        <div class="hp-hero">
-          <div class="hp-hero-title">Baked with love,<br>every morning</div>
-          <div class="hp-hero-sub">Sourdough & seasonal pastries · Tel Aviv</div>
-          <div class="hp-hero-btn">See the menu →</div>
+        <div class="site-hero">
+          <div class="site-hero-title">Baked with love,<br>every morning</div>
+          <div class="site-hero-sub">Sourdough & seasonal pastries · Tel Aviv</div>
+          <div class="site-hero-btn">See the menu →</div>
         </div>
-        <div class="hp-cards-row">
-          <div class="hp-mini-card"><span>Sourdough</span></div>
-          <div class="hp-mini-card"><span>Croissants</span></div>
-          <div class="hp-mini-card"><span>Seasonal</span></div>
+        <div class="site-products">
+          <div class="site-product">Sourdough</div>
+          <div class="site-product">Croissants</div>
+          <div class="site-product">Seasonal</div>
+          <div class="site-product">Specials</div>
         </div>
       </div>
     </div>
-
-    <!-- Brand section -->
-    <div class="bb-section-header">
-      <span class="bb-section-label">Brand</span>
-      <span class="bb-section-num">03</span>
-    </div>
-    <div class="bb-row" style="margin-bottom:52px;">
-      <div class="bb-card">
-        <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.35);margin-bottom:14px;">Font pack</div>
-        <div class="font-pack">
-          <div class="font-item">
-            <div class="font-preview" style="font-family:'Wix Madefor Display';">Aa</div>
-            <div class="font-name">Wix Madefor Display</div>
-          </div>
-          <div class="font-item">
-            <div class="font-preview" style="font-style:italic;">Aa</div>
-            <div class="font-name">Wix Madefor Text</div>
-          </div>
-        </div>
-        <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.06);">
-          <div class="vp-tags">
-            <span class="vp-tag">Warm</span><span class="vp-tag">Artisan</span><span class="vp-tag">Approachable</span>
-          </div>
+    <!-- Aria panel -->
+    <div class="aria-panel">
+      <div class="aria-panel-header">Ask Aria</div>
+      <div class="aria-msgs s5-msgs">
+        <div class="msg-aria"><strong style="color:#6B46FF;">Your site is ready</strong> 🎉<br>Built from your brand book — 4 pages, Wix Madefor, earthy palette.</div>
+        <div class="msg-aria">You can keep editing directly on the canvas, or ask me to change anything.</div>
+        <div style="background:#F5F3FF;border-radius:12px;padding:14px;margin-top:4px;">
+          <div style="font-size:12px;font-weight:600;color:#6B46FF;margin-bottom:10px;">🌐 Connect your domain</div>
+          <div style="font-size:13px;color:#666;margin-bottom:12px;line-height:1.5;">Make it official with <strong>goody-bakery.com</strong></div>
+          <button style="width:100%;background:#6B46FF;color:#fff;border:none;border-radius:9px;padding:10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;">Connect domain →</button>
+          <button style="width:100%;background:none;border:none;font-family:inherit;font-size:13px;color:#AAA;cursor:pointer;margin-top:6px;padding:6px;">Later</button>
         </div>
       </div>
-      <div class="bb-card">
-        <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.35);margin-bottom:14px;">Color palette</div>
-        <div class="palette-grid">
-          <div class="palette-swatch" style="background:#C85A1A;"></div>
-          <div class="palette-swatch" style="background:#D4C44A;"></div>
-          <div class="palette-swatch" style="background:#8C7B6B;"></div>
-          <div class="palette-swatch" style="background:#7A8C7E;"></div>
-          <div class="palette-swatch" style="background:#F5F0E8;"></div>
-          <div class="palette-swatch" style="background:#E8E0D0;"></div>
-        </div>
+      <div class="aria-panel-footer">
+        <span></span>
+        <button class="btn-next">Start customizing →</button>
       </div>
     </div>
-
-  </div>
-
-  <!-- Domain offer bar -->
-  <div class="domain-bar">
-    <div class="domain-icon">🌐</div>
-    <div class="domain-text">
-      <strong>Connect your domain</strong>
-      <span>Your site is ready — make it official with goody-bakery.com</span>
-    </div>
-    <button class="btn-later">Later</button>
-    <button class="btn-domain">Connect domain →</button>
   </div>
 </div>
 
@@ -739,7 +593,7 @@ body { font-family: 'Wix Madefor Text', sans-serif; background: #fff; overflow: 
 <!-- Concept nav -->
 <div id="concept-nav">
   <a href="concepts.html">← All</a>
-  <div class="nav-div"></div>
+  <div class="ndiv"></div>
   <a href="concept-1-brief.html">1</a>
   <a href="concept-2-blueprint.html">2</a>
   <a href="concept-3-brandbook.html" style="background:#2F5BFF;color:#fff;border-radius:20px;">3</a>
@@ -748,26 +602,29 @@ body { font-family: 'Wix Madefor Text', sans-serif; background: #fff; overflow: 
 
 <script>
 let cur = 1;
-const total = 5;
 
 function goTo(n) {
   document.getElementById('s'+cur).classList.remove('active');
   cur = n;
   document.getElementById('s'+n).classList.add('active');
   const dots = document.querySelectorAll('.step-dot');
-  dots.forEach((d,i) => d.classList.toggle('active', i === n-1));
-  // hide dots on s4/s5 (aria bar takes bottom)
-  document.getElementById('step-dots').style.display = (n >= 4) ? 'none' : 'flex';
+  dots.forEach((d,i) => d.classList.toggle('active', i===n-1));
+  document.getElementById('step-dots').style.display = n >= 4 ? 'none' : 'flex';
 }
 
-function sel(el, group) {
-  document.querySelectorAll('#'+group+' .q-option').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
+function sel(el, g) {
+  document.querySelectorAll('#'+g+' .aria-opt').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function selFork(id) {
+  document.querySelectorAll('.fork-card').forEach(c => c.classList.remove('sel'));
+  document.getElementById(id).classList.add('sel');
 }
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight' && cur < total) goTo(cur+1);
-  if (e.key === 'ArrowLeft' && cur > 1) goTo(cur-1);
+  if (e.key==='ArrowRight' && cur<5) goTo(cur+1);
+  if (e.key==='ArrowLeft' && cur>1) goTo(cur-1);
 });
 </script>
 </body>
