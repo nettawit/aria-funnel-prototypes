@@ -8,19 +8,58 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Wix Madefor Text', sans-serif; overflow: hidden; height: 100vh; }
-
 .screen { position: absolute; inset: 0; display: none; flex-direction: column; opacity: 0; transition: opacity 0.3s ease; }
 .screen.active { display: flex; opacity: 1; }
 
+/* ══ S1 — PROMPT (Wix Aria style) ══ */
+#s1 {
+  background: linear-gradient(160deg, #E8EEFF 0%, #F5F0FF 40%, #FFF0F8 100%);
+  flex-direction: column;
+}
+.s1-top {
+  height: 52px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; flex-shrink: 0;
+}
+.s1-logo { font-family: 'Wix Madefor Display', sans-serif; font-size: 22px; font-weight: 800; color: #0F0F1A; }
+.s1-right { display: flex; align-items: center; gap: 12px; }
+.s1-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg,#6B46FF,#E040FB); display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:600; }
+.s1-upgrade { font-size: 13px; font-weight: 600; color: #6B46FF; background: none; border: none; cursor: pointer; }
+.s1-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 24px 60px; }
+.s1-aria-intro { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 24px; max-width: 560px; width: 100%; }
+.s1-aria-avatar { width: 32px; height: 32px; border-radius: 50%; background: #0F0F1A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; margin-top: 2px; }
+.s1-aria-text { font-size: 18px; line-height: 1.5; color: #0F0F1A; }
+.s1-aria-text strong { color: #116DFF; font-weight: 600; }
+.s1-aria-text em { color: #116DFF; font-style: normal; font-weight: 400; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+.s1-input-wrap { width: 100%; max-width: 560px; margin-bottom: 20px; }
+.s1-textarea-box {
+  background: #fff; border: 1.5px solid #E0E0EC; border-radius: 14px;
+  padding: 16px 16px 12px; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.s1-textarea-box:focus-within { border-color: #116DFF; box-shadow: 0 0 0 3px rgba(17,109,255,0.08); }
+.s1-textarea-box textarea {
+  width: 100%; background: transparent; border: none; outline: none; resize: none;
+  font-family: inherit; font-size: 16px; color: #0F0F1A; line-height: 1.5; min-height: 80px;
+}
+.s1-textarea-box textarea::placeholder { color: #BEBEC8; }
+.s1-textarea-foot { display: flex; justify-content: flex-end; padding-top: 10px; border-top: 1px solid #F0F0F5; margin-top: 10px; }
+.s1-gen-btn { background: #116DFF; color: #fff; border: none; border-radius: 10px; padding: 10px 22px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.s1-gen-btn:hover { background: #0055DD; }
+.s1-examples { max-width: 560px; width: 100%; }
+.s1-examples-label { font-size: 12px; color: #AAA; margin-bottom: 10px; }
+.s1-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.s1-chip { border: 1px solid #E0E0EC; border-radius: 20px; padding: 6px 14px; font-size: 12px; color: #444; cursor: pointer; background: rgba(255,255,255,0.7); transition: all 0.15s; }
+.s1-chip:hover { border-color: #116DFF; color: #116DFF; }
+.s1-chip.more { color: #116DFF; border-color: rgba(17,109,255,0.3); display: flex; align-items: center; gap: 5px; }
+.s1-footer { text-align: center; padding: 16px; font-size: 11px; color: #BEBEC8; flex-shrink: 0; }
+
 /* ══ EDITOR CHROME ══ */
 .editor-chrome {
-  height: 44px; background: #fff; border-bottom: 1px solid #E5E5EA;
-  display: flex; align-items: center; padding: 0 12px; flex-shrink: 0; z-index: 10;
-  gap: 2px;
+  height: 44px; background: #fff; border-bottom: 1px solid #E8E8EF;
+  display: flex; align-items: center; padding: 0 12px; flex-shrink: 0; z-index: 10; gap: 2px;
 }
 .chrome-logo { font-family: 'Wix Madefor Display',sans-serif; font-size: 18px; font-weight: 800; color: #0F0F1A; margin-right: 8px; }
 .chrome-avatar { width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg,#6B46FF,#E040FB); display:flex;align-items:center;justify-content:center; font-size:10px;color:#fff;font-weight:600; flex-shrink:0; }
-.chrome-div { width:1px;height:16px;background:#E5E5EA;margin:0 6px; }
+.chrome-div { width:1px;height:16px;background:#E8E8EF;margin:0 6px; }
 .chrome-btn { display:flex;align-items:center;gap:3px;padding:4px 8px;border-radius:5px;font-size:12px;font-weight:500;color:#555;background:transparent;border:none;cursor:pointer; }
 .chrome-btn:hover { background:#F5F5F8; }
 .chrome-caret { display:inline-block;width:7px;height:7px;border-right:1.5px solid #AAA;border-bottom:1.5px solid #AAA;transform:rotate(45deg) translateY(-2px); }
@@ -30,369 +69,254 @@ body { font-family: 'Wix Madefor Text', sans-serif; overflow: hidden; height: 10
 .btn-upgrade { color:#6B46FF;font-size:12px;font-weight:600;background:none;border:none;cursor:pointer;padding:4px 8px; }
 .btn-preview { padding:5px 12px;background:none;border:1px solid #D5D5DC;border-radius:7px;font-size:12px;font-weight:500;color:#333;cursor:pointer; }
 .btn-publish { padding:5px 12px;border:none;border-radius:7px;font-size:12px;font-weight:600;color:#fff;cursor:not-allowed;background:#CACAD8; }
-.btn-publish.active { background:#6B46FF;cursor:pointer; }
+.btn-publish.live { background:#116DFF;cursor:pointer; }
 
-/* ══ EDITOR BODY LAYOUT ══ */
-.editor-body { flex:1;display:flex;overflow:hidden;position:relative; }
-.editor-surface { flex:1;background:#ECEEF4;position:relative;overflow:hidden; }
+/* ══ EDITOR LAYOUT ══ */
+.editor-body { flex:1; display:flex; overflow:hidden; position:relative; }
+.editor-surface { flex:1; background:#ECEEF4; position:relative; overflow:hidden; }
 
-/* ══ ARIA CHAT PANEL ══ */
-.aria-panel {
-  width: 290px; flex-shrink: 0;
-  background: #fff; border-left: 1px solid #E5E5EA;
-  display: flex; flex-direction: column;
-}
-.aria-panel-header { padding:12px 16px 10px;border-bottom:1px solid #F2F2F5;font-size:13px;font-weight:600;color:#0F0F1A; }
-.aria-msgs { flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px; }
-.msg-user { align-self:flex-end;background:#F3F0FF;color:#0F0F1A;border-radius:14px 14px 3px 14px;padding:9px 12px;font-size:13px;max-width:85%;line-height:1.5; }
-.msg-aria { font-size:13px;color:#333;line-height:1.6; }
-.aria-q {
-  background:#FAFAFA;border:1px solid #EBEBF0;border-radius:12px;padding:12px;margin-top:4px;
-}
-.aria-q-label { font-size:12px;font-weight:600;color:#0F0F1A;margin-bottom:2px; }
-.aria-q-sub { font-size:11px;color:#BBB;margin-bottom:10px; }
-.aria-opts { display:flex;flex-direction:column;gap:6px; }
-.aria-opt { display:flex;align-items:center;gap:8px;padding:8px 10px;border:1.5px solid #E8E8EF;border-radius:8px;font-size:12px;color:#333;cursor:pointer;transition:all 0.15s;background:#fff; }
-.aria-opt:hover { border-color:#6B46FF;background:#F8F5FF;color:#6B46FF; }
-.aria-opt.sel { border-color:#6B46FF;background:#F3EEFF;color:#6B46FF; }
-.aria-free { margin-top:7px;border:1.5px solid #E8E8EF;border-radius:8px;overflow:hidden; }
-.aria-free input { width:100%;border:none;outline:none;padding:8px 10px;font-family:inherit;font-size:12px;color:#333;background:#FAFAFA; }
-.aria-free input::placeholder { color:#CCC; }
-.aria-panel-footer { display:flex;align-items:center;justify-content:space-between;padding:10px 14px 12px;border-top:1px solid #F2F2F5; }
-.btn-skip { background:none;border:none;font-size:12px;color:#BBB;cursor:pointer; }
-.btn-next { background:#116DFF;color:#fff;border:none;border-radius:8px;padding:8px 18px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer; }
-.btn-next:hover { background:#0055DD; }
+/* ══ ARIA PANEL ══ */
+.aria-panel { width:280px; flex-shrink:0; background:#fff; border-left:1px solid #E8E8EF; display:flex; flex-direction:column; }
+.aria-panel-head { padding:12px 14px 10px; border-bottom:1px solid #F2F2F5; font-size:13px; font-weight:600; color:#0F0F1A; }
+.aria-msgs { flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px; }
+.msg-user { align-self:flex-end; background:#F3F0FF; color:#0F0F1A; border-radius:12px 12px 3px 12px; padding:8px 11px; font-size:12px; max-width:85%; line-height:1.5; }
+.msg-aria-t { font-size:12px; color:#444; line-height:1.6; }
+.aria-q { background:#FAFAFA; border:1px solid #EBEBF0; border-radius:11px; padding:11px; margin-top:2px; }
+.aria-q-lbl { font-size:12px; font-weight:600; color:#0F0F1A; margin-bottom:2px; }
+.aria-q-sub { font-size:11px; color:#BBB; margin-bottom:9px; }
+.aria-opts { display:flex; flex-direction:column; gap:5px; }
+.aria-opt { display:flex;align-items:center;gap:7px;padding:7px 10px;border:1.5px solid #E8E8EF;border-radius:8px;font-size:12px;color:#333;cursor:pointer;transition:all 0.15s;background:#fff; }
+.aria-opt:hover { border-color:#116DFF;background:#F0F5FF;color:#116DFF; }
+.aria-opt.sel { border-color:#116DFF;background:#EAF1FF;color:#116DFF; }
+.aria-panel-foot { display:flex;align-items:center;justify-content:space-between;padding:9px 12px 11px;border-top:1px solid #F2F2F5; }
+.btn-skip-sm { background:none;border:none;font-size:12px;color:#BBB;cursor:pointer; }
+.btn-next-sm { background:#116DFF;color:#fff;border:none;border-radius:8px;padding:7px 16px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer; }
+.btn-next-sm:hover { background:#0055DD; }
 
-/* ══ S1 PROMPT ══ */
-#s1 { background:#fff;align-items:center;justify-content:center; }
-.prompt-wrap { display:flex;flex-direction:column;align-items:center;gap:36px;width:100%;max-width:640px;padding:0 24px; }
-.prompt-eyebrow { font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#C0C0CC; }
-.prompt-title { font-family:'Wix Madefor Display',sans-serif;font-size:44px;font-weight:800;color:#0F0F1A;text-align:center;line-height:1.12;letter-spacing:-1.5px; }
-.prompt-title em { color:#6B46FF;font-style:normal; }
-.prompt-box { width:100%;background:#F7F7F9;border:1.5px solid #E8E8EF;border-radius:20px;padding:20px 20px 14px;transition:border-color 0.2s,box-shadow 0.2s; }
-.prompt-box:focus-within { border-color:#6B46FF;box-shadow:0 0 0 3px rgba(107,70,255,0.1); }
-.prompt-box textarea { width:100%;background:transparent;border:none;outline:none;resize:none;font-family:inherit;font-size:18px;color:#0F0F1A;line-height:1.5;min-height:70px; }
-.prompt-box textarea::placeholder { color:#C8C8D4; }
-.prompt-box-foot { display:flex;justify-content:flex-end;padding-top:12px;border-top:1px solid #EBEBF0;margin-top:10px; }
-.btn-gen { background:#6B46FF;color:#fff;border:none;border-radius:12px;padding:11px 26px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer; }
-.btn-gen:hover { background:#5836E8; }
+/* ══ S2 — LOADING TEMPLATES ON SURFACE ══ */
+.loading-surface {
+  position:absolute;inset:0;padding:24px 28px;
+  display:flex;flex-direction:column;gap:12px;overflow:hidden;
+}
+.loading-row {
+  display:flex;gap:12px;
+}
+.loading-card {
+  flex:1;border-radius:12px;overflow:hidden;
+  display:flex;flex-direction:column;
+  animation: card-pulse 2s ease-in-out infinite;
+}
+.loading-card:nth-child(2) { animation-delay:.25s; }
+.loading-card:nth-child(3) { animation-delay:.5s; }
+.loading-card-thumb { flex:1;min-height:0; }
+.loading-card-foot { height:32px;background:rgba(255,255,255,0.6);border-top:1px solid rgba(0,0,0,0.05);display:flex;align-items:center;padding:0 10px;gap:6px; }
+.loading-card-line { height:7px;border-radius:4px;background:rgba(0,0,0,0.1); }
+@keyframes card-pulse {
+  0%,100% { opacity:.55; }
+  50% { opacity:1; }
+}
+.loading-refresh {
+  position:absolute;bottom:18px;left:28px;
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:600;color:#116DFF;
+  background:rgba(255,255,255,0.85);
+  border:1px solid rgba(17,109,255,0.2);
+  border-radius:8px;padding:6px 12px;cursor:pointer;
+  backdrop-filter:blur(4px);
+}
+.loading-refresh:hover { background:#fff; }
 
-/* ══ GHOST BLUEPRINT (S2 background) ══ */
-.ghost-surface {
-  position: absolute; inset: 0;
-  padding: 28px 32px;
-  display: flex; flex-direction: column; gap: 0;
-  overflow: hidden;
-}
-.ghost-biz-name {
-  height: 36px; width: 200px;
-  background: rgba(255,255,255,0.18);
-  border-radius: 8px;
-  margin-bottom: 22px;
-  animation: ghost-pulse 2.4s ease-in-out infinite;
-}
-.ghost-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-.ghost-card {
-  background: rgba(255,255,255,0.07);
-  border: 1.5px solid rgba(255,255,255,0.12);
-  border-radius: 12px;
-  padding: 14px;
-  animation: ghost-pulse 2.4s ease-in-out infinite;
-}
-.ghost-card.gc2 { animation-delay: 0.3s; }
-.ghost-card.gc3 { animation-delay: 0.6s; }
-.ghost-card.gc4 { animation-delay: 0.9s; }
-
-.ghost-card-label {
-  height: 8px; width: 60px;
-  background: rgba(255,255,255,0.15);
-  border-radius: 4px; margin-bottom: 12px;
-}
-.ghost-card-body { display: flex; flex-direction: column; gap: 8px; }
-
-.ghost-palette { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.ghost-swatch {
-  height: 52px; border-radius: 7px;
-  background: rgba(255,255,255,0.1);
-}
-.ghost-swatch.gs1 { background: rgba(200,90,26,0.25); }
-.ghost-swatch.gs2 { background: rgba(212,196,74,0.2); }
-.ghost-swatch.gs3 { background: rgba(140,123,107,0.2); }
-.ghost-swatch.gs4 { background: rgba(122,140,126,0.2); }
-
-.ghost-font-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.ghost-font-aa {
-  height: 64px; border-radius: 7px;
-  background: rgba(255,255,255,0.08);
-}
-.ghost-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-.ghost-tag {
-  height: 20px; border-radius: 10px;
-  background: rgba(255,255,255,0.1);
-}
-.ghost-tag:nth-child(1) { width: 52px; }
-.ghost-tag:nth-child(2) { width: 64px; }
-.ghost-tag:nth-child(3) { width: 80px; }
-
-.ghost-page-row {
-  height: 28px; border-radius: 6px;
-  background: rgba(255,255,255,0.08);
-}
-.ghost-apps { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.ghost-app {
-  height: 32px; border-radius: 7px;
-  background: rgba(255,255,255,0.08);
-}
-
-@keyframes ghost-pulse {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
-}
-
-/* ══ S3 CHOOSE ON SURFACE ══ */
+/* ══ S3 — CHOOSE ON SURFACE ══ */
 .choose-surface {
-  position:absolute;inset:0;overflow-y:auto;
-  padding:28px 32px 40px;
-  display:flex;flex-direction:column;gap:0;
+  position:absolute;inset:0;padding:22px 24px 16px;
+  display:flex;flex-direction:column;overflow:hidden;
 }
 .choose-label {
   font-size:11px;font-weight:600;color:rgba(0,0,0,0.35);
-  letter-spacing:0.06em;text-transform:uppercase;
-  margin-bottom:16px;
+  letter-spacing:.06em;text-transform:uppercase;
+  margin-bottom:14px;flex-shrink:0;
 }
 .choose-options {
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-  margin-bottom:16px;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:10px;flex:1;min-height:0;
 }
-/* Blank canvas card */
+/* Blank canvas — attractive */
 .choose-blank {
-  border:2px dashed rgba(0,0,0,0.18);
-  border-radius:12px;
-  aspect-ratio:3/4;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:8px;cursor:pointer;
-  background:rgba(255,255,255,0.5);
-  transition:all 0.15s;
-  position:relative;
+  border-radius:12px;overflow:hidden;cursor:pointer;
+  position:relative;display:flex;flex-direction:column;
+  background:linear-gradient(140deg,#0D0D1E 0%,#1A0D3A 60%,#0D1A3A 100%);
+  border:2px solid transparent;transition:all 0.2s;
 }
-.choose-blank:hover { border-color:#116DFF;background:rgba(17,109,255,0.04); }
-.choose-blank.sel { border-color:#116DFF;border-style:solid;background:rgba(17,109,255,0.06); }
-.choose-blank-icon { font-size:24px;opacity:0.35; }
-.choose-blank-label { font-size:12px;font-weight:600;color:rgba(0,0,0,0.4); }
-.choose-blank-sub { font-size:11px;color:rgba(0,0,0,0.25);text-align:center;padding:0 8px; }
+.choose-blank:hover { border-color:#6B46FF;transform:translateY(-2px);box-shadow:0 8px 24px rgba(107,70,255,0.2); }
+.choose-blank.sel { border-color:#6B46FF;box-shadow:0 8px 24px rgba(107,70,255,0.25); }
+.choose-blank-inner { flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px; }
+.choose-blank-stars { font-size:22px;opacity:0.8; }
+.choose-blank-title { font-family:'Wix Madefor Display',sans-serif;font-size:13px;font-weight:800;color:#fff;text-align:center;line-height:1.2; }
+.choose-blank-sub { font-size:10px;color:rgba(255,255,255,0.45);text-align:center;line-height:1.4; }
+.choose-blank-tag { margin-top:4px;background:rgba(107,70,255,0.4);border:1px solid rgba(107,70,255,0.5);border-radius:6px;padding:3px 8px;font-size:10px;font-weight:600;color:#C4AAFF; }
+.choose-blank-foot { height:30px;background:rgba(255,255,255,0.04);border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center; }
+.choose-blank-foot span { font-size:10px;font-weight:600;color:rgba(255,255,255,0.3); }
 
 /* Template cards */
 .choose-tpl {
-  border:2px solid transparent;
-  border-radius:12px;
-  overflow:hidden;
-  cursor:pointer;
-  transition:all 0.15s;
-  background:#fff;
-  box-shadow:0 2px 12px rgba(0,0,0,0.08);
+  border:2px solid transparent;border-radius:12px;overflow:hidden;cursor:pointer;
+  transition:all 0.2s;background:#fff;
+  box-shadow:0 2px 10px rgba(0,0,0,0.07);
   display:flex;flex-direction:column;
 }
-.choose-tpl:hover { border-color:#116DFF;box-shadow:0 4px 20px rgba(17,109,255,0.15); transform:translateY(-2px); }
-.choose-tpl.sel { border-color:#116DFF;box-shadow:0 4px 20px rgba(17,109,255,0.2); }
-.tpl-thumb {
-  width:100%;aspect-ratio:3/4;
-  display:flex;flex-direction:column;
-  overflow:hidden;position:relative;
-}
-.tpl-thumb-nav {
-  height:20px;display:flex;align-items:center;
-  padding:0 8px;justify-content:space-between;
-}
-.tpl-thumb-logo { font-size:8px;font-weight:800; }
-.tpl-thumb-links { display:flex;gap:5px; }
-.tpl-thumb-links span { font-size:7px;opacity:0.5; }
-.tpl-thumb-hero {
-  flex:1;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:4px;
-  padding:8px;
-}
-.tpl-thumb-title { font-weight:800;text-align:center;line-height:1.2; }
-.tpl-thumb-sub { font-size:7px;opacity:0.5;text-align:center; }
-.tpl-thumb-btn { border-radius:4px;padding:3px 8px;font-size:7px;font-weight:700;margin-top:2px; }
-.tpl-thumb-bottom { height:24px;display:flex;align-items:center;gap:4px;padding:0 8px; }
-.tpl-thumb-pill { height:10px;border-radius:4px;background:rgba(255,255,255,0.15); }
-.tpl-info { padding:8px 10px;border-top:1px solid #F0F0F5; }
+.choose-tpl:hover { border-color:#116DFF;box-shadow:0 6px 20px rgba(17,109,255,0.14);transform:translateY(-2px); }
+.choose-tpl.sel { border-color:#116DFF;box-shadow:0 6px 20px rgba(17,109,255,0.18); }
+.tpl-thumb { flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden; }
+.tpl-nav { height:20px;display:flex;align-items:center;padding:0 8px;justify-content:space-between;flex-shrink:0; }
+.tpl-nav-logo { font-size:8px;font-weight:800; }
+.tpl-nav-links { display:flex;gap:6px; }
+.tpl-nav-links span { font-size:7px;opacity:0.45; }
+.tpl-hero { flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px; }
+.tpl-hero-title { font-weight:800;text-align:center;line-height:1.15; }
+.tpl-hero-sub { font-size:7px;opacity:0.45;text-align:center; }
+.tpl-hero-btn { border-radius:4px;padding:3px 8px;font-size:7px;font-weight:700;margin-top:3px; }
+.tpl-bottom { height:22px;display:flex;align-items:center;gap:4px;padding:0 8px;flex-shrink:0; }
+.tpl-pill { height:8px;border-radius:3px;background:rgba(255,255,255,0.15); }
+.tpl-info { padding:7px 9px;border-top:1px solid #F0F0F5;flex-shrink:0; }
 .tpl-info-name { font-size:11px;font-weight:600;color:#0F0F1A; }
 .tpl-info-cat { font-size:10px;color:#AAA; }
+.choose-bottom { flex-shrink:0;padding-top:12px;display:flex;align-items:center;justify-content:space-between; }
+.choose-more-btn { display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#116DFF;background:rgba(255,255,255,0.8);border:1.5px solid rgba(17,109,255,0.2);border-radius:8px;padding:6px 12px;cursor:pointer; }
+.choose-more-btn:hover { background:#fff;border-color:#116DFF; }
 
-.choose-more {
-  display:inline-flex;align-items:center;gap:6px;
-  font-size:12px;font-weight:600;color:#116DFF;
-  background:none;border:1.5px solid rgba(17,109,255,0.25);
-  border-radius:8px;padding:7px 14px;cursor:pointer;
-  transition:all 0.15s;align-self:flex-start;
-}
-.choose-more:hover { background:rgba(17,109,255,0.05);border-color:#116DFF; }
-
-/* ══ S4 BRAND BOOK ON SURFACE ══ */
-#s4 .editor-surface { background:#1C1C28; }
-.bb-surface-inner {
-  position:absolute;inset:0;overflow-y:auto;
-  padding:28px 32px 80px;
-  display:flex;flex-direction:column;gap:0;
-}
-.bb-biz-name {
-  font-family:'Wix Madefor Display',sans-serif;
-  font-size:38px;font-weight:800;color:#fff;
-  letter-spacing:-1.5px;line-height:1;
-  margin-bottom:22px;
-}
-.bb-section-row {
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:10px;
-}
-.bb-section-label { font-size:11px;font-weight:600;color:rgba(255,255,255,0.4);letter-spacing:0.04em; }
-.bb-section-num { font-size:11px;font-weight:600;color:rgba(255,255,255,0.18); }
-.bb-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:32px;position:relative; }
-
-.bb-card {
-  background:#272736;border-radius:12px;padding:16px;position:relative;overflow:visible;
-}
-.bb-card-label { font-size:10px;font-weight:600;color:rgba(255,255,255,0.3);margin-bottom:12px;letter-spacing:0.05em;text-transform:uppercase; }
-
-/* Palette */
-.palette-grid { display:grid;grid-template-columns:1fr 1fr;gap:6px; }
-.palette-swatch { height:60px;border-radius:8px;cursor:pointer;transition:transform 0.15s; }
-.palette-swatch:hover { transform:scale(1.03); }
-
-/* Font pack */
-.font-pack { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
-.font-item { background:#1C1C2A;border-radius:8px;padding:12px 10px; }
-.font-preview { font-size:42px;line-height:1;color:#fff;margin-bottom:4px; }
-.font-name { font-size:10px;color:rgba(255,255,255,0.3); }
-
-/* Visual profile */
-.vp-tags { display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06); }
-.vp-tag { padding:4px 10px;border-radius:16px;font-size:11px;font-weight:500;border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.55);cursor:pointer;transition:all 0.15s; }
-.vp-tag:hover { border-color:rgba(255,255,255,0.3);color:#fff; }
-
-/* Pages */
+/* ══ S4 — BRAND BOOK + CHAT ══ */
+#s4 .editor-surface { background:#1A1A28; }
+.bb-surface-inner { position:absolute;inset:0;overflow-y:auto;padding:24px 26px 80px;display:flex;flex-direction:column; }
+.bb-biz-name { font-family:'Wix Madefor Display',sans-serif;font-size:34px;font-weight:800;color:#fff;letter-spacing:-1.5px;line-height:1;margin-bottom:20px; }
+.bb-section-row { display:flex;align-items:center;justify-content:space-between;margin-bottom:9px; }
+.bb-sec-label { font-size:10px;font-weight:600;color:rgba(255,255,255,0.35);letter-spacing:.05em;text-transform:uppercase; }
+.bb-sec-num { font-size:10px;font-weight:600;color:rgba(255,255,255,0.15); }
+.bb-grid { display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:28px;position:relative; }
+.bb-card { background:#252535;border-radius:11px;padding:14px;position:relative;overflow:visible; }
+.bb-card-lbl { font-size:9px;font-weight:700;color:rgba(255,255,255,0.28);margin-bottom:11px;letter-spacing:.06em;text-transform:uppercase; }
+.palette-grid { display:grid;grid-template-columns:1fr 1fr;gap:5px; }
+.palette-swatch { height:52px;border-radius:7px;cursor:pointer;transition:transform .15s; }
+.palette-swatch:hover { transform:scale(1.04); }
+.font-pack { display:grid;grid-template-columns:1fr 1fr;gap:7px; }
+.font-item { background:#1C1C2A;border-radius:8px;padding:11px 10px; }
+.font-preview { font-size:38px;line-height:1;color:#fff;margin-bottom:3px; }
+.font-name { font-size:9px;color:rgba(255,255,255,0.28); }
+.vp-tags { display:flex;flex-wrap:wrap;gap:5px;margin-top:9px;padding-top:9px;border-top:1px solid rgba(255,255,255,0.05); }
+.vp-tag { padding:4px 9px;border-radius:14px;font-size:10px;font-weight:500;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);cursor:pointer; }
 .pages-list { display:flex;flex-direction:column;gap:5px; }
-.page-row { display:flex;align-items:center;gap:8px;padding:8px 10px;background:#1C1C2A;border-radius:8px;cursor:pointer;transition:background 0.15s; }
-.page-row:hover { background:#2E2E42; }
-.page-name { font-size:12px;font-weight:500;color:rgba(255,255,255,0.8);flex:1; }
-.page-type { font-size:10px;color:rgba(255,255,255,0.2); }
-
-/* Apps */
-.apps-grid { display:grid;grid-template-columns:1fr 1fr;gap:6px; }
-.app-chip { display:flex;align-items:center;gap:7px;padding:8px 10px;background:#1C1C2A;border-radius:8px;cursor:pointer;transition:background 0.15s; }
-.app-chip:hover { background:#2E2E42; }
+.page-row { display:flex;align-items:center;gap:7px;padding:7px 9px;background:#1C1C2A;border-radius:7px;cursor:pointer; }
+.page-row:hover { background:#2A2A3A; }
+.page-name { font-size:12px;font-weight:500;color:rgba(255,255,255,0.75);flex:1; }
+.page-type { font-size:9px;color:rgba(255,255,255,0.2); }
+.apps-grid { display:grid;grid-template-columns:1fr 1fr;gap:5px; }
+.app-chip { display:flex;align-items:center;gap:6px;padding:7px 9px;background:#1C1C2A;border-radius:7px;cursor:pointer; }
+.app-chip:hover { background:#2A2A3A; }
 .app-name { font-size:11px;font-weight:500;color:rgba(255,255,255,0.6); }
-
-/* Aria bubble */
-.aria-bubble {
-  position:absolute;bottom:-14px;left:16px;
-  background:#6B46FF;color:#fff;
-  border-radius:10px 10px 10px 2px;
-  padding:7px 10px;font-size:11px;line-height:1.4;
-  max-width:240px;
-  box-shadow:0 4px 16px rgba(107,70,255,0.4);
-  z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:5px;
-}
-.aria-bubble::before { content:'✦';font-size:8px;opacity:0.7;margin-right:2px; }
-.ab-btn {
-  display:inline-flex;align-items:center;
-  background:rgba(255,255,255,0.18);
-  border:1px solid rgba(255,255,255,0.2);
-  border-radius:6px;padding:2px 7px;font-size:10px;cursor:pointer;
-  transition:background 0.15s;white-space:nowrap;
-}
+.aria-bubble { position:absolute;bottom:-12px;left:14px;background:#6B46FF;color:#fff;border-radius:9px 9px 9px 2px;padding:6px 10px;font-size:10px;line-height:1.4;max-width:220px;box-shadow:0 4px 14px rgba(107,70,255,0.4);z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:4px; }
+.aria-bubble::before { content:'✦';font-size:7px;opacity:.7;margin-right:2px; }
+.ab-btn { display:inline-flex;align-items:center;background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.2);border-radius:5px;padding:2px 6px;font-size:9px;cursor:pointer;white-space:nowrap; }
 .ab-btn:hover { background:rgba(255,255,255,0.28); }
+/* S4 panel */
+#s4 .aria-panel { background:#1E1E2C;border-left:1px solid rgba(255,255,255,0.05); }
+#s4 .aria-panel-head { border-bottom:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.85); }
+.dark-msg { background:#2A2A3C;border-radius:9px;padding:9px 11px;font-size:11px;color:rgba(255,255,255,0.62);line-height:1.6; }
+.dark-msg strong { color:#A78BFF; }
+.dark-msg-user { align-self:flex-end;background:#6B46FF;color:#fff;border-radius:9px 9px 2px 9px;padding:7px 10px;font-size:11px;max-width:85%;line-height:1.5; }
+.dark-input-row { border-top:1px solid rgba(255,255,255,0.05);padding:9px 11px 11px;display:flex;flex-direction:column;gap:7px; }
+.dark-input-row input { width:100%;border:1.5px solid rgba(255,255,255,0.09);border-radius:8px;padding:8px 10px;font-family:inherit;font-size:12px;color:#fff;outline:none;background:rgba(255,255,255,0.05); }
+.dark-input-row input:focus { border-color:#6B46FF; }
+.dark-input-row input::placeholder { color:rgba(255,255,255,0.2); }
+.btn-generate-site { width:100%;background:#116DFF;color:#fff;border:none;border-radius:8px;padding:10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer; }
+.btn-generate-site:hover { background:#0055DD; }
 
-/* S4 Aria panel */
-#s4 .aria-panel { background:#1E1E2C;border-left:1px solid rgba(255,255,255,0.06); }
-#s4 .aria-panel-header { border-bottom:1px solid rgba(255,255,255,0.06);padding:12px 14px 10px; }
-.aria-dark-send { width:30px;height:30px;background:#6B46FF;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
-.aria-dark-send:hover { background:#5836E8; }
-.aria-dark-send svg { width:12px;height:12px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
-
-/* ══ S5 SITE GENERATED ══ */
-#s5 .editor-surface { background:#E8EAF0;display:flex;align-items:center;justify-content:center; }
-.site-canvas {
-  width:72%;max-width:720px;height:88%;
-  background:#fff;border-radius:2px;
-  box-shadow:0 8px 40px rgba(0,0,0,0.15);
-  overflow:hidden;display:flex;flex-direction:column;
-}
-.site-nav { display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid #F0F0F0; }
-.site-nav-logo { font-family:'Wix Madefor Display',sans-serif;font-size:18px;font-weight:800;color:#1A1A2E; }
-.site-nav-links { display:flex;gap:20px; }
-.site-nav-links span { font-size:13px;color:#666; }
-.site-nav-cta { background:#1A1A2E;color:#fff;border-radius:7px;padding:6px 16px;font-size:12px;font-weight:600; }
-.site-hero { flex:1;background:linear-gradient(160deg,#1A1A2E 0%,#3D2A00 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:32px; }
-.site-hero-title { font-family:'Wix Madefor Display',sans-serif;font-size:36px;font-weight:800;color:#fff;text-align:center;line-height:1.15; }
-.site-hero-sub { font-size:14px;color:rgba(255,255,255,0.55);text-align:center; }
-.site-hero-btn { background:#E8C97E;color:#1A1A2E;border-radius:9px;padding:11px 24px;font-size:14px;font-weight:700;margin-top:6px; }
-.site-products { display:flex;gap:12px;padding:20px 28px;border-top:1px solid #F5F5F5; }
-.site-product { flex:1;background:#F8F6F2;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#888; }
-
-#s5 .aria-panel-header span { color:#0F0F1A; display:block; }
-#s5 .aria-panel-header small { font-size:12px;color:#AAA;font-weight:400; }
-.s5-msgs .msg-aria { font-size:14px;color:#333;line-height:1.6; }
-.s5-msgs .msg-aria strong { color:#6B46FF; }
-.s5-generate-btn {
-  margin:0 16px 16px;
-  background:#6B46FF;color:#fff;border:none;border-radius:12px;
-  padding:14px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;
-  width:calc(100% - 32px);
-  transition:background 0.15s;
-}
-.s5-generate-btn:hover { background:#5836E8; }
+/* ══ S5 — SITE LIVE ══ */
+#s5 .editor-surface { display:flex;align-items:center;justify-content:center;background:#ECEEF4; }
+.site-canvas { width:70%;max-width:680px;height:86%;background:#fff;box-shadow:0 8px 40px rgba(0,0,0,0.13);display:flex;flex-direction:column;overflow:hidden; }
+.site-nav { display:flex;align-items:center;justify-content:space-between;padding:12px 22px;border-bottom:1px solid #F0F0F0;flex-shrink:0; }
+.site-nav-logo { font-family:'Wix Madefor Display',sans-serif;font-size:16px;font-weight:800;color:#1A1A2E; }
+.site-nav-links { display:flex;gap:18px; }
+.site-nav-links span { font-size:12px;color:#666; }
+.site-nav-cta { background:#1A1A2E;color:#fff;border-radius:7px;padding:6px 14px;font-size:11px;font-weight:600; }
+.site-hero { flex:1;background:linear-gradient(155deg,#1A1A2E 0%,#3D2A00 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:28px; }
+.site-hero-title { font-family:'Wix Madefor Display',sans-serif;font-size:32px;font-weight:800;color:#fff;text-align:center;line-height:1.15; }
+.site-hero-sub { font-size:13px;color:rgba(255,255,255,0.5);text-align:center; }
+.site-hero-btn { background:#E8C97E;color:#1A1A2E;border-radius:8px;padding:10px 22px;font-size:13px;font-weight:700;margin-top:4px; }
+.site-products { display:flex;gap:10px;padding:16px 22px;border-top:1px solid #F5F5F5;flex-shrink:0; }
+.site-product { flex:1;background:#F8F6F2;border-radius:9px;height:70px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#888; }
+/* S5 panel */
+.s5-notice { background:#F0F5FF;border-radius:10px;padding:11px 12px;font-size:12px;line-height:1.5;color:#0F0F1A; }
+.s5-notice strong { color:#116DFF; }
+.s5-domain-card { background:#F7F7FA;border-radius:10px;padding:12px; }
+.s5-domain-title { font-size:12px;font-weight:700;color:#0F0F1A;margin-bottom:4px; }
+.s5-domain-sub { font-size:11px;color:#888;margin-bottom:10px;line-height:1.4; }
+.s5-domain-btn { width:100%;background:#116DFF;color:#fff;border:none;border-radius:8px;padding:9px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:5px; }
+.s5-domain-btn:hover { background:#0055DD; }
+.s5-later-btn { width:100%;background:none;border:none;font-family:inherit;font-size:11px;color:#AAA;cursor:pointer;padding:4px; }
+.s5-blueprint-link { display:flex;align-items:center;gap:6px;font-size:11px;color:#116DFF;cursor:pointer;padding:8px 0;border-top:1px solid #F0F0F5;margin-top:4px; }
+.s5-blueprint-link:hover { opacity:0.7; }
 
 /* ══ CONCEPT NAV ══ */
-#concept-nav {
-  position:fixed;bottom:24px;right:24px;
-  display:flex;align-items:center;gap:8px;
-  background:rgba(255,255,255,0.95);
-  border:1px solid rgba(0,0,0,0.1);
-  border-radius:40px;padding:8px 12px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.12);
-  z-index:9999;backdrop-filter:blur(8px);
-}
-#concept-nav a { text-decoration:none;font-size:12px;font-weight:600;color:#666;padding:4px 8px;border-radius:20px;transition:all 0.15s;font-family:inherit; }
+#concept-nav { position:fixed;bottom:20px;right:20px;display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.95);border:1px solid rgba(0,0,0,0.1);border-radius:40px;padding:7px 11px;box-shadow:0 4px 18px rgba(0,0,0,0.1);z-index:9999;backdrop-filter:blur(8px); }
+#concept-nav a { text-decoration:none;font-size:12px;font-weight:600;color:#666;padding:4px 8px;border-radius:16px;transition:all .15s;font-family:inherit; }
 #concept-nav a:hover { background:#F0F3FF;color:#2F5BFF; }
-#concept-nav .ndiv { width:1px;height:16px;background:rgba(0,0,0,0.1); }
+#concept-nav .ndiv { width:1px;height:14px;background:rgba(0,0,0,0.1); }
 
-/* screen dots */
-.step-dots { position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:100; }
-.step-dot { width:6px;height:6px;border-radius:50%;background:rgba(0,0,0,0.2);transition:all 0.2s;cursor:pointer; }
-.step-dot.active { background:#6B46FF;width:18px;border-radius:3px; }
+.step-dots { position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:100; }
+.step-dot { width:5px;height:5px;border-radius:50%;background:rgba(0,0,0,0.2);transition:all .2s;cursor:pointer; }
+.step-dot.active { background:#116DFF;width:16px;border-radius:3px; }
 </style>
 </head>
 <body>
 
-<!-- ══ S1 PROMPT ══ -->
+<!-- ══ S1 — PROMPT ══ -->
 <div class="screen active" id="s1">
-  <div style="flex:1;display:flex;align-items:center;justify-content:center;">
-    <div class="prompt-wrap">
-      <div class="prompt-eyebrow">Wix · Aria</div>
-      <h1 class="prompt-title">Tell Aria about<br><em>your business</em></h1>
-      <div class="prompt-box">
-        <textarea placeholder="e.g. I run a small bakery in Tel Aviv specializing in sourdough and seasonal pastries…" rows="3"></textarea>
-        <div class="prompt-box-foot">
-          <button class="btn-gen" onclick="goTo(2)">Generate site →</button>
+  <div class="s1-top">
+    <span class="s1-logo">wix</span>
+    <div class="s1-right">
+      <div class="s1-avatar">N</div>
+      <button class="s1-upgrade">Upgrade</button>
+    </div>
+  </div>
+  <div class="s1-body">
+    <div class="s1-aria-intro">
+      <div class="s1-aria-avatar">A</div>
+      <div class="s1-aria-text">
+        <strong>Hi! I'm Aria, your friendly design assistant.</strong><br>
+        Tell me your site's <em>name</em>, what kind of <em>business it is</em>, and what <em>makes it unique.</em>
+      </div>
+    </div>
+    <div class="s1-input-wrap">
+      <div class="s1-textarea-box">
+        <textarea placeholder="Describe the site you want to build…" rows="4"></textarea>
+        <div class="s1-textarea-foot">
+          <button class="s1-gen-btn" onclick="goTo(2)">
+            Generate
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 12V2M2 7l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
       </div>
     </div>
+    <div class="s1-examples">
+      <div class="s1-examples-label">Try an example prompt</div>
+      <div class="s1-chips">
+        <span class="s1-chip">Fashion store</span>
+        <span class="s1-chip">Online course</span>
+        <span class="s1-chip">Wellness service</span>
+        <span class="s1-chip">Consulting website</span>
+        <span class="s1-chip">Community hub</span>
+        <span class="s1-chip">Creative portfolio</span>
+        <span class="s1-chip more">↻ More ideas</span>
+      </div>
+    </div>
   </div>
+  <div class="s1-footer">AI can make mistakes. Double check the results.</div>
 </div>
 
-<!-- ══ S2 EDITOR + ONBOARDING ══ -->
+<!-- ══ S2 — ONBOARDING + LOADING TEMPLATES ══ -->
 <div class="screen" id="s2">
   <div class="editor-chrome">
     <span class="chrome-logo">wix</span>
-    <div class="chrome-avatar">G</div>
+    <div class="chrome-avatar">N</div>
     <div class="chrome-div"></div>
     <button class="chrome-btn">Goody <span class="chrome-caret"></span></button>
     <button class="chrome-btn">Brand <span class="chrome-caret"></span></button>
@@ -405,88 +329,54 @@ body { font-family: 'Wix Madefor Text', sans-serif; overflow: hidden; height: 10
   </div>
   <div class="editor-body">
     <div class="editor-surface">
-      <!-- Ghost blueprint squares loading in background -->
-      <div class="ghost-surface">
-        <div class="ghost-biz-name"></div>
-        <div class="ghost-grid">
-          <div class="ghost-card gc1">
-            <div class="ghost-card-label"></div>
-            <div class="ghost-card-body">
-              <div class="ghost-palette">
-                <div class="ghost-swatch gs1"></div>
-                <div class="ghost-swatch gs2"></div>
-                <div class="ghost-swatch gs3"></div>
-                <div class="ghost-swatch gs4"></div>
-              </div>
-            </div>
+      <!-- Loading template skeletons -->
+      <div class="loading-surface">
+        <div class="loading-row" style="flex:1;">
+          <div class="loading-card" style="background:rgba(180,180,195,0.25);">
+            <div class="loading-card-thumb" style="background:rgba(180,180,195,0.3);"></div>
+            <div class="loading-card-foot"><div class="loading-card-line" style="width:40%;"></div><div class="loading-card-line" style="width:28%;"></div></div>
           </div>
-          <div class="ghost-card gc2">
-            <div class="ghost-card-label"></div>
-            <div class="ghost-card-body">
-              <div class="ghost-font-row">
-                <div class="ghost-font-aa"></div>
-                <div class="ghost-font-aa"></div>
-              </div>
-              <div class="ghost-tags">
-                <div class="ghost-tag"></div>
-                <div class="ghost-tag"></div>
-                <div class="ghost-tag"></div>
-              </div>
-            </div>
+          <div class="loading-card" style="background:rgba(180,180,195,0.2);">
+            <div class="loading-card-thumb" style="background:rgba(180,180,195,0.25);"></div>
+            <div class="loading-card-foot"><div class="loading-card-line" style="width:44%;"></div><div class="loading-card-line" style="width:30%;"></div></div>
           </div>
-          <div class="ghost-card gc3">
-            <div class="ghost-card-label"></div>
-            <div class="ghost-card-body">
-              <div class="ghost-page-row"></div>
-              <div class="ghost-page-row"></div>
-              <div class="ghost-page-row"></div>
-              <div class="ghost-page-row"></div>
-            </div>
-          </div>
-          <div class="ghost-card gc4">
-            <div class="ghost-card-label"></div>
-            <div class="ghost-card-body">
-              <div class="ghost-apps">
-                <div class="ghost-app"></div>
-                <div class="ghost-app"></div>
-                <div class="ghost-app"></div>
-                <div class="ghost-app"></div>
-              </div>
-            </div>
+          <div class="loading-card" style="background:rgba(180,180,195,0.18);">
+            <div class="loading-card-thumb" style="background:rgba(180,180,195,0.22);"></div>
+            <div class="loading-card-foot"><div class="loading-card-line" style="width:36%;"></div><div class="loading-card-line" style="width:24%;"></div></div>
           </div>
         </div>
       </div>
+      <button class="loading-refresh">↻ Refresh options</button>
     </div>
     <div class="aria-panel">
-      <div class="aria-panel-header">Ask Aria</div>
+      <div class="aria-panel-head">Ask Aria</div>
       <div class="aria-msgs">
         <div class="msg-user">I need a site for my bakery</div>
-        <div class="msg-aria">Love it — let me get to know your business so we build something that's really yours.</div>
+        <div class="msg-aria-t">Love it — a few quick questions so I can get this just right.</div>
         <div class="aria-q">
-          <div class="aria-q-label">What's your bakery's vibe?</div>
-          <div class="aria-q-sub">Help Aria nail your aesthetic</div>
+          <div class="aria-q-lbl">What's your bakery's vibe?</div>
+          <div class="aria-q-sub">Helps Aria nail your look</div>
           <div class="aria-opts" id="q1">
             <div class="aria-opt" onclick="sel(this,'q1')">🌿 Wholesome & natural</div>
             <div class="aria-opt" onclick="sel(this,'q1')">✨ Premium & elegant</div>
             <div class="aria-opt" onclick="sel(this,'q1')">🎨 Playful & colorful</div>
             <div class="aria-opt" onclick="sel(this,'q1')">🏠 Cozy & neighborhood</div>
           </div>
-          <div class="aria-free"><input type="text" placeholder="Or describe in your own words…"></div>
         </div>
       </div>
-      <div class="aria-panel-footer">
-        <button class="btn-skip">Skip</button>
-        <button class="btn-next" onclick="goTo(3)">Next →</button>
+      <div class="aria-panel-foot">
+        <button class="btn-skip-sm">Skip</button>
+        <button class="btn-next-sm" onclick="goTo(3)">Next →</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══ S3 CHOOSE ON SURFACE ══ -->
+<!-- ══ S3 — CHOOSE: BLANK OR TEMPLATE ══ -->
 <div class="screen" id="s3">
   <div class="editor-chrome">
     <span class="chrome-logo">wix</span>
-    <div class="chrome-avatar">G</div>
+    <div class="chrome-avatar">N</div>
     <div class="chrome-div"></div>
     <button class="chrome-btn">Goody <span class="chrome-caret"></span></button>
     <button class="chrome-btn">Brand <span class="chrome-caret"></span></button>
@@ -504,111 +394,72 @@ body { font-family: 'Wix Madefor Text', sans-serif; overflow: hidden; height: 10
         <div class="choose-options">
 
           <!-- Blank canvas -->
-          <div class="choose-blank sel" id="cho-blank" onclick="selChoose('cho-blank');goTo(4)">
-            <div class="choose-blank-icon">＋</div>
-            <div class="choose-blank-label">Blank canvas</div>
-            <div class="choose-blank-sub">Build with Aria from scratch</div>
+          <div class="choose-blank" id="cho-blank" onclick="selChoose('cho-blank');goTo(4)">
+            <div class="choose-blank-inner">
+              <div class="choose-blank-stars">✦</div>
+              <div class="choose-blank-title">Design with<br>Aria</div>
+              <div class="choose-blank-sub">Build a custom site from scratch, tailored to your brand</div>
+              <div class="choose-blank-tag">Taylor Made</div>
+            </div>
+            <div class="choose-blank-foot"><span>Blank canvas →</span></div>
           </div>
 
           <!-- Template 1 -->
-          <div class="choose-tpl" id="cho-t1" onclick="selChoose('cho-t1');goTo(4)">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1A1A2E,#3D2A00);">
-              <div class="tpl-thumb-nav" style="color:#fff;">
-                <span class="tpl-thumb-logo">Goody</span>
-                <div class="tpl-thumb-links"><span>Menu</span><span>Story</span></div>
-              </div>
-              <div class="tpl-thumb-hero">
-                <div class="tpl-thumb-title" style="font-size:11px;color:#fff;">Baked with love</div>
-                <div class="tpl-thumb-sub">Sourdough · Tel Aviv</div>
-                <div class="tpl-thumb-btn" style="background:#E8C97E;color:#1A1A2E;">Order →</div>
-              </div>
-              <div class="tpl-thumb-bottom">
-                <div class="tpl-thumb-pill" style="width:36px;"></div>
-                <div class="tpl-thumb-pill" style="width:28px;"></div>
-                <div class="tpl-thumb-pill" style="width:44px;"></div>
-              </div>
+          <div class="choose-tpl" id="cho-t1" onclick="selChoose('cho-t1');goTo(5)">
+            <div class="tpl-thumb" style="background:linear-gradient(155deg,#1A1A2E,#3D2A00);">
+              <div class="tpl-nav" style="color:#fff;"><span class="tpl-nav-logo">Goody</span><div class="tpl-nav-links"><span>Menu</span><span>Story</span></div></div>
+              <div class="tpl-hero"><div class="tpl-hero-title" style="font-size:10px;color:#fff;">Baked with love</div><div class="tpl-hero-sub">Sourdough · Tel Aviv</div><div class="tpl-hero-btn" style="background:#E8C97E;color:#1A1A2E;">Order →</div></div>
+              <div class="tpl-bottom"><div class="tpl-pill" style="width:32px;"></div><div class="tpl-pill" style="width:24px;"></div><div class="tpl-pill" style="width:40px;"></div></div>
             </div>
-            <div class="tpl-info">
-              <div class="tpl-info-name">Artisan Dark</div>
-              <div class="tpl-info-cat">Bakery · Café</div>
-            </div>
+            <div class="tpl-info"><div class="tpl-info-name">Artisan Dark</div><div class="tpl-info-cat">Bakery · Café</div></div>
           </div>
 
           <!-- Template 2 -->
-          <div class="choose-tpl" id="cho-t2" onclick="selChoose('cho-t2');goTo(4)">
+          <div class="choose-tpl" id="cho-t2" onclick="selChoose('cho-t2');goTo(5)">
             <div class="tpl-thumb" style="background:#F5F0E8;">
-              <div class="tpl-thumb-nav" style="color:#1A1A2E;">
-                <span class="tpl-thumb-logo" style="color:#1A1A2E;">Goody</span>
-                <div class="tpl-thumb-links"><span style="color:#555;">Menu</span><span style="color:#555;">About</span></div>
-              </div>
-              <div class="tpl-thumb-hero">
-                <div class="tpl-thumb-title" style="font-size:10px;color:#1A1A2E;">Fresh Every Morning</div>
-                <div class="tpl-thumb-sub" style="color:#888;">Seasonal pastries</div>
-                <div class="tpl-thumb-btn" style="background:#1A1A2E;color:#fff;">Explore →</div>
-              </div>
-              <div class="tpl-thumb-bottom" style="background:rgba(0,0,0,0.04);">
-                <div class="tpl-thumb-pill" style="width:36px;background:rgba(0,0,0,0.12);"></div>
-                <div class="tpl-thumb-pill" style="width:28px;background:rgba(0,0,0,0.12);"></div>
-                <div class="tpl-thumb-pill" style="width:44px;background:rgba(0,0,0,0.12);"></div>
-              </div>
+              <div class="tpl-nav" style="color:#1A1A2E;"><span class="tpl-nav-logo" style="color:#1A1A2E;">Goody</span><div class="tpl-nav-links"><span style="color:#666;">Menu</span><span style="color:#666;">About</span></div></div>
+              <div class="tpl-hero"><div class="tpl-hero-title" style="font-size:9px;color:#1A1A2E;">Fresh Every Morning</div><div class="tpl-hero-sub" style="color:#888;">Seasonal pastries</div><div class="tpl-hero-btn" style="background:#1A1A2E;color:#fff;">Explore →</div></div>
+              <div class="tpl-bottom" style="background:rgba(0,0,0,0.04);"><div class="tpl-pill" style="width:32px;background:rgba(0,0,0,0.1);"></div><div class="tpl-pill" style="width:24px;background:rgba(0,0,0,0.1);"></div></div>
             </div>
-            <div class="tpl-info">
-              <div class="tpl-info-name">Natural Light</div>
-              <div class="tpl-info-cat">Bakery · Food</div>
-            </div>
+            <div class="tpl-info"><div class="tpl-info-name">Natural Light</div><div class="tpl-info-cat">Bakery · Food</div></div>
           </div>
 
           <!-- Template 3 -->
-          <div class="choose-tpl" id="cho-t3" onclick="selChoose('cho-t3');goTo(4)">
+          <div class="choose-tpl" id="cho-t3" onclick="selChoose('cho-t3');goTo(5)">
             <div class="tpl-thumb" style="background:#2D1B4E;">
-              <div class="tpl-thumb-nav" style="color:#fff;">
-                <span class="tpl-thumb-logo">Goody</span>
-                <div class="tpl-thumb-links"><span>Shop</span><span>Story</span></div>
-              </div>
-              <div class="tpl-thumb-hero">
-                <div class="tpl-thumb-title" style="font-size:10px;color:#fff;">Crafted Daily</div>
-                <div class="tpl-thumb-sub">Premium · Minimal</div>
-                <div class="tpl-thumb-btn" style="background:#C8A2E8;color:#2D1B4E;">Discover →</div>
-              </div>
-              <div class="tpl-thumb-bottom">
-                <div class="tpl-thumb-pill" style="width:36px;"></div>
-                <div class="tpl-thumb-pill" style="width:28px;"></div>
-                <div class="tpl-thumb-pill" style="width:44px;"></div>
-              </div>
+              <div class="tpl-nav" style="color:#fff;"><span class="tpl-nav-logo">Goody</span><div class="tpl-nav-links"><span>Shop</span><span>Story</span></div></div>
+              <div class="tpl-hero"><div class="tpl-hero-title" style="font-size:9px;color:#fff;">Crafted Daily</div><div class="tpl-hero-sub">Premium · Minimal</div><div class="tpl-hero-btn" style="background:#C8A2E8;color:#2D1B4E;">Discover →</div></div>
+              <div class="tpl-bottom"><div class="tpl-pill" style="width:32px;"></div><div class="tpl-pill" style="width:24px;"></div></div>
             </div>
-            <div class="tpl-info">
-              <div class="tpl-info-name">Premium Dark</div>
-              <div class="tpl-info-cat">Bakery · Boutique</div>
-            </div>
+            <div class="tpl-info"><div class="tpl-info-name">Premium Dark</div><div class="tpl-info-cat">Bakery · Boutique</div></div>
           </div>
 
         </div>
-        <button class="choose-more">See more templates →</button>
-      </div>
-    </div>
-
-    <!-- Aria panel -->
-    <div class="aria-panel">
-      <div class="aria-panel-header">Ask Aria</div>
-      <div class="aria-msgs">
-        <div class="msg-aria">I've learned about your bakery. Pick a starting point — or build from scratch with me.</div>
-        <div class="msg-aria" style="background:#F7F7FA;border-radius:10px;padding:10px 12px;font-size:12px;color:#555;">
-          💡 All 3 templates are already customized with your brand name, colors and content.
+        <div class="choose-bottom">
+          <button class="choose-more-btn">↻ See more templates</button>
         </div>
       </div>
-      <div class="aria-panel-footer">
-        <button class="btn-skip" onclick="goTo(2)">← Back</button>
-        <button class="btn-next" onclick="goTo(4)">Continue →</button>
+    </div>
+    <div class="aria-panel">
+      <div class="aria-panel-head">Ask Aria</div>
+      <div class="aria-msgs">
+        <div class="msg-aria-t">I found 3 templates that match your bakery. Or start from a blank canvas and we'll design together.</div>
+        <div style="background:#F0F5FF;border-radius:9px;padding:9px 10px;font-size:11px;color:#444;line-height:1.5;">
+          💡 Templates are already customized with your brand name and content.
+        </div>
+      </div>
+      <div class="aria-panel-foot">
+        <button class="btn-skip-sm" onclick="goTo(2)">← Back</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══ S4 BRAND BOOK ON SURFACE + CHAT ══ -->
+<!-- ══ S4 — BRAND BOOK + CHAT (Taylor Made) ══ -->
 <div class="screen" id="s4">
   <div class="editor-chrome">
     <span class="chrome-logo">wix</span>
-    <div class="chrome-avatar">G</div>
+    <div class="chrome-avatar">N</div>
     <div class="chrome-div"></div>
     <button class="chrome-btn">Goody <span class="chrome-caret"></span></button>
     <button class="chrome-btn">Brand <span class="chrome-caret"></span></button>
@@ -620,45 +471,22 @@ body { font-family: 'Wix Madefor Text', sans-serif; overflow: hidden; height: 10
     </div>
   </div>
   <div class="editor-body">
-    <!-- Dark surface with brand book cards -->
     <div class="editor-surface">
       <div class="bb-surface-inner">
-
         <div class="bb-biz-name">Goody Bakery</div>
-
-        <!-- Brand section -->
-        <div class="bb-section-row">
-          <span class="bb-section-label">Brand</span>
-          <span class="bb-section-num">03</span>
-        </div>
+        <div class="bb-section-row"><span class="bb-sec-label">Brand</span><span class="bb-sec-num">03</span></div>
         <div class="bb-grid">
-          <!-- Font pack -->
           <div class="bb-card">
-            <div class="bb-card-label">Font pack</div>
+            <div class="bb-card-lbl">Font pack</div>
             <div class="font-pack">
-              <div class="font-item">
-                <div class="font-preview" style="font-family:'Wix Madefor Display';">Aa</div>
-                <div class="font-name">Wix Madefor Display</div>
-              </div>
-              <div class="font-item">
-                <div class="font-preview" style="font-style:italic;">Aa</div>
-                <div class="font-name">Wix Madefor Text</div>
-              </div>
+              <div class="font-item"><div class="font-preview" style="font-family:'Wix Madefor Display';">Aa</div><div class="font-name">Wix Madefor Display</div></div>
+              <div class="font-item"><div class="font-preview" style="font-style:italic;">Aa</div><div class="font-name">Wix Madefor Text</div></div>
             </div>
-            <div class="vp-tags">
-              <span class="vp-tag">Warm</span>
-              <span class="vp-tag">Artisan</span>
-              <span class="vp-tag">Approachable</span>
-            </div>
-            <div class="aria-bubble">
-              Madefor for that warm, crafted feel.
-              <span class="ab-btn">✓ Keep</span>
-              <span class="ab-btn">Try others</span>
-            </div>
+            <div class="vp-tags"><span class="vp-tag">Warm</span><span class="vp-tag">Artisan</span><span class="vp-tag">Approachable</span></div>
+            <div class="aria-bubble">Madefor — warm, crafted feel.<span class="ab-btn">✓ Keep</span><span class="ab-btn">Change</span></div>
           </div>
-          <!-- Color palette -->
           <div class="bb-card">
-            <div class="bb-card-label">Color palette</div>
+            <div class="bb-card-lbl">Color palette</div>
             <div class="palette-grid">
               <div class="palette-swatch" style="background:#C85A1A;"></div>
               <div class="palette-swatch" style="background:#D4C44A;"></div>
@@ -667,98 +495,59 @@ body { font-family: 'Wix Madefor Text', sans-serif; overflow: hidden; height: 10
               <div class="palette-swatch" style="background:#F5F0E8;"></div>
               <div class="palette-swatch" style="background:#E8E0D0;"></div>
             </div>
-            <div class="aria-bubble" style="left:auto;right:22px;">
-              Earthy & warm — natural tones for a bakery.
-              <span class="ab-btn">✓ Love it</span>
-              <span class="ab-btn">Change</span>
-            </div>
+            <div class="aria-bubble" style="left:auto;right:14px;">Earthy tones for a bakery.<span class="ab-btn">✓ Love it</span><span class="ab-btn">Change</span></div>
           </div>
         </div>
-
-        <!-- Site section -->
-        <div class="bb-section-row" style="margin-top:12px;">
-          <span class="bb-section-label">Site</span>
-          <span class="bb-section-num">04</span>
-        </div>
+        <div class="bb-section-row" style="margin-top:6px;"><span class="bb-sec-label">Site</span><span class="bb-sec-num">04</span></div>
         <div class="bb-grid">
-          <!-- Pages -->
           <div class="bb-card">
-            <div class="bb-card-label">Site structure</div>
+            <div class="bb-card-lbl">Site structure</div>
             <div class="pages-list">
               <div class="page-row"><span>🏠</span><span class="page-name">Home</span><span class="page-type">Main</span></div>
               <div class="page-row"><span>🍞</span><span class="page-name">Menu</span><span class="page-type">Catalog</span></div>
               <div class="page-row"><span>📖</span><span class="page-name">Our Story</span><span class="page-type">About</span></div>
               <div class="page-row"><span>📍</span><span class="page-name">Find Us</span><span class="page-type">Contact</span></div>
             </div>
-            <div class="aria-bubble">
-              4 pages — tight and focused. Add a shop?
-              <span class="ab-btn">Add shop</span>
-              <span class="ab-btn">Looks right</span>
-            </div>
+            <div class="aria-bubble">4 pages — tight and focused.<span class="ab-btn">Add shop</span><span class="ab-btn">Looks right</span></div>
           </div>
-          <!-- Apps & Goals -->
           <div class="bb-card">
-            <div class="bb-card-label">Apps & goals</div>
+            <div class="bb-card-lbl">Apps & goals</div>
             <div class="apps-grid">
               <div class="app-chip"><span>📅</span><span class="app-name">Bookings</span></div>
               <div class="app-chip"><span>📷</span><span class="app-name">Gallery</span></div>
               <div class="app-chip"><span>📝</span><span class="app-name">Forms</span></div>
               <div class="app-chip"><span>⭐</span><span class="app-name">Reviews</span></div>
             </div>
-            <div class="vp-tags" style="margin-top:12px;padding-top:12px;">
+            <div class="vp-tags" style="margin-top:9px;padding-top:9px;">
               <span class="vp-tag" style="border-color:rgba(232,200,126,0.3);color:#E8C97E;">📈 Grow orders</span>
-              <span class="vp-tag" style="border-color:rgba(52,211,153,0.3);color:#34D399;">🤝 Build loyalty</span>
+              <span class="vp-tag" style="border-color:rgba(52,211,153,0.3);color:#34D399;">🤝 Loyalty</span>
             </div>
-            <div class="aria-bubble" style="left:auto;right:22px;">
-              Added Bookings for pre-orders. OK?
-              <span class="ab-btn">✓ Yes</span>
-              <span class="ab-btn">Change</span>
-            </div>
+            <div class="aria-bubble" style="left:auto;right:14px;">Added Bookings for pre-orders.<span class="ab-btn">✓ Yes</span><span class="ab-btn">Change</span></div>
           </div>
         </div>
-
       </div>
     </div>
-
-    <!-- Aria chat panel — dark -->
     <div class="aria-panel">
-      <div class="aria-panel-header">
-        <span style="display:block;font-size:13px;font-weight:600;color:rgba(255,255,255,0.85);">Ask Aria</span>
-        <span style="font-size:11px;color:rgba(255,255,255,0.3);">Edit anything on your brand book</span>
+      <div class="aria-panel-head">Ask Aria</div>
+      <div class="aria-msgs">
+        <div class="dark-msg">Here's your <strong>brand book</strong> — the foundation I'll build from. Everything is editable.</div>
+        <div class="dark-msg">I chose <strong>earthy warm tones</strong> and Wix Madefor. Happy with the direction?</div>
+        <div class="dark-msg-user">Can you make the palette more minimal?</div>
+        <div class="dark-msg">Done — 3 core colors: dark, warm gold, off-white ✓</div>
       </div>
-      <div class="aria-msgs" id="s4-msgs">
-        <div style="background:#2E2E3E;border-radius:10px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,0.65);line-height:1.6;">
-          Here's your <strong style="color:#A78BFF;">brand book</strong> — the foundation I'll build from. Everything is editable.
-        </div>
-        <div style="background:#2E2E3E;border-radius:10px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,0.65);line-height:1.6;">
-          I chose <strong style="color:#A78BFF;">earthy warm tones</strong> and Wix Madefor. Happy with the direction?
-        </div>
-        <div style="align-self:flex-end;background:#6B46FF;color:#fff;border-radius:10px 10px 2px 10px;padding:8px 12px;font-size:12px;max-width:82%;line-height:1.5;">
-          Can you make the palette more minimal?
-        </div>
-        <div style="background:#2E2E3E;border-radius:10px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,0.65);line-height:1.6;">
-          Done — 3 core colors: dark, warm gold, off-white. Updated on the left ✓
-        </div>
-      </div>
-      <div style="border-top:1px solid rgba(255,255,255,0.06);padding:10px 12px 12px;display:flex;flex-direction:column;gap:8px;">
-        <div style="display:flex;gap:6px;">
-          <input type="text" placeholder="Change colors, fonts, pages…" style="flex:1;border:1.5px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 10px;font-family:inherit;font-size:12px;color:#fff;outline:none;background:rgba(255,255,255,0.06);">
-          <button class="aria-dark-send"><svg viewBox="0 0 14 14"><path d="M1 7h12M7 1l6 6-6 6"/></svg></button>
-        </div>
-        <button onclick="goTo(5)" style="width:100%;background:#116DFF;color:#fff;border:none;border-radius:8px;padding:10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;">
-          ✦ Generate my site →
-        </button>
+      <div class="dark-input-row">
+        <input type="text" placeholder="Change anything…">
+        <button class="btn-generate-site" onclick="goTo(5)">✦ Generate my site →</button>
       </div>
     </div>
-
   </div>
 </div>
 
-<!-- ══ S5 SITE GENERATED ══ -->
+<!-- ══ S5 — SITE LIVE ══ -->
 <div class="screen" id="s5">
   <div class="editor-chrome">
     <span class="chrome-logo">wix</span>
-    <div class="chrome-avatar">G</div>
+    <div class="chrome-avatar">N</div>
     <div class="chrome-div"></div>
     <button class="chrome-btn">Goody <span class="chrome-caret"></span></button>
     <button class="chrome-btn">Brand <span class="chrome-caret"></span></button>
@@ -766,7 +555,7 @@ body { font-family: 'Wix Madefor Text', sans-serif; overflow: hidden; height: 10
     <div class="chrome-right">
       <button class="btn-upgrade">Upgrade</button>
       <button class="btn-preview">Preview</button>
-      <button class="btn-publish active">Publish</button>
+      <button class="btn-publish live">Publish</button>
     </div>
   </div>
   <div class="editor-body">
@@ -790,28 +579,29 @@ body { font-family: 'Wix Madefor Text', sans-serif; overflow: hidden; height: 10
         </div>
       </div>
     </div>
-    <!-- Aria panel -->
     <div class="aria-panel">
-      <div class="aria-panel-header">Ask Aria</div>
-      <div class="aria-msgs s5-msgs">
-        <div class="msg-aria"><strong style="color:#6B46FF;">Your site is ready</strong> 🎉<br>Built from your brand book — 4 pages, Wix Madefor, earthy palette.</div>
-        <div class="msg-aria">You can keep editing directly on the canvas, or ask me to change anything.</div>
-        <div style="background:#F5F3FF;border-radius:12px;padding:14px;margin-top:4px;">
-          <div style="font-size:12px;font-weight:600;color:#6B46FF;margin-bottom:10px;">🌐 Connect your domain</div>
-          <div style="font-size:13px;color:#666;margin-bottom:12px;line-height:1.5;">Make it official with <strong>goody-bakery.com</strong></div>
-          <button style="width:100%;background:#6B46FF;color:#fff;border:none;border-radius:9px;padding:10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;">Connect domain →</button>
-          <button style="width:100%;background:none;border:none;font-family:inherit;font-size:13px;color:#AAA;cursor:pointer;margin-top:6px;padding:6px;">Later</button>
+      <div class="aria-panel-head">Ask Aria</div>
+      <div class="aria-msgs">
+        <div class="s5-notice"><strong>Your site is ready 🎉</strong><br>4 pages, Wix Madefor, earthy palette — all from your brand book.</div>
+        <div class="s5-domain-card">
+          <div class="s5-domain-title">🌐 Connect your domain</div>
+          <div class="s5-domain-sub">Make it official — <strong>goody-bakery.com</strong> is available</div>
+          <button class="s5-domain-btn">Connect domain →</button>
+          <button class="s5-later-btn">Skip for now</button>
+        </div>
+        <div class="s5-blueprint-link" onclick="goTo(4)">
+          ↗ View your brand book
         </div>
       </div>
-      <div class="aria-panel-footer">
+      <div class="aria-panel-foot">
         <span></span>
-        <button class="btn-next">Start customizing →</button>
+        <button class="btn-next-sm">Start customizing →</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Step dots -->
+<!-- dots -->
 <div class="step-dots" id="step-dots">
   <div class="step-dot active" onclick="goTo(1)"></div>
   <div class="step-dot" onclick="goTo(2)"></div>
@@ -820,7 +610,7 @@ body { font-family: 'Wix Madefor Text', sans-serif; overflow: hidden; height: 10
   <div class="step-dot" onclick="goTo(5)"></div>
 </div>
 
-<!-- Concept nav -->
+<!-- concept nav -->
 <div id="concept-nav">
   <a href="concepts.html">← All</a>
   <div class="ndiv"></div>
@@ -832,26 +622,21 @@ body { font-family: 'Wix Madefor Text', sans-serif; overflow: hidden; height: 10
 
 <script>
 let cur = 1;
-
 function goTo(n) {
   document.getElementById('s'+cur).classList.remove('active');
   cur = n;
   document.getElementById('s'+n).classList.add('active');
-  const dots = document.querySelectorAll('.step-dot');
-  dots.forEach((d,i) => d.classList.toggle('active', i===n-1));
+  document.querySelectorAll('.step-dot').forEach((d,i) => d.classList.toggle('active', i===n-1));
   document.getElementById('step-dots').style.display = n >= 4 ? 'none' : 'flex';
 }
-
 function sel(el, g) {
   document.querySelectorAll('#'+g+' .aria-opt').forEach(o => o.classList.remove('sel'));
   el.classList.add('sel');
 }
-
 function selChoose(id) {
   document.querySelectorAll('.choose-blank,.choose-tpl').forEach(c => c.classList.remove('sel'));
   document.getElementById(id).classList.add('sel');
 }
-
 document.addEventListener('keydown', e => {
   if (e.key==='ArrowRight' && cur<5) goTo(cur+1);
   if (e.key==='ArrowLeft' && cur>1) goTo(cur-1);
