@@ -1256,10 +1256,18 @@ function ImportFlow({ onClose, onImport }) {
     </div>
     {/* body */}
     <div style={{ padding: '18px 28px 26px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <div style={{ display: 'flex', gap: 10 }}>
-        <input autoFocus value={url} disabled={phase === 'scanning'} onChange={(e) => { setUrl(e.target.value); if (phase === 'error') setPhase('url'); }} onKeyDown={(e) => e.key === 'Enter' && phase !== 'scanning' && scan()} placeholder="Paste any URL addresses" style={{ flex: 1, height: 48, boxSizing: 'border-box', padding: '0 16px', background: '#F6F6F8', border: `1px solid ${phase === 'error' ? '#D32F2F' : '#ECECF0'}`, borderRadius: 12, fontSize: 15, color: '#32324D', outline: 'none', fontFamily: 'inherit' }} />
-        <button className="hbtn" onClick={scan} disabled={phase === 'scanning'} style={{ ...hBtnPrimary('medium'), height: 48, borderRadius: 10, padding: '0 26px', fontSize: 15, flexShrink: 0, opacity: phase === 'scanning' ? 0.6 : 1, cursor: phase === 'scanning' ? 'default' : 'pointer' }}>{phase === 'scanning' ? 'Scanning…' : 'Scan'}</button>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <input autoFocus value={url} disabled={phase === 'scanning'} onChange={(e) => { setUrl(e.target.value); if (phase === 'error') setPhase('url'); }} onKeyDown={(e) => e.key === 'Enter' && phase !== 'scanning' && scan()} placeholder="Paste any URL addresses" style={{ flex: 1, height: 38, boxSizing: 'border-box', padding: '0 12px', background: '#F6F6F8', border: `1px solid ${phase === 'error' ? '#D32F2F' : '#ECECF0'}`, borderRadius: 8, fontSize: 14, color: '#32324D', outline: 'none', fontFamily: 'inherit' }} />
+        <button className="hbtn" onClick={scan} disabled={phase === 'scanning'} style={{ ...hBtnPrimary('medium'), flexShrink: 0, opacity: phase === 'scanning' ? 0.6 : 1, cursor: phase === 'scanning' ? 'default' : 'pointer' }}>{phase === 'scanning' ? 'Scanning…' : 'Scan'}</button>
       </div>
+      {/* example URLs — one regular, one Shopify (shows the badge) */}
+      {phase !== 'scanning' &&
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 12, color: H_MUTED }}>Try an example:</span>
+          <button onClick={() => { setUrl('wix.com'); if (phase === 'error') setPhase('url'); }} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 28, padding: '0 12px', background: '#fff', border: '1px solid #E0E0E0', borderRadius: 14, fontSize: 12, fontWeight: 500, color: '#32324D', cursor: 'pointer', fontFamily: 'inherit' }}>wix.com</button>
+          <button onClick={() => { setUrl('mystore.com'); if (phase === 'error') setPhase('url'); }} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 28, padding: '0 4px 0 12px', background: '#fff', border: '1px solid #E0E0E0', borderRadius: 14, fontSize: 12, fontWeight: 500, color: '#32324D', cursor: 'pointer', fontFamily: 'inherit' }}>mystore.com<span style={{ background: '#EDFAF3', borderRadius: 10, padding: '3px 8px', fontSize: 10, fontWeight: 700, color: '#1A8A5A' }}>Shopify</span></button>
+        </div>
+      }
       {/* error */}
       {phase === 'error' &&
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: '#FFF3F3', border: '1px solid #FFCDD2', borderRadius: 8 }}>
