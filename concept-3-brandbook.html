@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concept 3 — The Brand Book</title>
+<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Wix+Madefor+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Wix Madefor Text', sans-serif; background: #fff; overflow: hidden; height: 100vh; }
+
+/* ─── SCREENS ─── */
+.screen { position: absolute; inset: 0; display: none; flex-direction: column; }
+.screen.active { display: flex; }
+
+/* ─── TRANSITIONS ─── */
+.screen { opacity: 0; transition: opacity 0.35s ease; }
+.screen.active { opacity: 1; }
+
+/* ════════════════════════════════════
+   SCREEN 1 — PROMPT
+════════════════════════════════════ */
+#s1 {
+  background: #fff;
+  align-items: center;
+  justify-content: center;
+}
+.prompt-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  width: 100%;
+  max-width: 700px;
+  padding: 0 24px;
+}
+.prompt-logo {
+  font-family: 'Wix Madefor Display', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: #0F0F1A;
+  letter-spacing: -0.5px;
+}
+.prompt-logo span { color: #6B46FF; }
+.prompt-heading {
+  font-family: 'Wix Madefor Display', sans-serif;
+  font-size: 42px;
+  font-weight: 800;
+  color: #0F0F1A;
+  text-align: center;
+  line-height: 1.15;
+  letter-spacing: -1px;
+}
+.prompt-heading em { color: #6B46FF; font-style: normal; }
+.prompt-box {
+  width: 100%;
+  background: #F7F7F9;
+  border: 1.5px solid #E5E5EA;
+  border-radius: 20px;
+  padding: 20px 20px 16px 20px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.prompt-box:focus-within {
+  border-color: #6B46FF;
+  box-shadow: 0 0 0 3px rgba(107,70,255,0.1);
+}
+.prompt-box textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: 'Wix Madefor Text', sans-serif;
+  font-size: 18px;
+  color: #0F0F1A;
+  line-height: 1.5;
+  min-height: 80px;
+}
+.prompt-box textarea::placeholder { color: #B0B0C0; }
+.prompt-box-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 12px;
+  border-top: 1px solid #EBEBF0;
+  margin-top: 12px;
+}
+.btn-generate {
+  background: #6B46FF;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 28px;
+  font-family: 'Wix Madefor Text', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-generate:hover { background: #5836E8; }
+.btn-generate:active { transform: scale(0.97); }
+.btn-generate svg { width: 16px; height: 16px; }
+
+/* ════════════════════════════════════
+   SCREEN 2 — EDITOR + COMPOSER
+════════════════════════════════════ */
+#s2 { background: #E8EAF0; flex-direction: column; }
+
+/* Editor chrome */
+.editor-chrome {
+  height: 52px;
+  background: #fff;
+  border-bottom: 1px solid #E0E0E8;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 0;
+  flex-shrink: 0;
+  z-index: 10;
+}
+.chrome-wix { display: flex; align-items: center; gap: 10px; margin-right: 8px; }
+.chrome-wix svg { width: 34px; height: 20px; }
+.chrome-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6B46FF, #E040FB);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: #fff; font-weight: 600;
+}
+.chrome-divider { width: 1px; height: 20px; background: #E0E0E8; margin: 0 8px; }
+.chrome-btn {
+  display: flex; align-items: center; gap: 4px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #444;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.chrome-btn:hover { background: #F5F5F8; }
+.chrome-btn svg { width: 12px; height: 12px; opacity: 0.6; }
+.chrome-center { flex: 1; display: flex; justify-content: center; }
+.chrome-fit {
+  font-size: 13px; color: #666;
+  display: flex; align-items: center; gap: 4px;
+  padding: 5px 8px; border-radius: 6px; cursor: pointer;
+}
+.chrome-fit:hover { background: #F5F5F8; }
+.chrome-right { display: flex; align-items: center; gap: 6px; }
+.btn-upgrade {
+  color: #6B46FF; font-size: 13px; font-weight: 600;
+  background: none; border: none; cursor: pointer; padding: 5px 8px;
+}
+.btn-icon {
+  width: 32px; height: 32px;
+  background: none; border: none;
+  border-radius: 8px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: #666;
+  transition: background 0.15s;
+}
+.btn-icon:hover { background: #F5F5F8; }
+.btn-preview {
+  padding: 6px 16px;
+  background: none;
+  border: 1px solid #D0D0DC;
+  border-radius: 8px;
+  font-size: 13px; font-weight: 500; color: #333;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.btn-preview:hover { border-color: #6B46FF; }
+.btn-publish {
+  padding: 6px 16px;
+  background: #CCCCDD;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px; font-weight: 600; color: #fff;
+  cursor: not-allowed;
+}
+
+/* Editor body */
+.editor-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Canvas area */
+.canvas-area {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.site-canvas {
+  width: 65%;
+  max-width: 680px;
+  height: 85%;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.12);
+  position: relative;
+  overflow: hidden;
+}
+.canvas-placeholder {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #F8F8FC 0%, #F0F0F8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.canvas-shimmer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 40px;
+  width: 100%;
+}
+.shimmer-block {
+  background: #E8E8F0;
+  border-radius: 8px;
+  animation: shimmer 2s infinite ease-in-out;
+}
+@keyframes shimmer {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Composer panel */
+.composer-panel {
+  width: 360px;
+  background: #fff;
+  border-left: 1px solid #E0E0E8;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.composer-header {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid #F0F0F5;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0F0F1A;
+}
+.composer-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.msg-user {
+  align-self: flex-end;
+  background: #F5F3FF;
+  color: #0F0F1A;
+  border-radius: 16px 16px 4px 16px;
+  padding: 10px 14px;
+  font-size: 14px;
+  max-width: 80%;
+  line-height: 1.5;
+}
+.msg-aria {
+  align-self: flex-start;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.6;
+  max-width: 90%;
+}
+.composer-question {
+  background: #fff;
+  border: 1px solid #E0E0E8;
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 8px;
+}
+.q-label { font-size: 13px; font-weight: 600; color: #0F0F1A; margin-bottom: 4px; }
+.q-sub { font-size: 12px; color: #888; margin-bottom: 12px; }
+.q-options { display: flex; flex-direction: column; gap: 8px; }
+.q-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1.5px solid #E5E5EA;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: #fff;
+}
+.q-option:hover { border-color: #6B46FF; background: #F8F5FF; color: #6B46FF; }
+.q-option.selected { border-color: #6B46FF; background: #F3EEFF; color: #6B46FF; }
+.q-option .opt-icon { font-size: 16px; }
+.q-free {
+  margin-top: 8px;
+  display: flex;
+  gap: 0;
+  border: 1.5px solid #E5E5EA;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.q-free input {
+  flex: 1; border: none; outline: none;
+  padding: 9px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  color: #333;
+  background: #FAFAFA;
+}
+.q-free input::placeholder { color: #B0B0C0; }
+.composer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 16px;
+  border-top: 1px solid #F0F0F5;
+}
+.btn-skip {
+  background: none; border: none;
+  font-size: 13px; color: #888; cursor: pointer;
+  padding: 6px 0;
+}
+.btn-skip:hover { color: #555; }
+.btn-next {
+  background: #6B46FF; color: #fff;
+  border: none; border-radius: 10px;
+  padding: 9px 22px;
+  font-family: inherit;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-next:hover { background: #5836E8; }
+
+/* ════════════════════════════════════
+   SCREEN 3 — FORK MODAL
+════════════════════════════════════ */
+#s3 { background: #E8EAF0; flex-direction: column; }
+#s3 .editor-chrome { opacity: 0.5; pointer-events: none; }
+.fork-overlay {
+  position: absolute;
+  inset: 52px 0 0 0;
+  background: rgba(15,15,26,0.45);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+.fork-modal {
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px;
+  width: 620px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+}
+.fork-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6B46FF;
+  margin-bottom: 10px;
+}
+.fork-title {
+  font-family: 'Wix Madefor Display', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: #0F0F1A;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.fork-sub {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+.fork-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.fork-card {
+  border: 2px solid #E5E5EA;
+  border-radius: 18px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.fork-card:hover { border-color: #6B46FF; box-shadow: 0 4px 20px rgba(107,70,255,0.1); }
+.fork-card.selected { border-color: #6B46FF; background: #FAF8FF; }
+.fork-card-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+}
+.fc-a .fork-card-icon { background: #F3EEFF; }
+.fc-b .fork-card-icon { background: #FFF0E6; }
+.fork-card h3 {
+  font-family: 'Wix Madefor Display', sans-serif;
+  font-size: 16px; font-weight: 800; color: #0F0F1A;
+}
+.fork-card p { font-size: 13px; color: #777; line-height: 1.5; }
+.fork-card .tag {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.fc-a .tag { background: #F0EBFF; color: #6B46FF; }
+.fc-b .tag { background: #FFF0E6; color: #E87E20; }
+.fork-cta {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+.btn-fork-back {
+  background: none; border: 1px solid #E5E5EA;
+  border-radius: 10px; padding: 10px 20px;
+  font-family: inherit; font-size: 14px; color: #666;
+  cursor: pointer;
+}
+.btn-fork-go {
+  background: #6B46FF; color: #fff;
+  border: none; border-radius: 10px;
+  padding: 10px 24px;
+  font-family: inherit; font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-fork-go:hover { background: #5836E8; }
+
+/* ════════════════════════════════════
+   SCREEN 4 — BRAND BOOK ON SURFACE
+════════════════════════════════════ */
+#s4 { background: #E8EAF0; flex-direction: column; }
+
+.brandbook-surface {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.brandbook-main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 28px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 16px;
+  align-content: start;
+}
+
+/* Brand book cards */
+.bb-card {
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.bb-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.12); transform: translateY(-2px); }
+
+.bb-card-header {
+  padding: 16px 20px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.bb-card-num {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #B0B0C0;
+}
+.bb-card-title {
+  font-family: 'Wix Madefor Display', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: #0F0F1A;
+  padding: 0 20px 16px;
+}
+.bb-card-body { padding: 0 20px 20px; }
+.bb-edit-btn {
+  background: none; border: 1px solid #E5E5EA;
+  border-radius: 8px; padding: 4px 10px;
+  font-size: 12px; color: #888; cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.bb-edit-btn:hover { border-color: #6B46FF; color: #6B46FF; }
+
+/* Colors card */
+.color-swatches {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.swatch {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+.swatch-dot {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.swatch-label { font-size: 10px; color: #999; font-weight: 500; }
+.swatch-hex { font-size: 10px; color: #555; font-weight: 600; font-family: monospace; }
+
+/* Typography card */
+.type-sample {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.type-row {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #F0F0F5;
+}
+.type-row:last-child { border-bottom: none; padding-bottom: 0; }
+.type-label { font-size: 10px; color: #B0B0C0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; width: 70px; flex-shrink: 0; }
+.type-preview { color: #0F0F1A; line-height: 1.2; }
+.type-meta { font-size: 10px; color: #C0C0CC; margin-left: auto; text-align: right; }
+
+/* Pages card */
+.pages-list { display: flex; flex-direction: column; gap: 8px; }
+.page-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #FAFAFA;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.page-row:hover { background: #F3EEFF; }
+.page-icon { font-size: 14px; width: 24px; text-align: center; }
+.page-name { font-size: 13px; font-weight: 500; color: #0F0F1A; flex: 1; }
+.page-type { font-size: 11px; color: #B0B0C0; }
+
+/* Apps card */
+.apps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.app-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #FAFAFA;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.app-chip:hover { background: #F3EEFF; }
+.app-emoji { font-size: 16px; }
+.app-name { font-size: 12px; font-weight: 500; color: #333; }
+
+/* Goals card — full width */
+.bb-card.full-width { grid-column: 1 / -1; }
+.goals-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.goal-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.goal-pill:hover { transform: scale(1.02); }
+
+/* Aria panel in blueprint */
+.aria-panel {
+  width: 340px;
+  background: #fff;
+  border-left: 1px solid #E0E0E8;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.aria-panel-header {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid #F0F0F5;
+}
+.aria-panel-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0F0F1A;
+  margin-bottom: 2px;
+}
+.aria-panel-sub {
+  font-size: 12px;
+  color: #B0B0C0;
+}
+.aria-msgs {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.aria-msg-bubble {
+  background: #F7F7FA;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #333;
+  line-height: 1.6;
+}
+.aria-msg-bubble strong { color: #6B46FF; }
+.aria-input-area {
+  border-top: 1px solid #F0F0F5;
+  padding: 12px 16px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+.aria-input-area input {
+  flex: 1;
+  border: 1.5px solid #E5E5EA;
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  color: #333;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.aria-input-area input:focus { border-color: #6B46FF; }
+.aria-input-area input::placeholder { color: #C0C0CC; }
+.aria-send {
+  width: 34px; height: 34px;
+  background: #6B46FF;
+  border: none; border-radius: 10px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.aria-send:hover { background: #5836E8; }
+.aria-send svg { width: 14px; height: 14px; fill: #fff; }
+
+/* Brand name bar */
+.brand-name-bar {
+  padding: 14px 20px;
+  border-bottom: 1px solid #F0F0F5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand-name { font-size: 15px; font-weight: 700; color: #0F0F1A; }
+.brand-desc { font-size: 12px; color: #888; margin-top: 2px; }
+.brand-badge {
+  font-size: 11px; font-weight: 600;
+  color: #059669;
+  background: #ECFDF5;
+  border-radius: 6px;
+  padding: 3px 8px;
+}
+
+/* ─── Navigation dot ─── */
+.nav-dot {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(15,15,26,0.7);
+  border-radius: 20px;
+  padding: 6px 12px;
+  z-index: 100;
+}
+.nav-dot span {
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+  font-weight: 500;
+}
+.nav-dot span.cur { color: #fff; font-weight: 700; }
+
+/* Concept nav pill */
+#concept-nav {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.95);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 40px;
+  padding: 8px 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  z-index: 9999;
+  backdrop-filter: blur(8px);
+}
+#concept-nav a {
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  padding: 4px 8px;
+  border-radius: 20px;
+  transition: all 0.15s;
+  font-family: 'Wix Madefor Text', sans-serif;
+}
+#concept-nav a:hover { background: #F0F3FF; color: #2F5BFF; }
+#concept-nav .nav-div { width: 1px; height: 16px; background: rgba(0,0,0,0.1); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     S1 — PROMPT INPUT
+══════════════════════════════════ -->
+<div class="screen active" id="s1">
+  <div class="prompt-wrap">
+    <div class="prompt-logo">wix <span>✦</span></div>
+    <h1 class="prompt-heading">Tell Aria about<br><em>your business</em></h1>
+    <div class="prompt-box">
+      <textarea id="prompt-input" placeholder="e.g. I run a small bakery in Tel Aviv specializing in sourdough and pastries…" rows="3"></textarea>
+      <div class="prompt-box-footer">
+        <button class="btn-generate" onclick="goTo(2)">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 1v14M1 8l7-7 7 7"/>
+          </svg>
+          Generate site
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     S2 — EDITOR + COMPOSER
+══════════════════════════════════ -->
+<div class="screen" id="s2">
+  <!-- Chrome -->
+  <div class="editor-chrome">
+    <div class="chrome-wix">
+      <svg viewBox="0 0 34 20" fill="none">
+        <text x="0" y="16" font-family="'Wix Madefor Display'" font-weight="800" font-size="16" fill="#0F0F1A">wix</text>
+      </svg>
+    </div>
+    <div class="chrome-avatar">G</div>
+    <div class="chrome-divider"></div>
+    <button class="chrome-btn">Goody <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l4 4 4-4"/></svg></button>
+    <button class="chrome-btn">Brand <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l4 4 4-4"/></svg></button>
+    <div class="chrome-center">
+      <div class="chrome-fit">Fit (96%) <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l4 4 4-4"/></svg></div>
+    </div>
+    <div class="chrome-right">
+      <button class="btn-upgrade">Upgrade</button>
+      <button class="btn-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1v14M1 8h14"/></svg></button>
+      <button class="btn-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8a6 6 0 1112 0A6 6 0 012 8z"/><path d="M8 5v3l2 2"/></svg></button>
+      <button class="btn-preview">Preview</button>
+      <button class="btn-publish">Publish</button>
+    </div>
+  </div>
+  <!-- Body -->
+  <div class="editor-body">
+    <div class="canvas-area">
+      <div class="site-canvas">
+        <div class="canvas-placeholder">
+          <div class="canvas-shimmer">
+            <div class="shimmer-block" style="height:60px;width:100%"></div>
+            <div class="shimmer-block" style="height:180px;width:100%"></div>
+            <div class="shimmer-block" style="height:24px;width:60%"></div>
+            <div class="shimmer-block" style="height:24px;width:80%"></div>
+            <div class="shimmer-block" style="height:24px;width:50%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Composer -->
+    <div class="composer-panel">
+      <div class="composer-header">Ask Aria</div>
+      <div class="composer-messages">
+        <div class="msg-user">I need a site</div>
+        <div class="msg-aria">I'm excited to help you build your site!<br>To get started, let's find the perfect name, industry, and what makes you unique.</div>
+        <div class="composer-question">
+          <div class="q-label">What does your business do?</div>
+          <div class="q-sub">Help Aria understand what makes you unique</div>
+          <div class="q-options" id="q1-options">
+            <div class="q-option" onclick="selectOption(this,'q1')"><span class="opt-icon">☕</span> Café or food business</div>
+            <div class="q-option" onclick="selectOption(this,'q1')"><span class="opt-icon">🛍</span> Online store or retail</div>
+            <div class="q-option" onclick="selectOption(this,'q1')"><span class="opt-icon">💼</span> Consulting or services</div>
+            <div class="q-option" onclick="selectOption(this,'q1')"><span class="opt-icon">🎨</span> Creative or portfolio</div>
+          </div>
+          <div class="q-free"><input type="text" placeholder="Or describe your business…"></div>
+        </div>
+      </div>
+      <div class="composer-actions">
+        <button class="btn-skip">Skip</button>
+        <button class="btn-next" onclick="goTo(3)">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     S3 — FORK MODAL
+══════════════════════════════════ -->
+<div class="screen" id="s3" style="position:relative;">
+  <!-- Chrome -->
+  <div class="editor-chrome" style="opacity:0.5;pointer-events:none;">
+    <div class="chrome-wix"><svg viewBox="0 0 34 20"><text x="0" y="16" font-family="'Wix Madefor Display'" font-weight="800" font-size="16" fill="#0F0F1A">wix</text></svg></div>
+    <div class="chrome-avatar">G</div>
+    <div class="chrome-divider"></div>
+    <button class="chrome-btn">Goody</button>
+    <button class="chrome-btn">Brand</button>
+    <div class="chrome-center"><div class="chrome-fit">Fit (96%)</div></div>
+    <div class="chrome-right">
+      <button class="btn-upgrade">Upgrade</button>
+      <button class="btn-preview">Preview</button>
+      <button class="btn-publish">Publish</button>
+    </div>
+  </div>
+  <!-- Blurred bg -->
+  <div style="flex:1;background:#E8EAF0;display:flex;align-items:center;justify-content:center;filter:blur(2px);opacity:0.4;">
+    <div style="width:60%;max-width:500px;height:70%;background:#fff;border-radius:2px;box-shadow:0 4px 32px rgba(0,0,0,0.12);"></div>
+  </div>
+  <!-- Modal -->
+  <div class="fork-overlay">
+    <div class="fork-modal">
+      <div class="fork-label">Aria has learned enough to get started</div>
+      <div class="fork-title">How should we build your site?</div>
+      <div class="fork-sub">Choose your path — you can always change direction later.</div>
+      <div class="fork-cards">
+        <div class="fork-card fc-a" onclick="selectFork(this)" id="fork-a">
+          <div class="fork-card-icon">✦</div>
+          <h3>Taylor Made</h3>
+          <p>Aria designs everything from scratch, tailored to your brand and vision.</p>
+          <span class="tag">Custom design</span>
+        </div>
+        <div class="fork-card fc-b" onclick="selectFork(this)" id="fork-b">
+          <div class="fork-card-icon">🗂</div>
+          <h3>Start from Template</h3>
+          <p>Pick from 3 curated templates that match your business perfectly.</p>
+          <span class="tag">Head start</span>
+        </div>
+      </div>
+      <div class="fork-cta">
+        <button class="btn-fork-back" onclick="goTo(2)">← Back</button>
+        <button class="btn-fork-go" onclick="goTo(4)">Build my site →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     S4 — BRAND BOOK ON SURFACE
+══════════════════════════════════ -->
+<div class="screen" id="s4">
+  <!-- Chrome -->
+  <div class="editor-chrome">
+    <div class="chrome-wix"><svg viewBox="0 0 34 20"><text x="0" y="16" font-family="'Wix Madefor Display'" font-weight="800" font-size="16" fill="#0F0F1A">wix</text></svg></div>
+    <div class="chrome-avatar">G</div>
+    <div class="chrome-divider"></div>
+    <button class="chrome-btn">Goody <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l4 4 4-4"/></svg></button>
+    <button class="chrome-btn">Brand <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l4 4 4-4"/></svg></button>
+    <div class="chrome-center"><div class="chrome-fit">Fit (96%) <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l4 4 4-4"/></svg></div></div>
+    <div class="chrome-right">
+      <button class="btn-upgrade">Upgrade</button>
+      <button class="btn-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8a6 6 0 1112 0A6 6 0 012 8z"/></svg></button>
+      <button class="btn-preview">Preview</button>
+      <button class="btn-publish" style="background:#6B46FF;cursor:pointer;">Publish</button>
+    </div>
+  </div>
+  <!-- Body -->
+  <div class="brandbook-surface">
+    <!-- Brand book cards on the gray surface -->
+    <div class="brandbook-main">
+
+      <!-- 01 COLORS -->
+      <div class="bb-card">
+        <div class="bb-card-header">
+          <span class="bb-card-num">01 / COLORS</span>
+          <button class="bb-edit-btn">Edit</button>
+        </div>
+        <div class="bb-card-title">Brand Colors</div>
+        <div class="bb-card-body">
+          <div class="color-swatches">
+            <div class="swatch">
+              <div class="swatch-dot" style="background:#1A1A2E;"></div>
+              <div class="swatch-label">Primary</div>
+              <div class="swatch-hex">#1A1A2E</div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-dot" style="background:#E8C97E;"></div>
+              <div class="swatch-label">Accent</div>
+              <div class="swatch-hex">#E8C97E</div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-dot" style="background:#F5F0E8;"></div>
+              <div class="swatch-label">Background</div>
+              <div class="swatch-hex">#F5F0E8</div>
+            </div>
+            <div class="swatch">
+              <div class="swatch-dot" style="background:#8B4513;"></div>
+              <div class="swatch-label">Warm</div>
+              <div class="swatch-hex">#8B4513</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 02 TYPOGRAPHY -->
+      <div class="bb-card">
+        <div class="bb-card-header">
+          <span class="bb-card-num">02 / TYPOGRAPHY</span>
+          <button class="bb-edit-btn">Edit</button>
+        </div>
+        <div class="bb-card-title">Fonts</div>
+        <div class="bb-card-body">
+          <div class="type-sample">
+            <div class="type-row">
+              <span class="type-label">Display</span>
+              <span class="type-preview" style="font-family:'Wix Madefor Display';font-size:28px;font-weight:800;">Goody</span>
+              <span class="type-meta">Wix Madefor Display<br>800</span>
+            </div>
+            <div class="type-row">
+              <span class="type-label">Body</span>
+              <span class="type-preview" style="font-size:15px;font-weight:400;">Fresh baked daily</span>
+              <span class="type-meta">Wix Madefor Text<br>400</span>
+            </div>
+            <div class="type-row">
+              <span class="type-label">Accent</span>
+              <span class="type-preview" style="font-size:13px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">EST. 2019</span>
+              <span class="type-meta">Wix Madefor Text<br>600 / Caps</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 03 PAGES -->
+      <div class="bb-card">
+        <div class="bb-card-header">
+          <span class="bb-card-num">03 / PAGES</span>
+          <button class="bb-edit-btn">Edit</button>
+        </div>
+        <div class="bb-card-title">Site Structure</div>
+        <div class="bb-card-body">
+          <div class="pages-list">
+            <div class="page-row"><span class="page-icon">🏠</span><span class="page-name">Home</span><span class="page-type">Main</span></div>
+            <div class="page-row"><span class="page-icon">🍞</span><span class="page-name">Menu</span><span class="page-type">Catalog</span></div>
+            <div class="page-row"><span class="page-icon">📖</span><span class="page-name">Our Story</span><span class="page-type">About</span></div>
+            <div class="page-row"><span class="page-icon">📍</span><span class="page-name">Find Us</span><span class="page-type">Contact</span></div>
+            <div class="page-row" style="opacity:0.5;border:1.5px dashed #E0E0E8;background:transparent;">
+              <span class="page-icon">+</span><span class="page-name" style="color:#B0B0C0;">Add a page</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 04 APPS & GOALS -->
+      <div class="bb-card">
+        <div class="bb-card-header">
+          <span class="bb-card-num">04 / APPS & GOALS</span>
+          <button class="bb-edit-btn">Edit</button>
+        </div>
+        <div class="bb-card-title">Installed Services</div>
+        <div class="bb-card-body">
+          <div class="apps-grid">
+            <div class="app-chip"><span class="app-emoji">🛒</span><span class="app-name">Wix Stores</span></div>
+            <div class="app-chip"><span class="app-emoji">📅</span><span class="app-name">Bookings</span></div>
+            <div class="app-chip"><span class="app-emoji">📝</span><span class="app-name">Forms</span></div>
+            <div class="app-chip"><span class="app-emoji">📷</span><span class="app-name">Gallery</span></div>
+          </div>
+          <div style="margin-top:14px;padding-top:14px;border-top:1px solid #F0F0F5;">
+            <div style="font-size:11px;font-weight:600;color:#B0B0C0;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Goals</div>
+            <div class="goals-row">
+              <div class="goal-pill" style="background:#FFF7E6;color:#B45309;">📈 Grow orders</div>
+              <div class="goal-pill" style="background:#F0FDF4;color:#15803D;">🤝 Build loyalty</div>
+              <div class="goal-pill" style="background:#F5F3FF;color:#6B46FF;">✨ Look premium</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Aria side panel -->
+    <div class="aria-panel">
+      <div class="brand-name-bar">
+        <div>
+          <div class="brand-name">Goody Bakery</div>
+          <div class="brand-desc">Artisan sourdough · Tel Aviv</div>
+        </div>
+        <div class="brand-badge">✓ Ready</div>
+      </div>
+      <div class="aria-panel-header">
+        <div class="aria-panel-title">Ask Aria</div>
+        <div class="aria-panel-sub">Edit anything, or keep going</div>
+      </div>
+      <div class="aria-msgs">
+        <div class="aria-msg-bubble">
+          Here's your site's <strong>brand book</strong> — the foundation Aria will build from. Everything here is yours to edit anytime.
+        </div>
+        <div class="aria-msg-bubble">
+          I've set up <strong>4 pages</strong> for your bakery and added <strong>Wix Stores</strong> and <strong>Bookings</strong> based on what you told me.
+        </div>
+        <div class="aria-msg-bubble">
+          Want to change the color palette, add a page, or adjust anything before we start building?
+        </div>
+      </div>
+      <div class="aria-input-area">
+        <input type="text" placeholder="Ask Aria to change something…">
+        <button class="aria-send">
+          <svg viewBox="0 0 14 14"><path d="M1 7h12M7 1l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Nav dots -->
+<div class="nav-dot" id="nav-dot">
+  <span id="nd1" class="cur" onclick="goTo(1)" style="cursor:pointer;">1</span>
+  <span id="nd2" onclick="goTo(2)" style="cursor:pointer;">2</span>
+  <span id="nd3" onclick="goTo(3)" style="cursor:pointer;">3</span>
+  <span id="nd4" onclick="goTo(4)" style="cursor:pointer;">4</span>
+</div>
+
+<!-- Concept nav -->
+<div id="concept-nav">
+  <a href="concepts.html">← All</a>
+  <div class="nav-div"></div>
+  <a href="concept-1-brief.html" id="cn1">1</a>
+  <a href="concept-2-blueprint.html" id="cn2">2</a>
+  <a href="concept-3-brandbook.html" id="cn3" style="background:#2F5BFF;color:#fff;border-radius:20px;">3</a>
+  <a href="concept-4-studio.html" id="cn4">4</a>
+</div>
+
+<script>
+let current = 1;
+
+function goTo(n) {
+  const prev = document.getElementById('s' + current);
+  const next = document.getElementById('s' + n);
+  if (!next) return;
+  prev.classList.remove('active');
+  current = n;
+  next.classList.add('active');
+  // Update dots
+  for (let i = 1; i <= 4; i++) {
+    const d = document.getElementById('nd' + i);
+    if (d) d.className = i === n ? 'cur' : '';
+  }
+}
+
+function selectOption(el, group) {
+  const opts = document.querySelectorAll('#' + group + '-options .q-option');
+  opts.forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function selectFork(el) {
+  document.querySelectorAll('.fork-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' && current < 4) goTo(current + 1);
+  if (e.key === 'ArrowLeft' && current > 1) goTo(current - 1);
+});
+</script>
+</body>
+</html>
