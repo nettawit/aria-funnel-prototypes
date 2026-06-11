@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Aria — 4 Concepts</title>
+<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700&family=Wix+Madefor+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Wix Madefor Text', sans-serif; background: #F5F6FA; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px; }
+  .wrap { max-width: 900px; width: 100%; }
+  h1 { font-family: 'Wix Madefor Display', sans-serif; font-size: 36px; font-weight: 800; color: #0F0F1A; margin-bottom: 8px; }
+  .sub { color: #888; font-size: 15px; margin-bottom: 48px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .card {
+    background: #fff; border-radius: 20px; padding: 32px; text-decoration: none; color: inherit;
+    border: 2px solid transparent; transition: all 0.2s; display: block;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+  }
+  .card:hover { border-color: #2F5BFF; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(47,91,255,0.1); }
+  .card-num { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #2F5BFF; margin-bottom: 12px; }
+  .card h2 { font-family: 'Wix Madefor Display', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 8px; color: #0F0F1A; }
+  .card .feel { font-size: 12px; color: #2F5BFF; font-weight: 600; margin-bottom: 12px; font-style: italic; }
+  .card p { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 20px; }
+  .card .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { background: #F0F3FF; color: #2F5BFF; border-radius: 6px; padding: 3px 10px; font-size: 11px; font-weight: 500; }
+  .card-1 .card-num { color: #1A1A2E; }
+  .card-1 .feel, .card-1 .tag { background: #F0F0F5; color: #1A1A2E; }
+  .card-2 .card-num { color: #3B82F6; }
+  .card-2 .feel, .card-2 .tag { background: #EFF6FF; color: #2563EB; }
+  .card-3 .card-num { color: #059669; }
+  .card-3 .feel, .card-3 .tag { background: #ECFDF5; color: #059669; }
+  .card-4 .card-num { color: #7C3AED; }
+  .card-4 .feel, .card-4 .tag { background: #F5F3FF; color: #7C3AED; }
+  .arrow { margin-top: 20px; font-size: 14px; font-weight: 600; color: #2F5BFF; display: flex; align-items: center; gap: 4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Aria — 4 UX Concepts</h1>
+  <p class="sub">Same flow, 4 different experiences. Click to explore each one.</p>
+  <div class="grid">
+    <a href="concept-1-brief.html" class="card card-1">
+      <div class="card-num">Concept 01</div>
+      <h2>The Brief</h2>
+      <div class="feel">Like giving a brief to an agency</div>
+      <p>One question at a time. Focused, dark, deliberate. Ends with a beautiful brief document that becomes your site's foundation.</p>
+      <div class="tag-row"><span class="tag">Dark</span><span class="tag">Sequential</span><span class="tag">Editorial</span></div>
+      <div class="arrow">Open →</div>
+    </a>
+    <a href="concept-2-blueprint.html" class="card card-2">
+      <div class="card-num">Concept 02</div>
+      <h2>The Blueprint</h2>
+      <div class="feel">Like planning with an architect</div>
+      <p>Technical, precise. The canvas is a schematic drawing that fills in as you answer. Dashboard feels like engineering specs.</p>
+      <div class="tag-row"><span class="tag">Dark Navy</span><span class="tag">Technical</span><span class="tag">Grid</span></div>
+      <div class="arrow">Open →</div>
+    </a>
+    <a href="concept-3-wizard.html" class="card card-3">
+      <div class="card-num">Concept 03</div>
+      <h2>The Wizard</h2>
+      <div class="feel">Like setting up a smart product</div>
+      <p>Clean, step-by-step, progress bar. One focused card per step. No surprises. Feels like the iPhone setup screen.</p>
+      <div class="tag-row"><span class="tag">Light</span><span class="tag">Linear</span><span class="tag">Clear progress</span></div>
+      <div class="arrow">Open →</div>
+    </a>
+    <a href="concept-4-studio.html" class="card card-4">
+      <div class="card-num">Concept 04</div>
+      <h2>The Studio</h2>
+      <div class="feel">Like co-creating with a designer</div>
+      <p>The site builds live in front of you as you answer questions. Canvas updates in real-time. Blueprint appears as an overlay.</p>
+      <div class="tag-row"><span class="tag">Live canvas</span><span class="tag">Real-time</span><span class="tag">Co-creation</span></div>
+      <div class="arrow">Open →</div>
+    </a>
+  </div>
+</div>
+</body>
+</html>

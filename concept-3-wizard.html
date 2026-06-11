@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Concept 3 — The Wizard</title>
+<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700&family=Wix+Madefor+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Wix Madefor Text', sans-serif; background: #F7F8FA; color: #1A1A2E; height: 100vh; overflow: hidden; }
+
+  .concept-label {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+    background: #fff; border: 1px solid #E0E2E8; border-radius: 20px;
+    padding: 6px 16px; font-size: 12px; color: #666; z-index: 100;
+  }
+
+  /* TOP PROGRESS BAR */
+  .progress-bar {
+    position: fixed; top: 0; left: 0; right: 0; height: 3px;
+    background: #E8EAF0; z-index: 200;
+  }
+  .progress-fill {
+    height: 100%; background: linear-gradient(90deg, #2F5BFF, #7C3AED);
+    transition: width 0.5s ease;
+  }
+
+  /* NAV */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; height: 56px;
+    background: #fff; border-bottom: 1px solid #E8EAF0;
+    display: flex; align-items: center; padding: 0 32px; z-index: 100;
+  }
+  .nav-logo { font-size: 15px; font-weight: 700; }
+  .nav-steps { margin: 0 auto; display: flex; align-items: center; gap: 0; }
+  .nav-step { display: flex; align-items: center; gap: 0; }
+  .step-circle {
+    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 12px; font-weight: 600; transition: all 0.3s;
+  }
+  .step-circle.done { background: #2F5BFF; color: #fff; }
+  .step-circle.active { background: #2F5BFF; color: #fff; box-shadow: 0 0 0 4px rgba(47,91,255,0.15); }
+  .step-circle.pending { background: #E8EAF0; color: #999; }
+  .step-name { font-size: 11px; color: #888; margin-left: 6px; white-space: nowrap; }
+  .step-name.active { color: #2F5BFF; font-weight: 600; }
+  .step-line { width: 40px; height: 1px; background: #E8EAF0; margin: 0 8px; }
+  .step-line.done { background: #2F5BFF; }
+
+  /* MAIN */
+  .main { position: absolute; inset: 0; top: 56px; display: flex; align-items: center; justify-content: center; padding: 40px; }
+
+  .screen { position: absolute; inset: 0; top: 56px; display: flex; align-items: center; justify-content: center; padding: 40px; opacity: 0; pointer-events: none; transition: all 0.4s ease; transform: translateX(30px); }
+  .screen.active { opacity: 1; pointer-events: all; transform: translateX(0); }
+  .screen.exit { transform: translateX(-30px); }
+
+  /* CARD */
+  .card {
+    background: #fff; border-radius: 20px; padding: 48px; max-width: 560px; width: 100%;
+    box-shadow: 0 4px 40px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .card-step { font-size: 11px; color: #2F5BFF; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; }
+  .card h2 { font-family: 'Wix Madefor Display', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 8px; color: #0F0F1A; }
+  .card p { font-size: 15px; color: #666; margin-bottom: 28px; line-height: 1.5; }
+
+  /* Inputs */
+  .field { margin-bottom: 20px; }
+  .field label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 6px; }
+  .field input, .field textarea {
+    width: 100%; border: 1.5px solid #E0E2E8; border-radius: 10px; padding: 12px 16px;
+    font-size: 15px; font-family: inherit; outline: none; transition: border-color 0.2s;
+    background: #FAFBFC; color: #1A1A2E;
+  }
+  .field input:focus, .field textarea:focus { border-color: #2F5BFF; background: #fff; }
+  .field textarea { resize: none; height: 80px; }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  .opt {
+    border: 1.5px solid #E0E2E8; border-radius: 12px; padding: 14px 16px;
+    cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 12px;
+    background: #FAFBFC;
+  }
+  .opt:hover { border-color: #2F5BFF; background: #F0F3FF; }
+  .opt.selected { border-color: #2F5BFF; background: #F0F3FF; }
+  .opt-radio {
+    width: 18px; height: 18px; border-radius: 50%; border: 2px solid #C0C5D0;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .opt.selected .opt-radio { border-color: #2F5BFF; background: #2F5BFF; }
+  .opt.selected .opt-radio::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #fff; }
+  .opt-text { font-size: 14px; color: #333; }
+
+  /* Buttons */
+  .btn-row { display: flex; gap: 12px; align-items: center; margin-top: 28px; }
+  .btn-next {
+    background: #2F5BFF; color: #fff; border: none; border-radius: 10px;
+    padding: 14px 32px; font-size: 15px; font-weight: 600; cursor: pointer;
+    font-family: inherit; transition: filter 0.2s; display: flex; align-items: center; gap: 8px;
+  }
+  .btn-next:hover { filter: brightness(1.1); }
+  .btn-back { background: none; border: 1.5px solid #E0E2E8; border-radius: 10px; padding: 14px 20px; font-size: 15px; font-family: inherit; cursor: pointer; color: #666; transition: all 0.2s; }
+  .btn-back:hover { border-color: #999; color: #333; }
+
+  /* Fork cards */
+  .fork-cards { display: flex; gap: 14px; margin-bottom: 24px; }
+  .fork-card {
+    flex: 1; border: 1.5px solid #E0E2E8; border-radius: 14px; padding: 20px;
+    cursor: pointer; transition: all 0.2s; background: #FAFBFC;
+  }
+  .fork-card:hover, .fork-card.selected { border-color: #2F5BFF; background: #F0F3FF; }
+  .fork-card .fc-icon { font-size: 22px; margin-bottom: 10px; }
+  .fork-card h4 { font-size: 15px; font-weight: 700; color: #1A1A2E; margin-bottom: 6px; }
+  .fork-card p { font-size: 12px; color: #888; line-height: 1.4; }
+  .fork-card.primary { border-color: #2F5BFF; background: #F0F3FF; }
+  .fork-tpls { display: flex; gap: 6px; margin-top: 10px; }
+  .fork-tpl { flex: 1; height: 40px; background: #E4E8F5; border-radius: 6px; }
+
+  /* Overview */
+  .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+  .ov-cell { background: #F7F8FA; border-radius: 12px; padding: 16px; }
+  .ov-label { font-size: 10px; font-weight: 600; color: #999; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .ov-value { font-size: 14px; color: #1A1A2E; }
+  .ov-swatches { display: flex; gap: 6px; }
+  .ov-sw { width: 24px; height: 24px; border-radius: 5px; }
+  .ov-pages { display: flex; flex-wrap: wrap; gap: 4px; }
+  .ov-page { font-size: 11px; background: #E8EAF0; border-radius: 5px; padding: 3px 8px; color: #555; }
+</style>
+</head>
+<body>
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:20%"></div></div>
+<div class="concept-label">Concept 3 — The Wizard &nbsp;·&nbsp; Step-by-step / Product setup feel</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">Wix</div>
+  <div class="nav-steps" id="nav-steps">
+    <div class="nav-step">
+      <div class="step-circle active" id="dot-1">1</div>
+      <span class="step-name active" id="name-1">Basics</span>
+    </div>
+    <div class="step-line" id="line-1"></div>
+    <div class="nav-step">
+      <div class="step-circle pending" id="dot-2">2</div>
+      <span class="step-name" id="name-2">Audience</span>
+    </div>
+    <div class="step-line" id="line-2"></div>
+    <div class="nav-step">
+      <div class="step-circle pending" id="dot-3">3</div>
+      <span class="step-name" id="name-3">Direction</span>
+    </div>
+    <div class="step-line" id="line-3"></div>
+    <div class="nav-step">
+      <div class="step-circle pending" id="dot-4">4</div>
+      <span class="step-name" id="name-4">Build</span>
+    </div>
+    <div class="step-line" id="line-4"></div>
+    <div class="nav-step">
+      <div class="step-circle pending" id="dot-5">5</div>
+      <span class="step-name" id="name-5">Overview</span>
+    </div>
+  </div>
+</nav>
+
+<!-- S1: Basics -->
+<div class="screen active" id="s1">
+  <div class="card">
+    <div class="card-step">Step 1 of 5 · Basics</div>
+    <h2>Tell me about your business</h2>
+    <p>Just the essentials — we'll fill in the details as we go.</p>
+    <div class="field"><label>Business name</label><input type="text" value="Clay & Calm" /></div>
+    <div class="field"><label>What do you do?</label><textarea>A ceramics studio for kids and families. Open studio, classes, and handmade goods.</textarea></div>
+    <div class="btn-row">
+      <button class="btn-next" onclick="go(2)">Continue <span>→</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- S2: Audience -->
+<div class="screen" id="s2">
+  <div class="card">
+    <div class="card-step">Step 2 of 5 · Audience</div>
+    <h2>Who's your main audience?</h2>
+    <p>This helps Aria pick the right tone and design direction.</p>
+    <div class="options">
+      <div class="opt selected" onclick="sel(this)"><div class="opt-radio"></div><span class="opt-text">Families & parents with kids</span></div>
+      <div class="opt" onclick="sel(this)"><div class="opt-radio"></div><span class="opt-text">Adults interested in craft & wellness</span></div>
+      <div class="opt" onclick="sel(this)"><div class="opt-radio"></div><span class="opt-text">Art educators & schools</span></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="go(1)">← Back</button>
+      <button class="btn-next" onclick="go(3)">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- S3: Direction (Fork) -->
+<div class="screen" id="s3">
+  <div class="card">
+    <div class="card-step">Step 3 of 5 · Design direction</div>
+    <h2>How do you want to build?</h2>
+    <p>Both paths end up in the same place — your perfect site.</p>
+    <div class="fork-cards">
+      <div class="fork-card primary" onclick="selFork(this)">
+        <div class="fc-icon">✦</div>
+        <h4>Taylor Made</h4>
+        <p>Aria designs everything from scratch based on your business</p>
+      </div>
+      <div class="fork-card" onclick="selFork(this)">
+        <div class="fc-icon">⊞</div>
+        <h4>From a template</h4>
+        <p>3 templates picked for you — then customize</p>
+        <div class="fork-tpls"><div class="fork-tpl"></div><div class="fork-tpl"></div><div class="fork-tpl"></div></div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="go(2)">← Back</button>
+      <button class="btn-next" onclick="go(4)">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- S4: Goals + Apps -->
+<div class="screen" id="s4">
+  <div class="card">
+    <div class="card-step">Step 4 of 5 · Goals & Features</div>
+    <h2>What should your site do?</h2>
+    <p>Select everything that applies to your business.</p>
+    <div class="options" id="goals-opts">
+      <div class="opt selected" onclick="toggle(this)"><div class="opt-radio"></div><span class="opt-text">📅 Let customers book classes or appointments</span></div>
+      <div class="opt selected" onclick="toggle(this)"><div class="opt-radio"></div><span class="opt-text">🛒 Sell products online</span></div>
+      <div class="opt" onclick="toggle(this)"><div class="opt-radio"></div><span class="opt-text">✍️ Publish blog posts or updates</span></div>
+      <div class="opt" onclick="toggle(this)"><div class="opt-radio"></div><span class="opt-text">💬 Collect leads & inquiries</span></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="go(3)">← Back</button>
+      <button class="btn-next" onclick="go(5)">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- S5: Overview -->
+<div class="screen" id="s5">
+  <div class="card" style="max-width:640px">
+    <div class="card-step">Step 5 of 5 · Review</div>
+    <h2>Here's your site overview</h2>
+    <p>Everything looks good. You can always change this later.</p>
+    <div class="overview-grid">
+      <div class="ov-cell">
+        <div class="ov-label">Brand Colors</div>
+        <div class="ov-swatches">
+          <div class="ov-sw" style="background:#454F43"></div>
+          <div class="ov-sw" style="background:#EFE4D1"></div>
+          <div class="ov-sw" style="background:#BFA685"></div>
+          <div class="ov-sw" style="background:#EBDFCA"></div>
+        </div>
+      </div>
+      <div class="ov-cell">
+        <div class="ov-label">Typography</div>
+        <div class="ov-value" style="font-family:'Wix Madefor Display',sans-serif;font-size:20px">Playfair Display</div>
+      </div>
+      <div class="ov-cell">
+        <div class="ov-label">Pages</div>
+        <div class="ov-pages">
+          <div class="ov-page">Home</div><div class="ov-page">Classes</div>
+          <div class="ov-page">Gallery</div><div class="ov-page">About</div>
+          <div class="ov-page">Contact</div>
+        </div>
+      </div>
+      <div class="ov-cell">
+        <div class="ov-label">Apps installed</div>
+        <div class="ov-value" style="font-size:13px;color:#555;line-height:1.8">Wix Bookings<br>Wix Stores</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="go(4)">← Back</button>
+      <button class="btn-next" onclick="go(1)" style="background:linear-gradient(135deg,#2F5BFF,#7C3AED)">Build my site →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let current = 1;
+  const pcts = [20, 40, 60, 80, 100];
+  function go(n) {
+    document.getElementById('s'+current).classList.remove('active');
+    current = n;
+    document.getElementById('s'+current).classList.add('active');
+    document.getElementById('progress').style.width = pcts[n-1]+'%';
+    // Update dots
+    for(let i=1;i<=5;i++) {
+      const dot = document.getElementById('dot-'+i);
+      const name = document.getElementById('name-'+i);
+      dot.className = 'step-circle ' + (i<n?'done':i===n?'active':'pending');
+      dot.textContent = i<n ? '✓' : i;
+      name.className = 'step-name' + (i===n?' active':'');
+      if(i<5) {
+        const line = document.getElementById('line-'+i);
+        line.className = 'step-line' + (i<n?' done':'');
+      }
+    }
+  }
+  function sel(el) {
+    el.parentNode.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+  function selFork(el) {
+    el.parentNode.querySelectorAll('.fork-card').forEach(o=>o.classList.remove('primary'));
+    el.classList.add('primary');
+  }
+  function toggle(el) { el.classList.toggle('selected'); }
+</script>
+</body>
+</html>

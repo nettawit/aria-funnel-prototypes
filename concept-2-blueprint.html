@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Concept 2 — The Blueprint</title>
+<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700&family=Wix+Madefor+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Wix Madefor Text', sans-serif; background: #0D1525; color: #fff; height: 100vh; overflow: hidden; }
+
+  .concept-label {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+    background: rgba(47,100,255,0.15); border: 1px solid rgba(47,100,255,0.3);
+    border-radius: 20px; padding: 6px 16px; font-size: 12px; color: rgba(100,160,255,0.8);
+    letter-spacing: 0.04em; z-index: 100;
+  }
+  .steps {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 8px; z-index: 100;
+  }
+  .step-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(47,100,255,0.3); transition: all 0.3s; cursor: pointer; }
+  .step-dot.active { background: #4A8AFF; width: 20px; border-radius: 3px; }
+
+  .screen { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+  .screen.active { opacity: 1; pointer-events: all; }
+
+  /* GRID BG */
+  .grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(47,100,255,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(47,100,255,0.08) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    position: absolute; top: 0; left: 0; right: 0; height: 48px;
+    background: rgba(5,10,25,0.9); border-bottom: 1px solid rgba(47,100,255,0.15);
+    display: flex; align-items: center; padding: 0 24px; gap: 16px; z-index: 10;
+  }
+  .topbar-logo { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); }
+  .topbar-sep { width: 1px; height: 16px; background: rgba(255,255,255,0.1); }
+  .topbar-tag { font-size: 10px; letter-spacing: 0.1em; color: rgba(47,150,255,0.7); text-transform: uppercase; }
+  .topbar-right { margin-left: auto; display: flex; gap: 8px; }
+  .topbar-btn {
+    background: rgba(47,100,255,0.15); border: 1px solid rgba(47,100,255,0.3);
+    color: rgba(100,160,255,0.8); border-radius: 6px; padding: 5px 14px;
+    font-size: 12px; cursor: pointer; font-family: inherit;
+  }
+
+  /* SCREEN 1 — ENTRY */
+  .bp-entry { display: flex; align-items: center; justify-content: center; height: 100%; padding: 80px 40px 40px; }
+  .bp-entry-box {
+    max-width: 600px; width: 100%;
+    border: 1px solid rgba(47,100,255,0.35); border-radius: 4px;
+    padding: 48px; position: relative;
+  }
+  .bp-entry-box::before {
+    content: 'ARIA · SITE SPECIFICATION'; position: absolute; top: -10px; left: 24px;
+    background: #0D1525; padding: 0 8px; font-size: 9px; letter-spacing: 0.15em;
+    color: rgba(47,150,255,0.6);
+  }
+  .bp-entry-box::after {
+    content: '01'; position: absolute; top: -10px; right: 24px;
+    background: #0D1525; padding: 0 8px; font-size: 9px;
+    color: rgba(47,100,255,0.4);
+  }
+  .bp-field { margin-bottom: 28px; }
+  .bp-field-label { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(47,150,255,0.6); margin-bottom: 8px; }
+  .bp-field-input {
+    width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(47,100,255,0.3);
+    color: rgba(200,220,255,0.9); font-family: inherit; font-size: 20px; padding: 10px 0;
+    outline: none; transition: border-color 0.3s;
+  }
+  .bp-field-input:focus { border-bottom-color: rgba(47,150,255,0.8); }
+  .bp-field-input::placeholder { color: rgba(47,100,255,0.25); font-size: 16px; }
+  .bp-submit {
+    background: rgba(47,100,255,0.2); border: 1px solid rgba(47,100,255,0.5);
+    color: rgba(100,170,255,0.9); border-radius: 4px; padding: 12px 28px;
+    font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; letter-spacing: 0.05em;
+    transition: all 0.2s;
+  }
+  .bp-submit:hover { background: rgba(47,100,255,0.35); border-color: rgba(47,150,255,0.7); }
+  /* corner brackets */
+  .corner { position: absolute; width: 12px; height: 12px; border-color: rgba(47,150,255,0.5); border-style: solid; }
+  .corner.tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .corner.tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+  .corner.bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+  .corner.br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+  /* SCREEN 2 — EDITOR with chat */
+  .bp-editor { display: flex; height: 100%; padding-top: 48px; }
+  .bp-canvas { flex: 1; position: relative; overflow: hidden; }
+  .bp-panel { width: 360px; background: rgba(5,10,25,0.95); border-left: 1px solid rgba(47,100,255,0.15); display: flex; flex-direction: column; }
+  .panel-header { padding: 16px 20px; border-bottom: 1px solid rgba(47,100,255,0.1); }
+  .panel-header h3 { font-size: 13px; font-weight: 600; color: rgba(180,210,255,0.9); }
+  .panel-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+  .msg { border-radius: 10px; padding: 12px 14px; font-size: 13px; line-height: 1.5; max-width: 90%; }
+  .msg.aria { background: rgba(47,80,180,0.2); border: 1px solid rgba(47,100,255,0.2); color: rgba(180,210,255,0.9); align-self: flex-start; }
+  .msg.user { background: rgba(47,100,255,0.25); color: rgba(220,235,255,0.95); align-self: flex-end; text-align: right; }
+  .panel-composer { padding: 12px 16px; border-top: 1px solid rgba(47,100,255,0.1); display: flex; gap: 8px; }
+  .composer-input {
+    flex: 1; background: rgba(47,80,180,0.1); border: 1px solid rgba(47,100,255,0.2);
+    border-radius: 8px; padding: 10px 14px; color: rgba(200,220,255,0.9);
+    font-family: inherit; font-size: 13px; outline: none;
+  }
+  .composer-send {
+    width: 36px; height: 36px; background: rgba(47,100,255,0.4); border: none;
+    border-radius: 8px; cursor: pointer; color: #fff; font-size: 14px;
+  }
+  /* blueprint elements appearing on canvas */
+  .bp-schematic { position: absolute; inset: 0; padding: 24px; }
+  .bp-section {
+    position: absolute; border: 1px solid rgba(47,100,255,0.35); border-radius: 4px;
+    padding: 12px 14px; transition: all 0.6s ease;
+  }
+  .bp-section .sec-label { font-size: 8px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(47,150,255,0.6); margin-bottom: 6px; }
+  .bp-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(47,150,255,0.5); display: inline-block; margin-right: 4px; }
+
+  /* SCREEN 3 — Fork on blueprint */
+  .bp-fork { display: flex; align-items: center; justify-content: center; height: 100%; padding: 80px 40px 40px; }
+  .bp-fork-inner { max-width: 700px; width: 100%; }
+  .bp-fork-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(47,150,255,0.6); margin-bottom: 20px; text-align: center; }
+  .bp-fork-q { font-family: 'Wix Madefor Display', sans-serif; font-size: 30px; font-weight: 700; text-align: center; color: rgba(200,220,255,0.95); margin-bottom: 32px; }
+  .bp-options { display: flex; gap: 16px; }
+  .bp-option {
+    flex: 1; border: 1px solid rgba(47,100,255,0.35); border-radius: 4px; padding: 28px;
+    cursor: pointer; transition: all 0.2s; position: relative;
+  }
+  .bp-option::before { content: attr(data-n); position: absolute; top: -10px; left: 20px; background: #0D1525; padding: 0 8px; font-size: 9px; letter-spacing: 0.12em; color: rgba(47,150,255,0.5); }
+  .bp-option:hover { border-color: rgba(47,150,255,0.7); background: rgba(47,80,180,0.08); }
+  .bp-option h4 { font-size: 16px; font-weight: 700; color: rgba(200,220,255,0.95); margin-bottom: 8px; }
+  .bp-option p { font-size: 12px; color: rgba(100,140,200,0.7); line-height: 1.5; }
+  .bp-option .tpls { display: flex; gap: 6px; margin-top: 16px; }
+  .bp-option .tpl-mini { width: 60px; height: 44px; background: rgba(47,80,180,0.15); border: 1px solid rgba(47,100,255,0.2); border-radius: 3px; }
+
+  /* SCREEN 4 — Blueprint Dashboard */
+  .bp-dash { display: flex; height: 100%; padding-top: 48px; }
+  .bp-main { flex: 1; overflow-y: auto; padding: 24px; }
+  .bp-stamp { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(47,150,255,0.4); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+  .bp-stamp::after { content: ''; flex: 1; height: 1px; background: rgba(47,100,255,0.15); }
+  .bp-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .bp-card {
+    border: 1px solid rgba(47,100,255,0.25); padding: 20px; position: relative; cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .bp-card:hover { border-color: rgba(47,150,255,0.5); background: rgba(47,80,180,0.06); }
+  .bp-card-n { position: absolute; top: -9px; left: 16px; background: #0D1525; padding: 0 6px; font-size: 8px; letter-spacing: 0.12em; color: rgba(47,150,255,0.5); }
+  .bp-card h4 { font-size: 12px; font-weight: 600; color: rgba(100,160,255,0.8); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 12px; }
+  .swatches { display: flex; gap: 6px; }
+  .sw { width: 28px; height: 28px; border-radius: 3px; }
+  .font-sample { font-family: 'Wix Madefor Display', sans-serif; font-size: 28px; color: rgba(200,220,255,0.9); }
+  .pages-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pg { font-size: 10px; color: rgba(100,150,220,0.7); padding: 3px 8px; border: 1px solid rgba(47,100,255,0.2); border-radius: 3px; }
+  .app-row { display: flex; flex-direction: column; gap: 6px; }
+  .app-item { font-size: 12px; color: rgba(150,190,255,0.8); display: flex; align-items: center; gap: 6px; }
+  .app-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(47,150,255,0.5); }
+</style>
+</head>
+<body>
+<div class="concept-label">Concept 2 — The Blueprint &nbsp;·&nbsp; Architectural / Technical feel</div>
+
+<!-- S1: Entry -->
+<div class="screen active" id="s1">
+  <div class="grid-bg"></div>
+  <div class="topbar">
+    <span class="topbar-logo">Wix</span>
+    <span class="topbar-sep"></span>
+    <span class="topbar-tag">Site Specification · Draft</span>
+  </div>
+  <div class="bp-entry">
+    <div class="bp-entry-box">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+      <div class="bp-field">
+        <div class="bp-field-label">Business name</div>
+        <input class="bp-field-input" type="text" placeholder="Clay & Calm" />
+      </div>
+      <div class="bp-field">
+        <div class="bp-field-label">Describe your business</div>
+        <input class="bp-field-input" type="text" placeholder="A ceramics studio for kids and families..." id="entry-input"/>
+      </div>
+      <div class="bp-field">
+        <div class="bp-field-label">Primary goal</div>
+        <input class="bp-field-input" type="text" placeholder="Book classes, sell handmade goods..." />
+      </div>
+      <button class="bp-submit" onclick="go(2)">INITIATE BLUEPRINT &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- S2: Editor + Aria -->
+<div class="screen" id="s2">
+  <div class="grid-bg"></div>
+  <div class="topbar">
+    <span class="topbar-logo">Wix Editor</span>
+    <span class="topbar-sep"></span>
+    <span class="topbar-tag">Clay & Calm · Building blueprint...</span>
+    <div class="topbar-right">
+      <button class="topbar-btn" onclick="go(3)">Next →</button>
+    </div>
+  </div>
+  <div class="bp-editor">
+    <div class="bp-canvas">
+      <div class="bp-schematic">
+        <div class="bp-section" style="left:48px;top:60px;width:200px">
+          <div class="sec-label">01 / Colors</div>
+          <div style="display:flex;gap:6px">
+            <div style="width:24px;height:24px;border-radius:3px;background:#454F43"></div>
+            <div style="width:24px;height:24px;border-radius:3px;background:#EFE4D1"></div>
+            <div style="width:24px;height:24px;border-radius:3px;background:#BFA685"></div>
+          </div>
+        </div>
+        <div class="bp-section" style="left:48px;top:200px;width:200px">
+          <div class="sec-label">02 / Typography</div>
+          <div style="font-family:'Wix Madefor Display',sans-serif;font-size:24px;color:rgba(200,220,255,0.8)">Aa</div>
+          <div style="font-size:10px;color:rgba(100,150,200,0.7);margin-top:2px">Playfair Display</div>
+        </div>
+        <div class="bp-section" style="left:280px;top:60px;width:260px">
+          <div class="sec-label">03 / Site Structure</div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px">
+            <div class="pg">Home</div><div class="pg">Classes</div>
+            <div class="pg">Gallery</div><div class="pg">About</div><div class="pg">Contact</div>
+          </div>
+        </div>
+        <div class="bp-section" style="left:280px;top:200px;width:260px">
+          <div class="sec-label">04 / Apps</div>
+          <div class="app-row">
+            <div class="app-item"><span class="app-dot"></span>Wix Bookings</div>
+            <div class="app-item"><span class="app-dot"></span>Wix Stores</div>
+          </div>
+        </div>
+        <div style="position:absolute;bottom:80px;right:120px;font-size:9px;letter-spacing:0.12em;color:rgba(47,100,255,0.3)">CLAY & CALM · ARIA BLUEPRINT · v0.1</div>
+      </div>
+    </div>
+    <div class="bp-panel">
+      <div class="panel-header"><h3>Ask Aria</h3></div>
+      <div class="panel-messages">
+        <div class="msg aria">Got it! Clay & Calm is a ceramics studio. Let me map out your blueprint.</div>
+        <div class="msg aria">Who is your main audience — adults, kids, or both?</div>
+        <div class="msg user">Mainly kids and families</div>
+        <div class="msg aria">Do you sell physical products online, or just book classes?</div>
+      </div>
+      <div class="panel-composer">
+        <input class="composer-input" placeholder="Type your answer..." />
+        <button class="composer-send">↑</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S3: Fork -->
+<div class="screen" id="s3">
+  <div class="grid-bg"></div>
+  <div class="topbar">
+    <span class="topbar-logo">Wix Editor</span>
+    <span class="topbar-sep"></span>
+    <span class="topbar-tag">Clay & Calm · Choose path</span>
+  </div>
+  <div class="bp-fork">
+    <div class="bp-fork-inner">
+      <div class="bp-fork-title">Blueprint Decision Point</div>
+      <div class="bp-fork-q">How shall we build the visual?</div>
+      <div class="bp-options">
+        <div class="bp-option" data-n="PATH A" onclick="go(4)">
+          <h4>Taylor Made ✦</h4>
+          <p>Aria generates a custom visual design from your blueprint. Colors, fonts, and layout built specifically for Clay & Calm.</p>
+        </div>
+        <div class="bp-option" data-n="PATH B" onclick="go(4)">
+          <h4>Start from template</h4>
+          <p>Choose from 3 templates matched to your business type. Blueprint data will be applied automatically.</p>
+          <div class="tpls">
+            <div class="tpl-mini"></div>
+            <div class="tpl-mini"></div>
+            <div class="tpl-mini"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S4: Blueprint Dashboard -->
+<div class="screen" id="s4">
+  <div class="grid-bg"></div>
+  <div class="topbar">
+    <span class="topbar-logo">Wix Editor</span>
+    <span class="topbar-sep"></span>
+    <span class="topbar-tag">Clay & Calm · Site Blueprint</span>
+    <div class="topbar-right">
+      <button class="topbar-btn">Edit</button>
+      <button class="topbar-btn" style="background:rgba(47,100,255,0.3)" onclick="go(1)">Build site →</button>
+    </div>
+  </div>
+  <div class="bp-dash">
+    <div class="bp-main">
+      <div class="bp-stamp">SITE BLUEPRINT — CLAY & CALM — REV 1.0</div>
+      <div class="bp-sections">
+        <div class="bp-card">
+          <div class="bp-card-n">01 / BRAND COLORS</div>
+          <h4>Colors</h4>
+          <div class="swatches">
+            <div class="sw" style="background:#454F43"></div>
+            <div class="sw" style="background:#EFE4D1"></div>
+            <div class="sw" style="background:#BFA685"></div>
+            <div class="sw" style="background:#EBDFCA"></div>
+          </div>
+        </div>
+        <div class="bp-card">
+          <div class="bp-card-n">02 / TYPOGRAPHY</div>
+          <h4>Fonts</h4>
+          <div class="font-sample">Aa</div>
+          <div style="font-size:10px;color:rgba(100,150,200,0.6);margin-top:4px">Playfair Display · Wix Madefor Text</div>
+        </div>
+        <div class="bp-card">
+          <div class="bp-card-n">03 / PAGES</div>
+          <h4>Site Structure</h4>
+          <div class="pages-row">
+            <div class="pg">Home</div><div class="pg">Classes</div>
+            <div class="pg">Gallery</div><div class="pg">About</div><div class="pg">Contact</div>
+          </div>
+        </div>
+        <div class="bp-card">
+          <div class="bp-card-n">04 / APPS</div>
+          <h4>Services</h4>
+          <div class="app-row">
+            <div class="app-item"><span class="app-dot"></span>Wix Bookings</div>
+            <div class="app-item"><span class="app-dot"></span>Wix Stores</div>
+            <div class="app-item"><span class="app-dot"></span>Wix Blog</div>
+          </div>
+        </div>
+        <div class="bp-card" style="grid-column:1/-1">
+          <div class="bp-card-n">05 / GOALS</div>
+          <h4>Business Goals</h4>
+          <div style="font-size:12px;color:rgba(150,190,255,0.8)">Book studio classes · Sell handmade ceramics · Build a community around craft</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="steps">
+  <div class="step-dot active" onclick="go(1)"></div>
+  <div class="step-dot" onclick="go(2)"></div>
+  <div class="step-dot" onclick="go(3)"></div>
+  <div class="step-dot" onclick="go(4)"></div>
+</div>
+
+<script>
+  let current = 1;
+  function go(n) {
+    document.getElementById('s'+current).classList.remove('active');
+    document.querySelectorAll('.step-dot')[current-1].classList.remove('active');
+    current = n;
+    document.getElementById('s'+current).classList.add('active');
+    document.querySelectorAll('.step-dot')[current-1].classList.add('active');
+  }
+</script>
+</body>
+</html>

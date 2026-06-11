@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Concept 4 — The Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700&family=Wix+Madefor+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Wix Madefor Text', sans-serif; background: #F0F2F7; color: #1A1A2E; height: 100vh; overflow: hidden; }
+
+  .concept-label {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+    background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 20px; padding: 6px 16px; font-size: 12px; color: #666; z-index: 200;
+  }
+
+  /* SCREEN LAYERS */
+  .screen { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+  .screen.active { opacity: 1; pointer-events: all; }
+
+  /* ───── SCREEN 1: ENTRY ───── */
+  #s1 { display: flex; align-items: center; justify-content: center; background: #fff; }
+  .entry-center { text-align: center; max-width: 600px; }
+  .wix-logo { font-size: 28px; font-weight: 800; margin-bottom: 48px; }
+  .entry-center h1 { font-family: 'Wix Madefor Display', sans-serif; font-size: 44px; font-weight: 800; line-height: 1.1; margin-bottom: 16px; color: #0F0F1A; }
+  .entry-center h1 span { color: #2F5BFF; }
+  .entry-center p { color: #888; font-size: 16px; margin-bottom: 40px; }
+  .entry-big-input {
+    width: 100%; border: 2px solid #E0E2E8; border-radius: 16px; padding: 20px 24px;
+    font-size: 18px; font-family: inherit; outline: none; transition: border-color 0.2s; color: #1A1A2E;
+    background: #FAFBFC; margin-bottom: 16px;
+  }
+  .entry-big-input:focus { border-color: #2F5BFF; background: #fff; }
+  .entry-big-input::placeholder { color: #C0C5D5; }
+  .entry-btn {
+    background: #2F5BFF; color: #fff; border: none; border-radius: 12px;
+    padding: 16px 40px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit;
+    width: 100%; transition: filter 0.2s;
+  }
+  .entry-btn:hover { filter: brightness(1.1); }
+
+  /* ───── SCREENS 2-4: EDITOR LAYOUT ───── */
+  .editor-layout { display: flex; height: 100%; flex-direction: column; }
+  .topbar {
+    height: 52px; background: #fff; border-bottom: 1px solid #E8EAF0;
+    display: flex; align-items: center; padding: 0 20px; gap: 12px; flex-shrink: 0;
+  }
+  .tb-logo { font-size: 14px; font-weight: 700; }
+  .tb-sep { width: 1px; height: 16px; background: #E0E2E8; }
+  .tb-site { font-size: 13px; color: #555; display: flex; align-items: center; gap: 6px; }
+  .tb-site span { color: #2F5BFF; font-weight: 600; }
+  .tb-right { margin-left: auto; display: flex; gap: 8px; }
+  .tb-btn {
+    background: none; border: 1.5px solid #E0E2E8; border-radius: 8px; padding: 6px 16px;
+    font-size: 13px; cursor: pointer; font-family: inherit; color: #555; transition: all 0.2s;
+  }
+  .tb-btn:hover { border-color: #999; color: #1A1A2E; }
+  .tb-btn.primary { background: #2F5BFF; border-color: #2F5BFF; color: #fff; }
+  .tb-btn.primary:hover { filter: brightness(1.1); }
+
+  .editor-body { display: flex; flex: 1; overflow: hidden; }
+
+  /* CANVAS */
+  .canvas {
+    flex: 1; background: #E8ECF5; position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .canvas-inner { background: #fff; border-radius: 4px; box-shadow: 0 4px 40px rgba(0,0,0,0.12); transition: all 0.6s ease; }
+
+  /* Live site preview states */
+  .site-preview { width: 520px; height: 360px; overflow: hidden; border-radius: 4px; }
+  .sp-header { height: 44px; display: flex; align-items: center; padding: 0 20px; gap: 8px; }
+  .sp-nav-item { font-size: 11px; color: #555; cursor: pointer; }
+  .sp-hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; }
+  .sp-title { font-family: 'Wix Madefor Display', sans-serif; font-size: 32px; font-weight: 800; color: #1A1A2E; margin-bottom: 8px; transition: all 0.5s; }
+  .sp-subtitle { font-size: 13px; color: #888; max-width: 280px; line-height: 1.5; transition: all 0.5s; }
+  .sp-cta { margin-top: 16px; background: #454F43; color: #fff; border: none; border-radius: 8px; padding: 10px 24px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.5s; }
+
+  /* Blueprint overlay (state 4) */
+  .bp-overlay {
+    position: absolute; inset: 0; background: rgba(8,14,32,0.92);
+    display: none; padding: 20px; flex-direction: column; gap: 12px;
+    background-image: linear-gradient(rgba(47,100,255,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(47,100,255,0.07) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .bp-overlay.show { display: flex; }
+  .bp-row { display: flex; gap: 10px; flex: 1; }
+  .bp-box {
+    flex: 1; border: 1px solid rgba(47,100,255,0.35); border-radius: 4px; padding: 12px;
+    position: relative;
+  }
+  .bp-box::before { content: attr(data-label); position: absolute; top: -8px; left: 12px; background: #080E20; padding: 0 6px; font-size: 8px; letter-spacing: 0.12em; color: rgba(47,150,255,0.6); }
+  .bp-swatches { display: flex; gap: 6px; margin-top: 6px; }
+  .bp-sw { width: 22px; height: 22px; border-radius: 3px; }
+  .bp-font { font-family: 'Wix Madefor Display', sans-serif; font-size: 26px; color: rgba(200,220,255,0.8); }
+  .bp-pages { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .bp-pg { font-size: 9px; color: rgba(100,150,220,0.7); padding: 2px 6px; border: 1px solid rgba(47,100,255,0.2); border-radius: 2px; }
+  .bp-apps { font-size: 10px; color: rgba(150,190,255,0.8); line-height: 1.8; margin-top:4px }
+
+  /* Aria panel */
+  .aria-panel { width: 340px; background: #fff; border-left: 1px solid #E8EAF0; display: flex; flex-direction: column; }
+  .ap-head { padding: 16px 18px; border-bottom: 1px solid #E8EAF0; display: flex; align-items: center; gap: 10px; }
+  .ap-avatar { width: 28px; height: 28px; background: #2F5BFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .ap-name { font-size: 13px; font-weight: 600; color: #1A1A2E; }
+  .ap-status { font-size: 11px; color: #2F5BFF; }
+  .ap-messages { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+  .ap-msg { border-radius: 12px; padding: 10px 13px; font-size: 13px; line-height: 1.5; max-width: 88%; }
+  .ap-msg.aria { background: #F0F3FF; color: #2A2A4A; align-self: flex-start; }
+  .ap-msg.user { background: #2F5BFF; color: #fff; align-self: flex-end; }
+  .ap-composer { padding: 10px 14px; border-top: 1px solid #E8EAF0; display: flex; gap: 8px; }
+  .ap-input {
+    flex: 1; background: #F5F6FA; border: 1.5px solid #E0E2E8; border-radius: 22px;
+    padding: 9px 16px; font-size: 13px; font-family: inherit; outline: none; transition: border-color 0.2s;
+  }
+  .ap-input:focus { border-color: #2F5BFF; background: #fff; }
+  .ap-send { width: 36px; height: 36px; background: #2F5BFF; border: none; border-radius: 50%; color: #fff; font-size: 14px; cursor: pointer; flex-shrink: 0; }
+
+  /* Fork modal */
+  .fork-modal {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: none;
+    align-items: center; justify-content: center; z-index: 50;
+  }
+  .fork-modal.show { display: flex; }
+  .fork-card-wrap { background: #fff; border-radius: 20px; padding: 40px; max-width: 520px; width: 90%; }
+  .fork-card-wrap h2 { font-family: 'Wix Madefor Display', sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+  .fork-card-wrap p { color: #888; font-size: 14px; margin-bottom: 24px; }
+  .fork-opts { display: flex; gap: 12px; margin-bottom: 20px; }
+  .fork-opt {
+    flex: 1; border: 2px solid #E0E2E8; border-radius: 14px; padding: 20px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .fork-opt:hover, .fork-opt.active { border-color: #2F5BFF; background: #F0F3FF; }
+  .fork-opt h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .fork-opt p { font-size: 12px; color: #888; margin: 0; line-height: 1.4; }
+  .fork-opt .tpls { display: flex; gap: 5px; margin-top: 10px; }
+  .fork-opt .tpl { flex: 1; height: 36px; background: #E4E8F5; border-radius: 5px; }
+  .fork-confirm {
+    background: #2F5BFF; color: #fff; border: none; border-radius: 10px;
+    padding: 14px 28px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; width: 100%;
+  }
+
+  /* Dots */
+  .steps { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 100; }
+  .step-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(0,0,0,0.15); transition: all 0.3s; cursor: pointer; }
+  .step-dot.active { background: #2F5BFF; width: 20px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="concept-label">Concept 4 — The Studio &nbsp;·&nbsp; Live co-creation feel</div>
+
+<!-- S1: Entry -->
+<div class="screen active" id="s1">
+  <div class="entry-center">
+    <div class="wix-logo">Wix</div>
+    <h1>Build your site<br><span>with Aria</span></h1>
+    <p>Describe your business — Aria will start building as you talk.</p>
+    <input class="entry-big-input" type="text" placeholder="A ceramics studio for kids in Tel Aviv..." id="entry-input" />
+    <button class="entry-btn" onclick="go(2)">Open Studio →</button>
+  </div>
+</div>
+
+<!-- S2: Editor — Onboarding -->
+<div class="screen" id="s2">
+  <div class="editor-layout">
+    <div class="topbar">
+      <span class="tb-logo">Wix</span><span class="tb-sep"></span>
+      <div class="tb-site">Building: <span>Clay & Calm</span></div>
+      <div class="tb-right">
+        <button class="tb-btn" onclick="document.getElementById('fork').classList.add('show')">Continue →</button>
+      </div>
+    </div>
+    <div class="editor-body">
+      <!-- Live canvas -->
+      <div class="canvas">
+        <div class="canvas-inner">
+          <div class="site-preview">
+            <div class="sp-header" style="background:#454F43">
+              <span style="font-size:12px;font-weight:700;color:#fff">Clay & Calm</span>
+              <div style="margin-left:auto;display:flex;gap:16px">
+                <span class="sp-nav-item" style="color:rgba(255,255,255,0.7)">Classes</span>
+                <span class="sp-nav-item" style="color:rgba(255,255,255,0.7)">Gallery</span>
+                <span class="sp-nav-item" style="color:rgba(255,255,255,0.7)">Contact</span>
+              </div>
+            </div>
+            <div style="background:linear-gradient(160deg,#EFE4D1,#fff);flex:1;display:flex;align-items:center;justify-content:center;padding:32px;text-align:center;height:316px">
+              <div>
+                <div class="sp-title">Clay & Calm</div>
+                <div class="sp-subtitle">Where kids and families explore ceramics together</div>
+                <button class="sp-cta" style="margin-top:16px">Book a class →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-size:11px;color:#8A90A0;background:rgba(255,255,255,0.9);padding:4px 12px;border-radius:20px">Live preview — updates as you answer</div>
+      </div>
+      <!-- Aria chat -->
+      <div class="aria-panel">
+        <div class="ap-head">
+          <div class="ap-avatar">A</div>
+          <div><div class="ap-name">Aria</div><div class="ap-status">● Building your site</div></div>
+        </div>
+        <div class="ap-messages">
+          <div class="ap-msg aria">I'm already setting up your site based on what you told me! Let me ask a few more things.</div>
+          <div class="ap-msg aria">Who are your main customers — kids, adults, or both?</div>
+          <div class="ap-msg user">Mainly kids and families</div>
+          <div class="ap-msg aria">Got it — I'll make the tone warm and family-friendly. Do you sell physical ceramics, or just run classes?</div>
+          <div class="ap-msg user">Both — classes and an online shop</div>
+          <div class="ap-msg aria">Adding Wix Bookings and Wix Stores to your site. What's the vibe? Earthy & calm, or bright & playful?</div>
+        </div>
+        <div class="ap-composer">
+          <input class="ap-input" placeholder="Earthy and calm..." />
+          <button class="ap-send">↑</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Fork Modal -->
+  <div class="fork-modal" id="fork">
+    <div class="fork-card-wrap">
+      <h2>Now, let's choose your look</h2>
+      <p>Aria has everything she needs. How do you want to style your site?</p>
+      <div class="fork-opts">
+        <div class="fork-opt active" onclick="selFork(this)">
+          <h4>✦ Taylor Made</h4>
+          <p>Aria creates a completely custom design for Clay & Calm</p>
+        </div>
+        <div class="fork-opt" onclick="selFork(this)">
+          <h4>⊞ Template</h4>
+          <p>3 templates matched to your business</p>
+          <div class="tpls"><div class="tpl"></div><div class="tpl"></div><div class="tpl"></div></div>
+        </div>
+      </div>
+      <button class="fork-confirm" onclick="document.getElementById('fork').classList.remove('show');go(3)">Build my site →</button>
+    </div>
+  </div>
+</div>
+
+<!-- S3: Blueprint overlay -->
+<div class="screen" id="s3">
+  <div class="editor-layout">
+    <div class="topbar">
+      <span class="tb-logo">Wix</span><span class="tb-sep"></span>
+      <div class="tb-site">Blueprint: <span>Clay & Calm</span></div>
+      <div class="tb-right">
+        <button class="tb-btn" onclick="go(4)">Looks good →</button>
+      </div>
+    </div>
+    <div class="editor-body">
+      <div class="canvas">
+        <div class="canvas-inner" style="width:560px;height:380px">
+          <div class="bp-overlay show" style="width:560px;height:380px;border-radius:4px">
+            <div style="font-size:8px;letter-spacing:0.15em;color:rgba(47,150,255,0.5);text-transform:uppercase">CLAY & CALM · SITE BLUEPRINT · ARIA v1.0</div>
+            <div class="bp-row">
+              <div class="bp-box" data-label="01 / COLORS">
+                <div class="bp-swatches">
+                  <div class="bp-sw" style="background:#454F43"></div>
+                  <div class="bp-sw" style="background:#EFE4D1"></div>
+                  <div class="bp-sw" style="background:#BFA685"></div>
+                  <div class="bp-sw" style="background:#EBDFCA"></div>
+                </div>
+              </div>
+              <div class="bp-box" data-label="02 / TYPOGRAPHY">
+                <div class="bp-font">Aa</div>
+                <div style="font-size:9px;color:rgba(100,150,200,0.6);margin-top:2px">Playfair Display</div>
+              </div>
+            </div>
+            <div class="bp-row">
+              <div class="bp-box" data-label="03 / PAGES">
+                <div class="bp-pages">
+                  <div class="bp-pg">Home</div><div class="bp-pg">Classes</div>
+                  <div class="bp-pg">Gallery</div><div class="bp-pg">About</div><div class="bp-pg">Contact</div>
+                </div>
+              </div>
+              <div class="bp-box" data-label="04 / APPS">
+                <div class="bp-apps">Wix Bookings<br>Wix Stores<br>Wix Blog</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-size:11px;color:rgba(47,150,255,0.8);background:rgba(8,14,32,0.8);padding:4px 14px;border-radius:20px">Click any section to edit</div>
+      </div>
+      <div class="aria-panel">
+        <div class="ap-head">
+          <div class="ap-avatar">A</div>
+          <div><div class="ap-name">Aria</div><div class="ap-status">● Blueprint ready</div></div>
+        </div>
+        <div class="ap-messages">
+          <div class="ap-msg aria">Here's your site blueprint! I mapped out everything we discussed.</div>
+          <div class="ap-msg aria">Click any section on the canvas to tweak it. When you're ready — I'll build the full site.</div>
+        </div>
+        <div class="ap-composer">
+          <input class="ap-input" placeholder="Change something..." />
+          <button class="ap-send">↑</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S4: Domain + Build -->
+<div class="screen" id="s4">
+  <div class="editor-layout">
+    <div class="topbar">
+      <span class="tb-logo">Wix</span><span class="tb-sep"></span>
+      <div class="tb-site"><span>Clay & Calm</span> · Almost there!</div>
+      <div class="tb-right">
+        <button class="tb-btn primary" onclick="go(1)">Build my site →</button>
+      </div>
+    </div>
+    <div class="editor-body">
+      <div class="canvas">
+        <div class="canvas-inner" style="width:480px;padding:40px;text-align:center">
+          <div style="font-size:40px;margin-bottom:20px">🌐</div>
+          <h3 style="font-family:'Wix Madefor Display',sans-serif;font-size:24px;font-weight:800;margin-bottom:8px">One last thing</h3>
+          <p style="color:#888;font-size:14px;margin-bottom:28px;line-height:1.5">Connect a domain so people can find your site easily</p>
+          <div style="border:2px solid #E0E2E8;border-radius:12px;padding:16px 20px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:12px;background:#FAFBFC">
+            <div style="width:10px;height:10px;border-radius:50%;background:#2F5BFF"></div>
+            <div style="text-align:left">
+              <div style="font-size:14px;font-weight:600">clayandcalm.com</div>
+              <div style="font-size:12px;color:#2F5BFF">Free with Premium plan</div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:#AAA;margin-bottom:24px;cursor:pointer">Skip for now →</div>
+          <button style="background:#2F5BFF;color:#fff;border:none;border-radius:10px;padding:14px 32px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;width:100%" onclick="go(1)">Let's build! →</button>
+        </div>
+      </div>
+      <div class="aria-panel">
+        <div class="ap-head">
+          <div class="ap-avatar">A</div>
+          <div><div class="ap-name">Aria</div><div class="ap-status">● Ready to build</div></div>
+        </div>
+        <div class="ap-messages">
+          <div class="ap-msg aria">Your blueprint is perfect! 🎉 One last thing — want to grab a domain?</div>
+          <div class="ap-msg aria">clayandcalm.com is available and it's free with a Premium plan.</div>
+        </div>
+        <div class="ap-composer">
+          <input class="ap-input" placeholder="Ask Aria anything..." />
+          <button class="ap-send">↑</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="steps">
+  <div class="step-dot active" onclick="go(1)"></div>
+  <div class="step-dot" onclick="go(2)"></div>
+  <div class="step-dot" onclick="go(3)"></div>
+  <div class="step-dot" onclick="go(4)"></div>
+</div>
+
+<script>
+  let current = 1;
+  function go(n) {
+    document.getElementById('s'+current).classList.remove('active');
+    document.querySelectorAll('.step-dot')[current-1].classList.remove('active');
+    current = n;
+    document.getElementById('s'+current).classList.add('active');
+    document.querySelectorAll('.step-dot')[current-1].classList.add('active');
+  }
+  function selFork(el) {
+    el.parentNode.querySelectorAll('.fork-opt').forEach(o=>o.classList.remove('active'));
+    el.classList.add('active');
+  }
+  document.getElementById('entry-input').addEventListener('keydown', e => { if(e.key==='Enter') go(2); });
+</script>
+</body>
+</html>

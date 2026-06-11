@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Concept 1 — The Brief</title>
+<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700&family=Wix+Madefor+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Wix Madefor Text', sans-serif; background: #0A0A0F; color: #fff; height: 100vh; overflow: hidden; }
+
+  /* LABEL */
+  .concept-label {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px; padding: 6px 16px; font-size: 12px; color: rgba(255,255,255,0.5);
+    letter-spacing: 0.04em; z-index: 100;
+  }
+
+  /* STEP INDICATOR */
+  .steps {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 8px; z-index: 100;
+  }
+  .step-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,0.2); transition: all 0.3s;
+    cursor: pointer;
+  }
+  .step-dot.active { background: #fff; width: 20px; border-radius: 3px; }
+
+  /* SCREENS */
+  .screen {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    padding: 40px; opacity: 0; pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    transform: translateY(20px);
+  }
+  .screen.active { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+  /* SCREEN 1 — Entry */
+  .entry-wrap { text-align: center; max-width: 680px; width: 100%; }
+  .entry-eyebrow { font-size: 12px; letter-spacing: 0.12em; color: rgba(255,255,255,0.35); text-transform: uppercase; margin-bottom: 32px; }
+  .entry-headline { font-family: 'Wix Madefor Display', sans-serif; font-size: 56px; font-weight: 800; line-height: 1.05; margin-bottom: 48px; }
+  .entry-headline span { color: rgba(255,255,255,0.3); }
+  .entry-input {
+    width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.2);
+    color: #fff; font-family: 'Wix Madefor Text', sans-serif; font-size: 22px; padding: 16px 0;
+    outline: none; text-align: center; transition: border-color 0.3s;
+  }
+  .entry-input:focus { border-bottom-color: rgba(255,255,255,0.6); }
+  .entry-input::placeholder { color: rgba(255,255,255,0.2); }
+  .entry-hint { margin-top: 16px; font-size: 13px; color: rgba(255,255,255,0.25); }
+  .btn-ghost {
+    margin-top: 40px; display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7); border-radius: 10px; padding: 12px 28px;
+    font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.14); color: #fff; }
+
+  /* SCREEN 2 — Questions */
+  .question-wrap { text-align: center; max-width: 560px; width: 100%; }
+  .q-from { font-size: 11px; letter-spacing: 0.1em; color: rgba(255,255,255,0.3); text-transform: uppercase; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .q-from::before, .q-from::after { content: ''; flex: 1; max-width: 40px; height: 1px; background: rgba(255,255,255,0.1); }
+  .q-text { font-family: 'Wix Madefor Display', sans-serif; font-size: 36px; font-weight: 700; line-height: 1.2; margin-bottom: 40px; }
+  .q-options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+  .q-option {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; padding: 16px 20px; text-align: left; cursor: pointer;
+    font-family: inherit; font-size: 15px; color: rgba(255,255,255,0.7);
+    transition: all 0.2s;
+  }
+  .q-option:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.25); color: #fff; }
+  .q-option.selected { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); color: #fff; }
+  .q-input {
+    width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.15);
+    color: #fff; font-family: inherit; font-size: 16px; padding: 12px 0;
+    outline: none; transition: border-color 0.3s;
+  }
+  .q-input:focus { border-bottom-color: rgba(255,255,255,0.5); }
+  .q-input::placeholder { color: rgba(255,255,255,0.2); }
+
+  /* SCREEN 3 — Fork */
+  .fork-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; max-width: 720px; width: 100%; }
+  .fork-head { text-align: center; margin-bottom: 8px; }
+  .fork-head h2 { font-family: 'Wix Madefor Display', sans-serif; font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+  .fork-head p { color: rgba(255,255,255,0.4); font-size: 15px; }
+  .fork-cards { display: flex; gap: 16px; width: 100%; }
+  .fork-card {
+    flex: 1; border-radius: 20px; padding: 32px; cursor: pointer;
+    transition: all 0.25s; position: relative; overflow: hidden;
+  }
+  .fork-card.primary { background: #2F5BFF; }
+  .fork-card.secondary { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); }
+  .fork-card:hover { transform: translateY(-3px); }
+  .fork-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+  .fork-card p { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.5; margin-bottom: 20px; }
+  .fork-tag { display: inline-block; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: rgba(255,255,255,0.15); border-radius: 4px; padding: 3px 8px; }
+  .fork-templates { display: flex; gap: 8px; margin-top: 16px; }
+  .fork-tpl { width: 70px; height: 50px; background: rgba(255,255,255,0.08); border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); }
+
+  /* SCREEN 4 — Brief document */
+  .brief-wrap { width: 100%; max-width: 760px; }
+  .brief-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .brief-title { font-family: 'Wix Madefor Display', sans-serif; font-size: 40px; font-weight: 800; }
+  .brief-meta { text-align: right; font-size: 11px; color: rgba(255,255,255,0.25); line-height: 1.8; letter-spacing: 0.05em; }
+  .brief-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .brief-cell { padding: 20px; background: rgba(255,255,255,0.03); }
+  .brief-cell:hover { background: rgba(255,255,255,0.05); }
+  .brief-cell-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 10px; }
+  .brief-cell-value { font-size: 15px; color: rgba(255,255,255,0.85); line-height: 1.5; }
+  .brief-colors { display: flex; gap: 8px; margin-top: 4px; }
+  .brief-swatch { width: 32px; height: 32px; border-radius: 6px; }
+  .brief-pages { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .brief-page { background: rgba(255,255,255,0.07); border-radius: 6px; padding: 4px 10px; font-size: 12px; color: rgba(255,255,255,0.6); }
+  .brief-cta { margin-top: 24px; display: flex; gap: 12px; align-items: center; }
+  .btn-primary { background: #2F5BFF; color: #fff; border: none; border-radius: 10px; padding: 14px 32px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: filter 0.2s; }
+  .btn-primary:hover { filter: brightness(1.1); }
+  .brief-edit { font-size: 13px; color: rgba(255,255,255,0.3); cursor: pointer; }
+  .brief-edit:hover { color: rgba(255,255,255,0.6); }
+</style>
+</head>
+<body>
+
+<div class="concept-label">Concept 1 — The Brief &nbsp;·&nbsp; Agency briefing feel</div>
+
+<!-- SCREEN 1: Entry -->
+<div class="screen active" id="s1">
+  <div class="entry-wrap">
+    <div class="entry-eyebrow">Wix · Create with Aria</div>
+    <h1 class="entry-headline">Tell me about<br><span>your business</span></h1>
+    <input class="entry-input" type="text" placeholder="A ceramic studio for kids in Tel Aviv..." id="entry-input" />
+    <div class="entry-hint">Press Enter or click below to continue</div>
+    <button class="btn-ghost" onclick="go(2)">Start the brief &rarr;</button>
+  </div>
+</div>
+
+<!-- SCREEN 2: Questions -->
+<div class="screen" id="s2">
+  <div class="question-wrap">
+    <div class="q-from">Aria</div>
+    <div class="q-text" id="q-text">What kind of business is Clay & Calm?</div>
+    <div class="q-options" id="q-options">
+      <button class="q-option" onclick="selectOpt(this)">Ceramics studio & classes</button>
+      <button class="q-option" onclick="selectOpt(this)">Handmade goods shop</button>
+      <button class="q-option" onclick="selectOpt(this)">Kids activity center</button>
+    </div>
+    <input class="q-input" placeholder="Or describe it in your own words..." />
+    <button class="btn-ghost" style="margin-top:28px" onclick="go(3)">Continue &rarr;</button>
+  </div>
+</div>
+
+<!-- SCREEN 3: Fork -->
+<div class="screen" id="s3">
+  <div class="fork-wrap">
+    <div class="fork-head">
+      <h2>How do you want to build?</h2>
+      <p>We know your business. Now let's create your site.</p>
+    </div>
+    <div class="fork-cards">
+      <div class="fork-card primary" onclick="go(4)">
+        <div class="fork-tag">Recommended</div>
+        <h3 style="margin-top:16px">Taylor Made ✦</h3>
+        <p>Aria designs your site from scratch based on everything you've shared. Fully custom, built for you.</p>
+        <div style="font-size:13px;color:rgba(255,255,255,0.5)">→ Continue to your site brief</div>
+      </div>
+      <div class="fork-card secondary" onclick="go(4)">
+        <h3>Start from a template</h3>
+        <p>Pick from 3 templates handpicked for your business. Then customize with Aria's help.</p>
+        <div class="fork-templates">
+          <div class="fork-tpl"></div>
+          <div class="fork-tpl"></div>
+          <div class="fork-tpl"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 4: Brief Document -->
+<div class="screen" id="s4">
+  <div class="brief-wrap">
+    <div class="brief-header">
+      <div>
+        <div style="font-size:11px;letter-spacing:0.1em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:8px">Site Brief</div>
+        <div class="brief-title">Clay & Calm</div>
+      </div>
+      <div class="brief-meta">
+        GENERATED BY ARIA<br>
+        JUNE 2026<br>
+        DRAFT 1.0
+      </div>
+    </div>
+    <div class="brief-grid">
+      <div class="brief-cell">
+        <div class="brief-cell-label">Business</div>
+        <div class="brief-cell-value">Ceramics studio for kids & families. Open studio sessions, classes, and handmade goods.</div>
+      </div>
+      <div class="brief-cell">
+        <div class="brief-cell-label">Brand Colors</div>
+        <div class="brief-colors">
+          <div class="brief-swatch" style="background:#454F43"></div>
+          <div class="brief-swatch" style="background:#EFE4D1"></div>
+          <div class="brief-swatch" style="background:#BFA685"></div>
+          <div class="brief-swatch" style="background:#EBDFCA"></div>
+        </div>
+      </div>
+      <div class="brief-cell">
+        <div class="brief-cell-label">Typography</div>
+        <div class="brief-cell-value" style="font-size:22px;font-family:'Wix Madefor Display',sans-serif;">Playfair Display</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:4px">Body: Wix Madefor Text</div>
+      </div>
+      <div class="brief-cell">
+        <div class="brief-cell-label">Site Pages</div>
+        <div class="brief-pages">
+          <div class="brief-page">Home</div>
+          <div class="brief-page">Classes</div>
+          <div class="brief-page">Gallery</div>
+          <div class="brief-page">About</div>
+          <div class="brief-page">Contact</div>
+        </div>
+      </div>
+      <div class="brief-cell">
+        <div class="brief-cell-label">Goals</div>
+        <div class="brief-cell-value">Book studio sessions · Sell ceramic pieces · Build community</div>
+      </div>
+      <div class="brief-cell">
+        <div class="brief-cell-label">Apps</div>
+        <div class="brief-cell-value">Wix Bookings · Wix Stores · Wix Blog</div>
+      </div>
+    </div>
+    <div class="brief-cta">
+      <button class="btn-primary" onclick="go(1)">Build my site →</button>
+      <span class="brief-edit">Edit brief</span>
+    </div>
+  </div>
+</div>
+
+<!-- DOTS -->
+<div class="steps">
+  <div class="step-dot active" onclick="go(1)"></div>
+  <div class="step-dot" onclick="go(2)"></div>
+  <div class="step-dot" onclick="go(3)"></div>
+  <div class="step-dot" onclick="go(4)"></div>
+</div>
+
+<script>
+  let current = 1;
+  function go(n) {
+    document.getElementById('s'+current).classList.remove('active');
+    document.querySelectorAll('.step-dot')[current-1].classList.remove('active');
+    current = n;
+    document.getElementById('s'+current).classList.add('active');
+    document.querySelectorAll('.step-dot')[current-1].classList.add('active');
+  }
+  function selectOpt(el) {
+    document.querySelectorAll('.q-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+  document.getElementById('entry-input').addEventListener('keydown', e => { if(e.key==='Enter') go(2); });
+</script>
+</body>
+</html>
