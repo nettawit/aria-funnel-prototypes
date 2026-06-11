@@ -792,7 +792,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
                     onMouseEnter={() => { const d = (!prompt.trim() && !asset && !refs.length && !importedSite) || continuing; if (d) setShowContinueTip(true); }}
                     onMouseLeave={() => setShowContinueTip(false)}>
                   {(() => { const isDisabled = (!prompt.trim() && !asset && !refs.length && !importedSite) || continuing; return (
-                    <button className="hbtn" onClick={!isDisabled ? () => { setContinuing(true); setTimeout(() => { setContinuing(false); onGenerate && onGenerate(prompt); }, 600); } : undefined} disabled={isDisabled}
+                    <button className="hbtn" onClick={!isDisabled ? () => { if (window.DISABLE_GENERATE) return; setContinuing(true); setTimeout(() => { setContinuing(false); onGenerate && onGenerate(prompt); }, 600); } : undefined} disabled={isDisabled}
                       style={{ ...hBtnPrimary('medium'), opacity: isDisabled ? 0.4 : 1, cursor: isDisabled ? 'not-allowed' : 'pointer', minWidth: 152, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, pointerEvents: isDisabled ? 'none' : 'auto' }}>
                       {continuing ? <><span style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.4)', borderTopColor: '#fff', display: 'inline-block', animation: 'h-spin 0.8s linear infinite' }} />Loading…</> : 'Generate site'}
                     </button>

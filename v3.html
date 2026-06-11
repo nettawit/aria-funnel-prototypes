@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Aria · Create from URL Flow</title>
+  <title>Harmony Creation v1.2</title>
   <link rel="icon" type="image/svg+xml" href="favicon-v2.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -69,7 +69,8 @@
   <div id="root"></div>
   <script>
     window.START_STEP = 4; // skip intro screens — open straight on the home screen
-    fetch('round-15.jsx?v=20260611e')
+    window.DISABLE_GENERATE = true; // Harmony Creation v1.2 — Generate is inert in this version
+    fetch('round-15.jsx?v=20260611f')
       .then(r => r.text())
       .then(src => {
         const compiled = Babel.transform(src, { presets: ['react'] }).code;
