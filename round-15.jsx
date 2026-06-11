@@ -549,10 +549,8 @@ function HomeFlow({ start = 'empty', onGenerate }) {
   const btnLabel = ready ? 'Generate Site' : 'Continue with Aria';
   // Headline: in ready state, use readyKey (not always '111')
   const readyHeadlineKey = readyKey;
-  const READY_HEADLINE = readyKey === '111'
-    ? HEADLINE_STATES['111']
-    : { l1: "We're still missing a few things.", l2Parts: HEADLINE_STATES[readyKey]?.l2Parts || HEADLINE_STATES['000'].l2Parts };
-  const hs_ = (ready || transitioning) ? READY_HEADLINE : HEADLINE_STATES[stateKey];
+  /* Static headline — Aria no longer reacts to the user's input */
+  const hs_ = HEADLINE_STATES['000'];
 
   const buildAriaTouch = () => {
     const parts = [];

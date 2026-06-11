@@ -69,7 +69,7 @@
   <div id="root"></div>
   <script>
     window.START_STEP = 4; // skip intro screens — open straight on the home screen
-    fetch('round-15.jsx?v=20260611c')
+    fetch('round-15.jsx?v=20260611d')
       .then(r => r.text())
       .then(src => {
         const compiled = Babel.transform(src, { presets: ['react'] }).code;
