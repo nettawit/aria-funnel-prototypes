@@ -1219,162 +1219,175 @@ function UrlModal({ onClose, onAdd, onBack }) {
 
 
 function ImportFlow({ onClose, onImport, initialUrl = '', initialPhase = 'url' }) {
+  /* phases: 'url' | 'scanning' | 'results'
+     errors:  'err-format' | 'err-private' | 'err-file' | 'err-reach' | 'err-timeout' */
   const [phase, setPhase] = hs(initialPhase);
   const [url, setUrl] = hs(initialUrl);
-  const [sel, setSel] = hs('both');
-  const isValidUrl = (u) => /^(https?:\/\/)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/.test(u.trim());
+  const [inputFocused, setInputFocused] = hs(false);
+  const scanTimer = hr(null);
+  he(() => () => clearTimeout(scanTimer.current), []);
+
+  const cleanUrl = url.trim();
+  const resolvedUrl = cleanUrl ? (/^https?:\/\//i.test(cleanUrl) ? cleanUrl : 'https://' + cleanUrl) : '';
+  const host = resolvedUrl.replace(/^https?:\/\//, '').replace(/\/.*$/, '') || '';
+
+  /* ── Detection rules ── */
+  const isShopify = /shop/i.test(host) && !/woo/i.test(host) && !!host;
+  const isWoo     = /woo/i.test(host) && !!host;
+  const isWixSite = /^(www\.)?wix\.com$/i.test(host) || /\.wixsite\.com$/i.test(host) || /\.wixstudio\.com$/i.test(host);
+  const isSocial  = /^(www\.)?(instagram|facebook|tiktok|twitter|x\.com|linkedin|pinterest|snapchat|youtube)\./i.test(host);
+  const isFile    = /\.(pdf|jpg|jpeg|png|gif|svg|zip|mp4|mov)(\?|$)/i.test(cleanUrl);
+  const isPrivate = /^(localhost|127\.|192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host);
+  const isValidFmt = !cleanUrl || /^https?:\/\/.{2,}/.test(resolvedUrl) || /^[a-zA-Z0-9][\w.-]+\.[a-zA-Z]{2,}/.test(cleanUrl);
+
+  const [error, setError] = hs(null);
+  /* errors: 'err-format' | 'err-wix' | 'err-social' | 'err-file' | 'err-private' | 'err-reach' | 'err-timeout' */
+
+  const ERR = {
+    'err-format':  "Enter a full website URL, like www.example.com",
+    'err-wix':     "This is already a Wix site — Aria works best with sites from other platforms.",
+    'err-social':  "Social media profiles can't be imported. Try a business website instead.",
+    'err-file':    "This link points to a file, not a webpage. Paste the main site URL instead.",
+    'err-private': "This URL isn't publicly accessible. Use a live website URL.",
+    'err-reach':   "Couldn't reach this site. Check the URL and try again.",
+    'err-timeout': "This is taking longer than expected. Try again or use a different URL.",
+  };
+
   const scan = () => {
-    if (!isValidUrl(url)) { setPhase('error'); return; }
+    if (!cleanUrl) { setError('err-format'); return; }
+    if (!isValidFmt) { setError('err-format'); return; }
+    if (isWixSite) { setError('err-wix'); return; }
+    if (isSocial)  { setError('err-social'); return; }
+    if (isFile)    { setError('err-file'); return; }
+    if (isPrivate) { setError('err-private'); return; }
+    setError(null);
     setPhase('scanning');
-    setTimeout(() => setPhase('results'), 1600);
-  };
-  const host = url.replace(/^https?:\/\//, '').replace(/\/.*$/, '') || 'mysite.com';
-
-  /* ── Demo detection rules ── */
-  const isShopify = /shop/i.test(host) && !/woo/i.test(host);
-  const isWoo = /woo/i.test(host);
-  const platform = isShopify ? 'Shopify' : isWoo ? 'WooCommerce' : null;
-
-  /* icon SVGs inline */
-  const IconLayers = ({ active }) => (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-      <path d="M10 2L2 6.5L10 11L18 6.5L10 2Z" stroke={active ? '#32324D' : '#888'} strokeWidth="1.5" strokeLinejoin="round"/>
-      <path d="M2 10L10 14.5L18 10" stroke={active ? '#32324D' : '#888'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M2 13.5L10 18L18 13.5" stroke={active ? '#32324D' : '#888'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  );
-  const IconPalette = ({ active }) => (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-      <path d="M10 2C5.58 2 2 5.58 2 10C2 14.42 5.58 18 10 18C10.92 18 11.5 17.24 11.5 16.5C11.5 16.16 11.38 15.86 11.18 15.62C10.99 15.39 10.88 15.1 10.88 14.75C10.88 14.01 11.49 13.38 12.25 13.38H14C16.21 13.38 18 11.59 18 9.38C18 5.3 14.41 2 10 2Z" stroke={active ? '#32324D' : '#888'} strokeWidth="1.4"/>
-      <circle cx="6.5" cy="9.5" r="1" fill={active ? '#32324D' : '#888'}/>
-      <circle cx="9" cy="6.5" r="1" fill={active ? '#32324D' : '#888'}/>
-      <circle cx="13" cy="7" r="1" fill={active ? '#32324D' : '#888'}/>
-    </svg>
-  );
-
-  const Opt = ({ id, title, sub, icon, shopifyNote }) => {
-    const on = sel === id;
-    return (
-      <button onClick={() => setSel(id)} style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0, boxSizing: 'border-box', textAlign: 'left', border: `1.5px solid ${on ? '#116DFF' : '#C1C2C3'}`, borderRadius: 10, padding: '12px 14px', background: on ? '#EEF4FF' : '#fff', cursor: 'pointer', transition: 'border-color 120ms, background 120ms', fontFamily: 'inherit' }}>
-        {on && (
-          <span style={{ position: 'absolute', top: -8, right: -8, width: 18, height: 18, borderRadius: '50%', background: '#116DFF', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 0 2px #fff' }}>
-            <svg width="10" height="10" viewBox="0 0 11 11" fill="none"><path d="M2 5.5L4.5 8L9 3" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          </span>
-        )}
-        <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ flexShrink: 0 }}>{icon}</span>
-          <span style={{ fontSize: 13, fontWeight: 700, color: on ? '#32324D' : '#888' }}>{title}</span>
-        </span>
-        <span style={{ display: 'block', fontSize: 11, color: H_MUTED, marginTop: 5, lineHeight: 1.4 }}>{sub}</span>
-        {shopifyNote && isShopify && (
-          <span style={{ display: 'block', marginTop: 7, paddingTop: 7, borderTop: '1px solid rgba(17,109,255,0.15)', fontSize: 11, color: '#2F5DFF', fontWeight: 500 }}>✦ Includes products, images &amp; prices</span>
-        )}
-      </button>
-    );
+    scanTimer.current = setTimeout(() => setPhase('results'), 2200);
   };
 
-  /* shell override — wider for this modal */
-  const wideShell = { ...shell, width: 580, maxWidth: '95vw', borderRadius: 16 };
+  /* visual input states */
+  const isErr  = !!error;
+  const isBusy = phase === 'scanning';
+  const inputBorder  = isErr ? '1px solid #D32F2F' : inputFocused ? '1px solid #116DFF' : '1px solid rgba(19,23,32,0)';
+  const inputShadow  = isErr ? 'none' : inputFocused ? '0 0 0 3px rgba(17,109,255,0.12)' : 'inset 1px 1px 3px rgba(118,117,116,0.2)';
 
-  /* ── Step 1: URL entry (also covers scanning / error states) ── */
-  if (phase !== 'results') return <Overlay><div onClick={(e) => e.stopPropagation()} style={wideShell}>
-    {/* header */}
-    <div style={{ padding: '26px 28px 4px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+  /* JSX fragments (not React components) to avoid re-mounting the input */
+  const modalHdr = (
+    <div style={{ padding: '24px 20px 24px 24px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
       <div>
-        <div style={{ fontSize: 22, fontWeight: 700, color: H_INK, lineHeight: 1.3 }}>Create from URL</div>
-        <div style={{ fontSize: 14, color: '#555566', marginTop: 5 }}>Use any website as starting point for your new site</div>
+        <div style={{ fontSize: 16, fontWeight: 700, letterSpacing: '-0.5px', color: '#151414', lineHeight: '24px' }}>Create from URL</div>
+        <div style={{ fontSize: 14, color: '#383838', marginTop: 2, lineHeight: '20px' }}>Use any website as a starting point</div>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginTop: 2 }}>
-        <button style={{ border: 0, background: 'transparent', fontSize: 17, fontWeight: 600, color: H_INK, cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}>?</button>
-        <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: '50%', border: 0, background: '#F1F1F4', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 3L13 13M13 3L3 13" stroke="#1E1E2E" strokeWidth="1.8" strokeLinecap="round"/></svg>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 2, marginTop: 2 }}>
+        <div style={{ width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7.5" stroke="#383838" strokeWidth="1.2"/><path d="M9 5.5v4.5" stroke="#383838" strokeWidth="1.4" strokeLinecap="round"/><circle cx="9" cy="12.5" r=".9" fill="#383838"/></svg>
+        </div>
+        <button onClick={onClose} style={{ width: 24, height: 24, borderRadius: '50%', border: 0, background: '#f0efef', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M1 1l6 6M7 1L1 7" stroke="#151414" strokeWidth="1.5" strokeLinecap="round"/></svg>
         </button>
       </div>
     </div>
-    {/* body */}
-    <div style={{ padding: '18px 28px 26px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <input autoFocus value={url} disabled={phase === 'scanning'} onChange={(e) => { setUrl(e.target.value); if (phase === 'error') setPhase('url'); }} onKeyDown={(e) => e.key === 'Enter' && phase !== 'scanning' && scan()} placeholder="Paste any URL addresses" style={{ flex: 1, height: 38, boxSizing: 'border-box', padding: '0 12px', background: '#F6F6F8', border: `1px solid ${phase === 'error' ? '#D32F2F' : '#ECECF0'}`, borderRadius: 8, fontSize: 14, color: '#32324D', outline: 'none', fontFamily: 'inherit' }} />
-        <button className="hbtn" onClick={scan} disabled={phase === 'scanning'} style={{ ...hBtnPrimary('medium'), flexShrink: 0, opacity: phase === 'scanning' ? 0.6 : 1, cursor: phase === 'scanning' ? 'default' : 'pointer' }}>{phase === 'scanning' ? 'Scanning…' : 'Scan'}</button>
-      </div>
-      {/* error */}
-      {phase === 'error' &&
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: '#FFF3F3', border: '1px solid #FFCDD2', borderRadius: 8 }}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#D32F2F" strokeWidth="1.4"/><path d="M8 4.5V8.5" stroke="#D32F2F" strokeWidth="1.6" strokeLinecap="round"/><circle cx="8" cy="11" r="1" fill="#D32F2F"/></svg>
-          <span style={{ fontSize: 13, color: '#B71C1C' }}>Couldn't reach this site. Check the URL and try again.</span>
-        </div>
-      }
-      {/* scanning */}
-      {phase === 'scanning' &&
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <div style={{ width: '100%', height: 4, background: '#EEEEF6', borderRadius: 4, overflow: 'hidden' }}><div style={{ width: '60%', height: '100%', background: '#2F5DFF', borderRadius: 4, transition: 'width 0.4s' }} /></div>
-          <div style={{ fontSize: 13, color: H_MUTED }}>Analyzing {host}…</div>
-        </div>
-      }
+  );
+
+  const footnote = (
+    <div style={{ background: '#f8f6f6', borderTop: '1px solid #e8e8e8', borderRadius: '0 0 12px 12px', padding: '16px 24px' }}>
+      <span style={{ fontSize: 12, color: '#151414', lineHeight: '16px' }}>Only use URLs where you have rights to the content</span>
     </div>
-    {/* WDS footnote strip */}
-    <div style={{ background: '#F0F0F4', borderTop: '1px solid #E8E8E8', borderRadius: '0 0 16px 16px', padding: '12px 28px' }}>
-      <span style={{ fontSize: 12, color: '#888898' }}>Only use URLs where you have rights to the content.</span>
+  );
+
+  const urlField = (
+    <div style={{ display: 'flex', alignItems: 'center', height: 38, background: '#f8f6f6', border: inputBorder, borderRadius: 8, boxShadow: inputShadow, overflow: 'hidden', boxSizing: 'border-box', transition: 'border-color 120ms, box-shadow 120ms' }}>
+      <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: '100%', flexShrink: 0 }}>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#767574" strokeWidth="1.2"/><ellipse cx="8" cy="8" rx="3.5" ry="6.5" stroke="#767574" strokeWidth="1.2"/><path d="M1.5 8h13M2.5 5h11M2.5 11h11" stroke="#767574" strokeWidth="1.1" strokeLinecap="round"/></svg>
+      </span>
+      <input
+        autoFocus
+        value={url}
+        disabled={isBusy}
+        onChange={(e) => { setUrl(e.target.value); setError(null); if (phase === 'results') setPhase('url'); }}
+        onFocus={() => setInputFocused(true)}
+        onBlur={() => setInputFocused(false)}
+        onKeyDown={(e) => { if (e.key === 'Enter' && !isBusy) scan(); }}
+        placeholder="www.yoursite.com"
+        style={{ flex: 1, height: '100%', border: 0, background: 'transparent', fontSize: 14, color: '#151414', outline: 'none', fontFamily: 'inherit', padding: '0 4px 0 0' }}
+      />
+      {url && !isBusy && (
+        <button onClick={() => { setUrl(''); setError(null); setPhase('url'); }} style={{ width: 28, height: '100%', border: 0, background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 1l8 8M9 1L1 9" stroke="#767574" strokeWidth="1.4" strokeLinecap="round"/></svg>
+        </button>
+      )}
     </div>
+  );
+
+  const modalShell = { width: 530, maxWidth: '95vw', background: '#fff', borderRadius: 12, boxShadow: '2px 20px 30px rgba(19,23,32,0.1)', overflow: 'hidden', display: 'flex', flexDirection: 'column' };
+
+  /* ── Step 1: URL entry + scanning ── */
+  if (phase !== 'results') return <Overlay><div onClick={(e) => e.stopPropagation()} style={modalShell}>
+    {modalHdr}
+    <div style={{ padding: '0 24px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {urlField}
+      {/* scanning progress */}
+      {isBusy && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div style={{ width: '100%', height: 3, background: '#EEEEF6', borderRadius: 3, overflow: 'hidden' }}>
+            <div style={{ width: '65%', height: '100%', background: '#2F5DFF', borderRadius: 3, transition: 'width 2s ease' }} />
+          </div>
+          <div style={{ fontSize: 12, color: '#767574' }}>Scanning {host}…</div>
+        </div>
+      )}
+      {/* error message */}
+      {isErr && (
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '8px 12px', background: '#FFF3F3', border: '1px solid #FFCDD2', borderRadius: 8 }}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, marginTop: 1 }}><circle cx="8" cy="8" r="7" stroke="#D32F2F" strokeWidth="1.3"/><path d="M8 4.5v4" stroke="#D32F2F" strokeWidth="1.5" strokeLinecap="round"/><circle cx="8" cy="11" r=".9" fill="#D32F2F"/></svg>
+          <span style={{ fontSize: 13, color: '#B71C1C', lineHeight: 1.45 }}>{ERR[error]}</span>
+        </div>
+      )}
+    </div>
+    {footnote}
   </div></Overlay>;
 
-  /* ── Step 2: scan results ── */
-  return <Overlay><div onClick={(e) => e.stopPropagation()} style={wideShell}>
-    {/* header */}
-    <div style={{ padding: '24px 24px 0', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-      <div>
-        <div style={{ fontSize: 20, fontWeight: 700, color: H_INK, lineHeight: 1.3 }}>Create from URL</div>
-        <div style={{ fontSize: 14, color: H_MUTED, marginTop: 4 }}>Use any website as a starting point for your new site.</div>
-      </div>
-      <button onClick={onClose} style={{ border: 0, background: 'transparent', cursor: 'pointer', padding: 6, marginTop: -2, borderRadius: 6, color: '#888898', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3L13 13M13 3L3 13" stroke="#888898" strokeWidth="1.8" strokeLinecap="round"/></svg>
-      </button>
-    </div>
-
-    <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-      {/* site preview card */}
-      <div style={{ border: '1px solid #E0E0EE', borderRadius: 10, overflow: 'hidden' }}>
-        {/* browser bar */}
-        <div style={{ height: 22, background: '#F3F4F6', display: 'flex', alignItems: 'center', gap: 4, padding: '0 10px', borderBottom: '1px solid #EBEBEB' }}>
-          {['#FF5F57','#FEBC2E','#28C840'].map((c) => <span key={c} style={{ width: 7, height: 7, borderRadius: '50%', background: c }} />)}
-          <span style={{ flex: 1, height: 12, background: '#E4E5EA', borderRadius: 4, marginLeft: 8 }} />
+  /* ── Step 2: results ── */
+  return <Overlay><div onClick={(e) => e.stopPropagation()} style={modalShell}>
+    {modalHdr}
+    <div style={{ padding: '0 24px 12px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {urlField}
+      {/* glassmorphism site preview card */}
+      <div style={{ backdropFilter: 'blur(7px)', background: 'rgba(255,255,255,0.4)', borderRadius: 8, boxShadow: '3.066px 3.066px 12.264px rgba(0,0,0,0.14)', padding: '8px 8px 12px' }}>
+        {/* mac dots */}
+        <div style={{ display: 'flex', gap: 3.3, alignItems: 'center', marginBottom: 8 }}>
+          {[0,1,2].map(i => <span key={i} style={{ width: 5, height: 5, borderRadius: '50%', background: '#cfd1dc', display: 'block' }} />)}
         </div>
         {/* screenshot */}
-        <div style={{ height: 148, background: '#E8EAF0', overflow: 'hidden' }}>
-          <img src={`https://image.thum.io/get/width/640/crop/400/${url.startsWith('http') ? url : 'https://' + url}`} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }} />
+        <div style={{ borderRadius: 4, border: '0.3px solid #e0e0e0', overflow: 'hidden', height: 238 }}>
+          <img
+            src={`https://image.thum.io/get/width/560/crop/680/${resolvedUrl}`}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }}
+            onError={(e) => { e.target.style.background = '#e8eaf0'; e.target.src = ''; }}
+          />
         </div>
-        {/* footer row */}
-        <div style={{ padding: '9px 14px', background: '#fff', borderTop: '1px solid #EBEBEB', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontSize: 13, fontWeight: 600, color: '#32324D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{host}</span>
-          {platform === 'Shopify' && <span style={{ background: '#EDFAF3', borderRadius: 6, padding: '3px 10px', fontSize: 12, fontWeight: 700, color: '#1A8A5A', flexShrink: 0 }}>Shopify</span>}
-          {platform === 'WooCommerce' && <span style={{ background: '#F3EEFF', borderRadius: 6, padding: '3px 10px', fontSize: 12, fontWeight: 700, color: '#7B3FC4', flexShrink: 0 }}>WooCommerce</span>}
+        {/* site name row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12 }}>
+          <span style={{ fontSize: 12, fontWeight: 500, color: '#383838', lineHeight: '16px' }}>{host}</span>
+          {isShopify && <span style={{ background: '#D5DFFF', borderRadius: 4, padding: '0 6px', height: 20, display: 'inline-flex', alignItems: 'center', fontSize: 12, fontWeight: 500, color: '#383838' }}>Shopify</span>}
+          {isWoo && <span style={{ background: '#F3EEFF', borderRadius: 4, padding: '0 6px', height: 20, display: 'inline-flex', alignItems: 'center', fontSize: 12, fontWeight: 500, color: '#7B3FC4' }}>WooCommerce</span>}
         </div>
       </div>
-
-      {/* what Aria will keep */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '12px 14px', background: '#F6F7FF', borderRadius: 10, border: '1px solid #E0E5FF' }}>
-        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style={{ flexShrink: 0, marginTop: 1 }}>
-          <path d="M10 2L2 6.5L10 11L18 6.5L10 2Z" stroke="#2F5DFF" strokeWidth="1.5" strokeLinejoin="round"/>
-          <path d="M2 10L10 14.5L18 10" stroke="#2F5DFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M2 13.5L10 18L18 13.5" stroke="#2F5DFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-        <span style={{ fontSize: 13, color: '#32324D', lineHeight: 1.55 }}>
-          {platform
-            ? 'Aria will keep the pages, content and visual of your site — included products data, images and prices.'
-            : 'Aria will keep the pages, content and visual of your site.'}
+      {/* info section helper */}
+      <div style={{ background: '#f5f7ff', border: '1px solid #7896ff', borderRadius: 12, display: 'flex', alignItems: 'center', padding: '6px 16px', gap: 6 }}>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ flexShrink: 0 }}><circle cx="9" cy="9" r="7.5" stroke="#2F5DFF" strokeWidth="1.2"/><path d="M9 6v5" stroke="#2F5DFF" strokeWidth="1.4" strokeLinecap="round"/><circle cx="9" cy="13" r=".85" fill="#2F5DFF"/></svg>
+        <span style={{ fontSize: 12, color: '#151414', lineHeight: '16px' }}>
+          {isShopify
+            ? "Aria will use your site's pages, content and visual style, including product data, images and prices."
+            : "Aria will use your site's pages, content and visual style."}
         </span>
       </div>
     </div>
-
     {/* footer */}
-    <div style={{ padding: '12px 24px', borderTop: '1px solid #F0F0F4', display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-      <button onClick={onClose} className="hbtn hbtn-secondary" style={cancelB}>Cancel</button>
-      <button onClick={() => onImport({ host, isShopify: !!platform, platform, mode: 'both' })} className="hbtn" style={addB}>Add to Aria</button>
+    <div style={{ padding: '24px', display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+      <button onClick={onClose} className="hbtn" style={{ height: 30, padding: '0 16px', background: 'transparent', color: '#2f5dff', border: '1px solid #7896ff', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Cancel</button>
+      <button onClick={() => onImport({ host, isShopify, isWoo, platform: isShopify ? 'Shopify' : isWoo ? 'WooCommerce' : null })} className="hbtn" style={{ height: 30, padding: '0 16px', background: '#2f5dff', color: '#fff', border: 0, borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Add site</button>
     </div>
-    {/* WDS footnote strip */}
-    <div style={{ background: '#F0F0F4', borderTop: '1px solid #E8E8E8', borderRadius: '0 0 16px 16px', padding: '12px 24px' }}>
-      <span style={{ fontSize: 12, color: '#888898' }}>Only use URLs where you have rights to the content.</span>
-    </div>
+    {footnote}
   </div></Overlay>;
 }
 
@@ -1681,37 +1694,47 @@ function FigmaEntryScreen({ onGenerate }) {
           <div style={{ background: 'linear-gradient(204deg, rgba(206,255,126,0.1) 20%, rgba(255,255,255,0) 87%), #F6F7F9', borderRadius: 12, padding: 12, boxShadow: '0 12px 8px rgba(0,0,0,0.10)', display: 'flex', flexDirection: 'column', gap: 12 }}>
             {/* Text area */}
             <div style={{ background: '#fff', borderRadius: 8, padding: '9px 12px', boxShadow: '-117px 128px 24.5px rgba(16,21,133,0), -75px 82px 22px rgba(16,21,133,0.01), -24px 24px 12px rgba(16,21,133,0.03), -5px 5px 7.5px rgba(16,21,133,0.07)', minHeight: 78 }}>
-              <p style={{ margin: 0, fontSize: 14, color: '#000624', lineHeight: '18px', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>
-                Create a bright, modern website for "Happy Moments", a shoe store in Tel Aviv, using soft sky blue, warm coral, and clean white for a cheerful, welcoming vi..
-              </p>
+              {importedSite ? (
+                <p style={{ margin: 0, fontSize: 14, color: '#868AA5', lineHeight: '18px' }}>Feel free to add instructions</p>
+              ) : (
+                <p style={{ margin: 0, fontSize: 14, color: '#000624', lineHeight: '18px', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>
+                  Create a bright, modern website for "Happy Moments", a shoe store in Tel Aviv, using soft sky blue, warm coral, and clean white for a cheerful, welcoming vi..
+                </p>
+              )}
             </div>
 
             {/* Action bar */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               {/* Create from URL — Default or Added state */}
               {importedSite ? (
-                /* ── Added state ── */
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <button onClick={() => setShowImport(true)} className="hbtn hbtn-secondary" style={{ ...hBtnSecondary('small'), borderRadius: 24, gap: 6 }}>
-                    <HIc name="link" size={14} color="#32324D" />
-                    Create from URL
-                  </button>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, height: 30, padding: '0 10px', background: '#fff', border: '1px solid #E0E0E0', borderRadius: 24, fontSize: 12, color: '#32324D', fontFamily: 'inherit', fontWeight: 600 }}>
-                    <img src={`https://www.google.com/s2/favicons?domain=${importedSite.host}&sz=32`} width={13} height={13} style={{ borderRadius: 2, flexShrink: 0, display: 'block' }} onError={e => { e.target.style.display='none'; }} />
-                    <span style={{ maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{importedSite.host}</span>
-                    {importedSite.isShopify && <span style={{ background: '#EDFAF3', borderRadius: 8, padding: '1px 6px', fontSize: 10, fontWeight: 700, color: '#1A8A5A' }}>Shopify</span>}
-                    <button onClick={removeSite} style={{ border: 0, background: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', lineHeight: 0, marginLeft: 2 }}>
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2L8 8M8 2L2 8" stroke="#888" strokeWidth="1.6" strokeLinecap="round"/></svg>
-                    </button>
+                /* ── Added state: site attachment chip ── */
+                <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', height: 48, background: '#fff', border: '1px solid #DFE5EB', borderRadius: 8, overflow: 'hidden', fontFamily: 'inherit', flexShrink: 0 }}>
+                  {/* Screenshot thumbnail */}
+                  <img
+                    src={`https://image.thum.io/get/width/96/crop/136/${importedSite.host}`}
+                    style={{ width: 32, height: 48, objectFit: 'cover', objectPosition: 'top', flexShrink: 0, display: 'block', borderRight: '1px solid #DFE5EB' }}
+                    onError={e => { e.target.style.display='none'; }}
+                  />
+                  {/* Site info */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 3, padding: '0 10px 0 10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ fontSize: 12, fontWeight: 600, color: '#1E1E2E', whiteSpace: 'nowrap', maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis' }}>Site Name</span>
+                      {importedSite.isShopify && <span style={{ background: '#D5DFFF', borderRadius: 12, padding: '1px 7px', fontSize: 10, fontWeight: 500, color: '#383838', flexShrink: 0 }}>Shopify</span>}
+                    </div>
+                    <span style={{ fontSize: 11, color: '#888898', whiteSpace: 'nowrap' }}>{importedSite.host}</span>
                   </div>
+                  {/* Close button */}
+                  <button onClick={removeSite} style={{ border: 0, background: 'none', cursor: 'pointer', padding: '4px 8px 4px 4px', display: 'flex', alignItems: 'center', lineHeight: 0, alignSelf: 'flex-start', marginTop: 4 }}>
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2L8 8M8 2L2 8" stroke="#888" strokeWidth="1.6" strokeLinecap="round"/></svg>
+                  </button>
                 </div>
               ) : (
-                /* ── Default state — WDS toggle/pill with hover tooltip ── */
+                /* ── Default state — ghost pill with hover ── */
                 <div style={{ position: 'relative', display: 'inline-flex' }}
                   onMouseEnter={() => setHovUrl(true)}
                   onMouseLeave={() => setHovUrl(false)}
                 >
-                  <button onClick={() => setShowImport(true)} className="hbtn" style={{ ...hBtnSecondary('small'), borderRadius: 24, gap: 6, background: hovUrl ? '#fff' : 'transparent', border: hovUrl ? '1px solid #E0E0E0' : '1px solid transparent', transition: 'background 150ms, border-color 150ms' }}>
+                  <button onClick={() => setShowImport(true)} className="hbtn" style={{ ...hBtn('small'), borderRadius: 24, gap: 6, background: hovUrl ? 'rgba(19,23,32,0.03)' : 'transparent', border: hovUrl ? '1px solid rgba(19,23,32,0.08)' : '1px solid transparent', color: '#32324D', transition: 'background 150ms, border-color 150ms' }}>
                     <HIc name="globe" size={14} color="#32324D" />
                     Create from URL
                   </button>
@@ -1886,12 +1909,32 @@ function HarmonyV11Screen({ onGenerate }) {
           />
           {/* Composer footer */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8 }}>
-            {/* Create from URL text button */}
+            {/* Create from URL — Default or Added state */}
+            {importedSite ? (
+              /* ── Added state: site attachment chip ── */
+              <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', height: 48, background: '#fff', border: '1px solid #DFE5EB', borderRadius: 8, overflow: 'hidden', fontFamily: 'inherit', flexShrink: 0 }}>
+                <img
+                  src={`https://image.thum.io/get/width/96/crop/136/${importedSite.host}`}
+                  style={{ width: 32, height: 48, objectFit: 'cover', objectPosition: 'top', flexShrink: 0, display: 'block', borderRight: '1px solid #DFE5EB' }}
+                  onError={e => { e.target.style.display='none'; }}
+                />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 3, padding: '0 10px 0 10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: '#1E1E2E', whiteSpace: 'nowrap', maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis' }}>Site Name</span>
+                    {importedSite.isShopify && <span style={{ background: '#D5DFFF', borderRadius: 12, padding: '1px 7px', fontSize: 10, fontWeight: 500, color: '#383838', flexShrink: 0 }}>Shopify</span>}
+                  </div>
+                  <span style={{ fontSize: 11, color: '#888898', whiteSpace: 'nowrap' }}>{importedSite.host}</span>
+                </div>
+                <button onClick={() => setImportedSite(null)} style={{ border: 0, background: 'none', cursor: 'pointer', padding: '4px 8px 4px 4px', display: 'flex', alignItems: 'center', lineHeight: 0, alignSelf: 'flex-start', marginTop: 4 }}>
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2L8 8M8 2L2 8" stroke="#888" strokeWidth="1.6" strokeLinecap="round"/></svg>
+                </button>
+              </div>
+            ) : (
             <div style={{ position: 'relative', display: 'inline-flex' }}
               onMouseEnter={() => setHovUrl(true)}
               onMouseLeave={() => setHovUrl(false)}
             >
-              <button onClick={() => setShowImport(true)} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'none', border: 0, cursor: 'pointer', fontSize: 16, fontWeight: 700, color: '#151414', fontFamily: 'inherit', padding: '8px 12px', borderRadius: 24 }}>
+              <button onClick={() => setShowImport(true)} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: hovUrl ? 'rgba(19,23,32,0.03)' : 'none', border: hovUrl ? '1px solid rgba(19,23,32,0.08)' : '1px solid transparent', cursor: 'pointer', fontSize: 16, fontWeight: 700, color: '#151414', fontFamily: 'inherit', padding: '8px 12px', borderRadius: 24, transition: 'background 150ms, border-color 150ms' }}>
                 <HIc name="globe" size={18} color="#151414" />
                 Create from URL
               </button>
@@ -1915,6 +1958,7 @@ function HarmonyV11Screen({ onGenerate }) {
                 </div>
               )}
             </div>
+            )}
 
             {/* Generate Site button */}
             <button className="hbtn" style={{ ...hBtnPrimary('medium'), background: '#2f5dff', gap: 10, borderRadius: 12, boxShadow: '0 4px 7px rgba(47,93,255,0.35)' }}>
