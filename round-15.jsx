@@ -1324,9 +1324,8 @@ function ImportFlow({ onClose, onImport, initialUrl = '', initialPhase = 'url' }
   /* ── Step 1: URL entry + scanning ── */
   if (phase !== 'results') return <Overlay><div onClick={(e) => e.stopPropagation()} style={modalShell}>
     {modalHdr}
-    <div style={{ padding: '0 24px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+    <div style={{ padding: '0 24px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
       {urlField}
-      {/* scanning progress */}
       {isBusy && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           <div style={{ width: '100%', height: 3, background: '#EEEEF6', borderRadius: 3, overflow: 'hidden' }}>
@@ -1335,13 +1334,18 @@ function ImportFlow({ onClose, onImport, initialUrl = '', initialPhase = 'url' }
           <div style={{ fontSize: 12, color: '#767574' }}>Scanning {host}…</div>
         </div>
       )}
-      {/* error message */}
       {isErr && (
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '8px 12px', background: '#FFF3F3', border: '1px solid #FFCDD2', borderRadius: 8 }}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, marginTop: 1 }}><circle cx="8" cy="8" r="7" stroke="#D32F2F" strokeWidth="1.3"/><path d="M8 4.5v4" stroke="#D32F2F" strokeWidth="1.5" strokeLinecap="round"/><circle cx="8" cy="11" r=".9" fill="#D32F2F"/></svg>
           <span style={{ fontSize: 13, color: '#B71C1C', lineHeight: 1.45 }}>{ERR[error]}</span>
         </div>
       )}
+    </div>
+    {/* footer with Continue CTA */}
+    <div style={{ padding: '0 24px 24px', display: 'flex', justifyContent: 'flex-end' }}>
+      <button onClick={scan} disabled={isBusy} className="hbtn" style={{ height: 30, padding: '0 16px', background: isBusy ? '#b0c4ff' : '#2f5dff', color: '#fff', border: 0, borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: isBusy ? 'default' : 'pointer', fontFamily: 'inherit', transition: 'background 120ms' }}>
+        {isBusy ? 'Scanning…' : 'Continue'}
+      </button>
     </div>
     {footnote}
   </div></Overlay>;
@@ -1687,49 +1691,50 @@ function FigmaEntryScreen({ onGenerate }) {
             <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#1E1E2E', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <HAria size={20} />
             </div>
-            <span style={{ fontSize: 14, fontWeight: 500, background: 'linear-gradient(90deg, #315FFF, #1D3999)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Aria is generating a prompt based on your site info...</span>
+            <span style={{ fontSize: 14, fontWeight: 500, background: 'linear-gradient(90deg, #315FFF, #1D3999)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              {importedSite ? 'Feel free to add instructions' : 'Aria is generating a prompt based on your site info...'}
+            </span>
           </div>
 
           {/* Card */}
           <div style={{ background: 'linear-gradient(204deg, rgba(206,255,126,0.1) 20%, rgba(255,255,255,0) 87%), #F6F7F9', borderRadius: 12, padding: 12, boxShadow: '0 12px 8px rgba(0,0,0,0.10)', display: 'flex', flexDirection: 'column', gap: 12 }}>
+
+            {/* Attachment chip — shown ABOVE textarea when site is imported */}
+            {importedSite && (
+              <div style={{ display: 'inline-flex', alignItems: 'center', height: 48, background: '#fff', border: '1px solid #DFE5EB', borderRadius: 8, overflow: 'hidden', fontFamily: 'inherit', alignSelf: 'flex-start', flexShrink: 0, maxWidth: '100%' }}>
+                <img
+                  src={`https://image.thum.io/get/width/96/crop/136/${importedSite.host}`}
+                  style={{ width: 48, height: 32, objectFit: 'cover', objectPosition: 'top', flexShrink: 0, display: 'block', margin: '0 0 0 8px', borderRadius: 4, border: '1px solid rgba(0,6,36,0.1)' }}
+                  onError={e => { e.target.style.display='none'; }}
+                />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2, padding: '0 0 0 10px', minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ fontSize: 12, fontWeight: 500, color: '#000624', whiteSpace: 'nowrap', maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis' }}>{importedSite.host}</span>
+                    {importedSite.isShopify && <span style={{ background: '#D5DFFF', borderRadius: 4, padding: '0 6px', height: 20, display: 'inline-flex', alignItems: 'center', fontSize: 12, fontWeight: 500, color: '#383838', flexShrink: 0 }}>Shopify</span>}
+                  </div>
+                  <span style={{ fontSize: 12, color: '#868AA5', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 150 }}>{importedSite.host}</span>
+                </div>
+                <div style={{ display: 'flex', height: 48, alignItems: 'flex-start', justifyContent: 'flex-end', paddingRight: 3, paddingTop: 3 }}>
+                  <button onClick={removeSite} style={{ border: 0, background: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 18, height: 18, borderRadius: '50%' }}>
+                    <svg width="6" height="6" viewBox="0 0 6 6" fill="none"><path d="M1 1l4 4M5 1L1 5" stroke="#32324D" strokeWidth="1.3" strokeLinecap="round"/></svg>
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Text area */}
             <div style={{ background: '#fff', borderRadius: 8, padding: '9px 12px', boxShadow: '-117px 128px 24.5px rgba(16,21,133,0), -75px 82px 22px rgba(16,21,133,0.01), -24px 24px 12px rgba(16,21,133,0.03), -5px 5px 7.5px rgba(16,21,133,0.07)', minHeight: 78 }}>
-              {importedSite ? (
-                <p style={{ margin: 0, fontSize: 14, color: '#868AA5', lineHeight: '18px' }}>Feel free to add instructions</p>
-              ) : (
-                <p style={{ margin: 0, fontSize: 14, color: '#000624', lineHeight: '18px', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>
-                  Create a bright, modern website for "Happy Moments", a shoe store in Tel Aviv, using soft sky blue, warm coral, and clean white for a cheerful, welcoming vi..
-                </p>
-              )}
+              <p style={{ margin: 0, fontSize: 14, color: importedSite ? '#868AA5' : '#000624', lineHeight: '18px', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>
+                {importedSite
+                  ? 'Use a more playful color palette and keep the messaging short'
+                  : 'Create a bright, modern website for "Happy Moments", a shoe store in Tel Aviv, using soft sky blue, warm coral, and clean white for a cheerful, welcoming vi..'}
+              </p>
             </div>
 
             {/* Action bar */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              {/* Create from URL — Default or Added state */}
-              {importedSite ? (
-                /* ── Added state: site attachment chip ── */
-                <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', height: 48, background: '#fff', border: '1px solid #DFE5EB', borderRadius: 8, overflow: 'hidden', fontFamily: 'inherit', flexShrink: 0 }}>
-                  {/* Screenshot thumbnail */}
-                  <img
-                    src={`https://image.thum.io/get/width/96/crop/136/${importedSite.host}`}
-                    style={{ width: 32, height: 48, objectFit: 'cover', objectPosition: 'top', flexShrink: 0, display: 'block', borderRight: '1px solid #DFE5EB' }}
-                    onError={e => { e.target.style.display='none'; }}
-                  />
-                  {/* Site info */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 3, padding: '0 10px 0 10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ fontSize: 12, fontWeight: 600, color: '#1E1E2E', whiteSpace: 'nowrap', maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis' }}>Site Name</span>
-                      {importedSite.isShopify && <span style={{ background: '#D5DFFF', borderRadius: 12, padding: '1px 7px', fontSize: 10, fontWeight: 500, color: '#383838', flexShrink: 0 }}>Shopify</span>}
-                    </div>
-                    <span style={{ fontSize: 11, color: '#888898', whiteSpace: 'nowrap' }}>{importedSite.host}</span>
-                  </div>
-                  {/* Close button */}
-                  <button onClick={removeSite} style={{ border: 0, background: 'none', cursor: 'pointer', padding: '4px 8px 4px 4px', display: 'flex', alignItems: 'center', lineHeight: 0, alignSelf: 'flex-start', marginTop: 4 }}>
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2L8 8M8 2L2 8" stroke="#888" strokeWidth="1.6" strokeLinecap="round"/></svg>
-                  </button>
-                </div>
-              ) : (
-                /* ── Default state — ghost pill with hover ── */
+              {/* Create from URL — Default state only (chip is now above) */}
+              {!importedSite && (
                 <div style={{ position: 'relative', display: 'inline-flex' }}
                   onMouseEnter={() => setHovUrl(true)}
                   onMouseLeave={() => setHovUrl(false)}
@@ -1902,6 +1907,29 @@ function HarmonyV11Screen({ onGenerate }) {
 
         {/* Composer card */}
         <div style={{ marginTop: 40, borderRadius: 24, background: '#fff', border: '1.5px solid #9db9ff', padding: '26px 28px 18px', minHeight: 296, display: 'flex', flexDirection: 'column', boxShadow: '0 2px 2px rgba(0,6,36,0.05), 0 0 3px rgba(0,6,36,0.1)', position: 'relative' }}>
+          {/* Attachment chip — shown ABOVE textarea when site is imported */}
+          {importedSite && (
+            <div style={{ display: 'inline-flex', alignItems: 'center', height: 48, background: '#fff', border: '1px solid #DFE5EB', borderRadius: 8, overflow: 'hidden', fontFamily: 'inherit', alignSelf: 'flex-start', flexShrink: 0, maxWidth: '100%', marginBottom: 4 }}>
+              <img
+                src={`https://image.thum.io/get/width/96/crop/136/${importedSite.host}`}
+                style={{ width: 48, height: 32, objectFit: 'cover', objectPosition: 'top', flexShrink: 0, display: 'block', margin: '0 0 0 8px', borderRadius: 4, border: '1px solid rgba(0,6,36,0.1)' }}
+                onError={e => { e.target.style.display='none'; }}
+              />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 2, padding: '0 0 0 10px', minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ fontSize: 12, fontWeight: 500, color: '#000624', whiteSpace: 'nowrap', maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis' }}>{importedSite.host}</span>
+                  {importedSite.isShopify && <span style={{ background: '#D5DFFF', borderRadius: 4, padding: '0 6px', height: 20, display: 'inline-flex', alignItems: 'center', fontSize: 12, fontWeight: 500, color: '#383838', flexShrink: 0 }}>Shopify</span>}
+                </div>
+                <span style={{ fontSize: 12, color: '#868AA5', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 180 }}>{importedSite.host}</span>
+              </div>
+              <div style={{ display: 'flex', height: 48, alignItems: 'flex-start', justifyContent: 'flex-end', paddingRight: 3, paddingTop: 3 }}>
+                <button onClick={() => setImportedSite(null)} style={{ border: 0, background: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 18, height: 18, borderRadius: '50%' }}>
+                  <svg width="6" height="6" viewBox="0 0 6 6" fill="none"><path d="M1 1l4 4M5 1L1 5" stroke="#32324D" strokeWidth="1.3" strokeLinecap="round"/></svg>
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Textarea */}
           <textarea
             placeholder="Describe the site you want to build…"
@@ -1909,27 +1937,8 @@ function HarmonyV11Screen({ onGenerate }) {
           />
           {/* Composer footer */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8 }}>
-            {/* Create from URL — Default or Added state */}
-            {importedSite ? (
-              /* ── Added state: site attachment chip ── */
-              <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', height: 48, background: '#fff', border: '1px solid #DFE5EB', borderRadius: 8, overflow: 'hidden', fontFamily: 'inherit', flexShrink: 0 }}>
-                <img
-                  src={`https://image.thum.io/get/width/96/crop/136/${importedSite.host}`}
-                  style={{ width: 32, height: 48, objectFit: 'cover', objectPosition: 'top', flexShrink: 0, display: 'block', borderRight: '1px solid #DFE5EB' }}
-                  onError={e => { e.target.style.display='none'; }}
-                />
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 3, padding: '0 10px 0 10px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: '#1E1E2E', whiteSpace: 'nowrap', maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis' }}>Site Name</span>
-                    {importedSite.isShopify && <span style={{ background: '#D5DFFF', borderRadius: 12, padding: '1px 7px', fontSize: 10, fontWeight: 500, color: '#383838', flexShrink: 0 }}>Shopify</span>}
-                  </div>
-                  <span style={{ fontSize: 11, color: '#888898', whiteSpace: 'nowrap' }}>{importedSite.host}</span>
-                </div>
-                <button onClick={() => setImportedSite(null)} style={{ border: 0, background: 'none', cursor: 'pointer', padding: '4px 8px 4px 4px', display: 'flex', alignItems: 'center', lineHeight: 0, alignSelf: 'flex-start', marginTop: 4 }}>
-                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2L8 8M8 2L2 8" stroke="#888" strokeWidth="1.6" strokeLinecap="round"/></svg>
-                </button>
-              </div>
-            ) : (
+            {/* Create from URL — default state only (chip is above) */}
+            {!importedSite && (
             <div style={{ position: 'relative', display: 'inline-flex' }}
               onMouseEnter={() => setHovUrl(true)}
               onMouseLeave={() => setHovUrl(false)}
