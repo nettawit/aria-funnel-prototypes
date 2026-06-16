@@ -237,15 +237,25 @@ function CloseBtn({ onRemove, transparent }) {
 
 function isUrl(name) { return /^https?:\/\/|^www\.|\.com|\.io|\.co|\.net|\.org/.test(name); }
 
-function AttachmentChip({ name, onRemove }) {
+/* ---- attachment types — colored left edge per type; label lives in group headers & hover tooltip ---- */
+const TYPE_BADGE = {
+  asset: { label: 'Asset', fg: '#C05B2A' },
+  ref:   { label: 'Reference', fg: '#6040D0' },
+  file:  { label: 'Info', fg: '#1A6CC0' },
+  site:  { label: 'Site', fg: '#44455A' },
+};
+const typeEdge = (type) => type ? { border: '1px solid #E8E7E7', borderLeft: `3px solid ${TYPE_BADGE[type].fg}` } : { border: '1px solid #E8E7E7' };
+
+function AttachmentChip({ name, onRemove, type }) {
   const [hovered, setHovered] = hs(false);
   const hoverProps = onRemove ? { onMouseEnter: () => setHovered(true), onMouseLeave: () => setHovered(false) } : {};
+  const tip = type ? TYPE_BADGE[type].label : undefined;
 
   /* URL variant — globe icon */
   if (isUrl(name)) {
     const display = name.replace(/^https?:\/\//, '').replace(/\/$/, '');
     return (
-      <span {...hoverProps} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', background: '#fff', border: '1px solid #E8E7E7', borderRadius: 8, overflow: 'visible', flexShrink: 0 }}>
+      <span {...hoverProps} title={tip} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', background: '#fff', ...typeEdge(type), borderRadius: 8, overflow: 'visible', flexShrink: 0 }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 6, paddingRight: onRemove ? 16 : 10 }}>
           <GlobeIcon />
           <span style={{ fontSize: 12, fontWeight: 500, color: '#151414', whiteSpace: 'nowrap', maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis' }}>{display}</span>
@@ -255,10 +265,10 @@ function AttachmentChip({ name, onRemove }) {
     );
   }
 
-  /* Image variant — Figma node 23:884 — 48×48 thumbnail */
+  /* Image variant — 48×48 thumbnail with type edge */
   if (isImage(name)) {
     return (
-      <span {...hoverProps} style={{ position: 'relative', display: 'inline-flex', width: 48, height: 48, borderRadius: 8, border: '1px solid rgba(19,23,32,0.1)', overflow: 'hidden', flexShrink: 0 }}>
+      <span {...hoverProps} title={tip} style={{ position: 'relative', display: 'inline-flex', width: 48, height: 48, borderRadius: 8, ...(type ? typeEdge(type) : { border: '1px solid rgba(19,23,32,0.1)' }), overflow: 'hidden', flexShrink: 0, boxSizing: 'border-box', background: '#fff' }}>
         <img src={imgSrc(name)} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
         {onRemove && hovered && <CloseBtn onRemove={onRemove} transparent={true} />}
       </span>
@@ -267,7 +277,7 @@ function AttachmentChip({ name, onRemove }) {
 
   /* File variant — Figma node 23:840 */
   return (
-    <span {...hoverProps} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', background: '#fff', border: '1px solid #E8E7E7', borderRadius: 8, overflow: 'visible', flexShrink: 0 }}>
+    <span {...hoverProps} title={tip} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', background: '#fff', ...typeEdge(type), borderRadius: 8, overflow: 'visible', flexShrink: 0 }}>
       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 6, paddingRight: onRemove ? 16 : 10 }}>
         <FileIcon name={name} />
         <span style={{ fontSize: 12, fontWeight: 500, color: '#151414', whiteSpace: 'nowrap', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis' }}>{name}</span>
@@ -307,7 +317,7 @@ function SiteChip({ site, onRemove }) {
   const [hovered, setHovered] = hs(false);
   const [favErr, setFavErr] = hs(false);
   return (
-    <span onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', background: '#fff', border: '1px solid #E8E7E7', borderRadius: 8, overflow: 'visible', flexShrink: 0 }}>
+    <span onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} title="Site" style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', background: '#fff', ...typeEdge('site'), borderRadius: 8, overflow: 'visible', flexShrink: 0 }}>
       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, paddingTop: 4, paddingBottom: 4, paddingLeft: 6, paddingRight: onRemove ? 16 : 10 }}>
         {favErr ? <GlobeIcon /> : <img src={`https://www.google.com/s2/favicons?domain=${site.host}&sz=64`} alt="" width={20} height={20} onError={() => setFavErr(true)} style={{ borderRadius: 4, display: 'block', flexShrink: 0 }} />}
         <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.25 }}>
@@ -454,6 +464,8 @@ function HomeFlow({ start = 'empty', onGenerate }) {
   const [assetFiles, setAssetFiles] = hs([]);
   const [refs, setRefs] = hs([]);
   const [importedSite, setImportedSite] = hs(null); // null | { host, isShopify, mode: 'both' | 'design' }
+  const [fileTypes, setFileTypes] = hs({}); // name -> 'asset' | 'file' | 'ref'
+  const recordTypes = (names, type) => setFileTypes(prev => { const m = { ...prev }; names.forEach(n => { if (!m[n]) m[n] = type; }); return m; });
   const [ov, setOv] = hs(null); // overlay/modal id
   const [refHover, setRefHover] = hs(false);
   const [scanPct, setScanPct] = hs(60);
@@ -512,7 +524,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
       const invalid = files.filter(f => !ALLOWED_EXTS.includes((f.name.split('.').pop() || '').toUpperCase()));
       if (valid.length) {
         const names = valid.map(f => f.name);
-        setAsset(true); setAssetFiles(prev => { const newOnes = names.filter(n => !prev.includes(n)); return [...prev, ...newOnes]; });
+        setAsset(true); recordTypes(names, 'asset'); setAssetFiles(prev => { const newOnes = names.filter(n => !prev.includes(n)); return [...prev, ...newOnes]; });
         if (screen === 'empty') setScreen('text');
       }
       if (invalid.length) {
@@ -589,9 +601,10 @@ function HomeFlow({ start = 'empty', onGenerate }) {
   };
 
   const closeOverlay = () => setOv(null);
-  const confirmAsset = (names) => {
+  const confirmAsset = (names, type = 'asset') => {
     setAsset(true);
     const arr = Array.isArray(names) ? names : ['logo.png'];
+    recordTypes(arr, type);
     setAssetFiles(prev => { const newOnes = arr.filter(n => !prev.includes(n)); return [...prev, ...newOnes]; });
     setAssetCount(prev => prev + arr.length);
     if (screen === 'empty') setScreen('text');
@@ -603,7 +616,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
     setOv(null);
   };
   const confirmVisualRef = ({ files = [], url = null }) => {
-    if (files.length) { setAsset(true); setAssetFiles(prev => { const newOnes = files.filter(n => !prev.includes(n)); return [...prev, ...newOnes]; }); }
+    if (files.length) { setAsset(true); recordTypes(files, 'ref'); setAssetFiles(prev => { const newOnes = files.filter(n => !prev.includes(n)); return [...prev, ...newOnes]; }); }
     if (url && !refs.includes(url)) setRefs(prev => [...prev, url]);
     if (files.length || url) { if (screen === 'empty') setScreen('text'); }
     setOv(null);
@@ -666,29 +679,41 @@ function HomeFlow({ start = 'empty', onGenerate }) {
               onDrop={handleDrop}
               style={{ background: dragOver ? '#F0F4FF' : ready ? '#F4F6FF' : 'rgba(255,255,255,0.5)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', minHeight: 360, borderRadius: 16, border: dragOver ? '2px dashed #2F5DFF' : `1px solid ${ready ? '#B8C5FF' : 'rgba(255,255,255,0.7)'}`, boxShadow: ready ? '0 4px 32px rgba(80,100,220,0.14)' : '0 2px 12px rgba(100,100,180,0.07)', transition: 'background 0.3s ease, border-color 0.2s ease, box-shadow 0.6s ease', position: 'relative', zIndex: ov === 'dropdown' ? 30 : 1, display: 'flex', flexDirection: 'column', animation: 'card-enter 420ms ease-out' }}>
               {dragOver && <div style={{ position: 'absolute', inset: 0, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, pointerEvents: 'none' }}><div style={{ background: 'rgba(47,93,255,0.06)', borderRadius: 16, padding: '12px 24px', fontSize: 14, fontWeight: 600, color: '#2F5DFF' }}>Drop files or URLs here</div></div>}
-              {/* attachment chips */}
-              {(asset || refs.length > 0 || importedSite) &&
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, padding: '16px 28px 6px' }}>
-                  {asset && (assetFiles.length ? assetFiles : ['logo.png']).slice(0, 9).map((nm, i) =>
-                    <AttachmentChip key={i} name={nm} onRemove={() => { const removed = nm; const removedIndex = i; const next = (assetFiles.length ? assetFiles : ['logo.png']).filter((_, idx) => idx !== removedIndex); setAssetFiles(next); if (!next.length) setAsset(false); showUndo(removed, () => { setAssetFiles(prev => { const arr = [...prev]; arr.splice(removedIndex, 0, removed); return arr; }); setAsset(true); }); }} />
-                  )}
-                  {asset && assetFiles.length > 9 && (
-                    <FolderChip
-                      files={assetFiles.slice(9)}
-                      onRemoveFile={(idx) => {
-                        const realIdx = 9 + idx;
-                        const removed = assetFiles[realIdx];
-                        const next = assetFiles.filter((_, i) => i !== realIdx);
-                        setAssetFiles(next);
-                        if (!next.length) setAsset(false);
-                        showUndo(removed, () => { setAssetFiles(prev => { const arr = [...prev]; arr.splice(realIdx, 0, removed); return arr; }); setAsset(true); });
-                      }}
-                    />
-                  )}
-                  {refs.map((r, i) => <AttachmentChip key={i} name={r} onRemove={() => { const removed = r; const idx = i; setRefs(prev => prev.filter((_, j) => j !== idx)); showUndo(removed, () => setRefs(prev => { const arr = [...prev]; arr.splice(idx, 0, removed); return arr; })); }} />)}
-                  {importedSite && <SiteChip site={importedSite} onRemove={() => { const s = importedSite; setImportedSite(null); showUndo(s.host, () => setImportedSite(s)); }} />}
-                </div>
-              }
+              {/* attachment chips — grouped by type, colored edge per type */}
+              {(asset || refs.length > 0 || importedSite) && (() => {
+                const allFiles = assetFiles.length ? assetFiles : (asset ? ['logo.png'] : []);
+                const removeFile = (nm) => {
+                  const removedIndex = allFiles.indexOf(nm);
+                  const next = allFiles.filter((_, idx) => idx !== removedIndex);
+                  setAssetFiles(next); if (!next.length) setAsset(false);
+                  showUndo(nm, () => { setAssetFiles(prev => { const arr = [...prev]; arr.splice(removedIndex, 0, nm); return arr; }); setAsset(true); });
+                };
+                const removeRef = (r) => {
+                  const idx = refs.indexOf(r);
+                  setRefs(prev => prev.filter((_, j) => j !== idx));
+                  showUndo(r, () => setRefs(prev => { const arr = [...prev]; arr.splice(idx, 0, r); return arr; }));
+                };
+                const groups = [
+                  { type: 'asset', label: 'Assets', items: allFiles.filter(n => (fileTypes[n] || 'asset') === 'asset') },
+                  { type: 'ref', label: 'References', items: [...allFiles.filter(n => fileTypes[n] === 'ref'), ...refs] },
+                  { type: 'file', label: 'Info', items: allFiles.filter(n => fileTypes[n] === 'file') },
+                ].filter(g => g.items.length);
+                return (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 18, padding: '14px 28px 6px' }}>
+                    {groups.map(g => (
+                      <div key={g.type} style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                        <span style={{ fontSize: 10, fontWeight: 600, color: '#9A9AB0', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{g.label}</span>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                          {g.items.map((nm, i) =>
+                            <AttachmentChip key={i} name={nm} type={g.type} onRemove={() => refs.includes(nm) ? removeRef(nm) : removeFile(nm)} />
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                    {/* importedSite is now shown inline in the action bar — no separate chip here */}
+                  </div>
+                );
+              })()}
 
               {/* Undo toast */}
 
@@ -766,27 +791,64 @@ function HomeFlow({ start = 'empty', onGenerate }) {
 
               {/* action row */}
               <div style={{ borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: 17, paddingBottom: 5, paddingLeft: 14, paddingRight: 14, display: 'flex', alignItems: 'center' }}>
-                <div style={{ position: 'relative' }}>
-                  {/* Add dropdown */}
-                  {ov === 'dropdown' &&
-                  <div style={{ position: 'absolute', bottom: 'calc(100% + 12px)', left: 0, width: 280, background: '#fff', border: '0.5px solid rgba(0,0,0,0.10)', borderRadius: 14, boxShadow: '0 4px 24px rgba(0,0,0,0.10)', padding: 6, zIndex: 30, animation: 'h-menu 160ms ease-out' }}>
-                      <div style={{ fontSize: 10, fontWeight: 600, color: '#AAAAAA', textTransform: 'uppercase', letterSpacing: '0.08em', padding: '8px 10px 4px' }}>Add to your prompt</div>
-                      <DropRow icon="image" bg="#FFF0E8" fg="#C05B2A" title="Add assets" desc="Upload media to use in your site" onClick={() => setOv('assets')} />
-                      <DropRow icon="link" icon2="image" bg="#EDE9FF" fg="#6040D0" title="Add visual references" desc="Give Aria a look & feel to start from" onClick={() => setOv('url')} />
-                      <DropRow icon="document" bg="#E8F3FF" fg="#1A6CC0" title="Add info" desc="Any info that helps Aria build a better site" onClick={() => setOv('files')} />
-                      <span style={{ position: 'absolute', left: 22, bottom: -7, width: 14, height: 14, background: '#fff', borderRight: '0.5px solid rgba(0,0,0,0.10)', borderBottom: '0.5px solid rgba(0,0,0,0.10)', transform: 'rotate(45deg)' }} />
+                {importedSite ? (
+                  /* ── "Added" state: site imported → inline URL chip in action bar ── */
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+                    <button className="hbtn hbtn-ghost" onClick={() => setOv('import-url')} style={{ ...hBtnGhost('medium'), gap: 5, paddingLeft: 6, paddingRight: 10, color: '#32324D' }}>
+                      <HIc name="link" size={14} color="#32324D" />
+                      <span style={{ fontSize: 12, fontWeight: 500 }}>Create from URL</span>
+                    </button>
+                    <span style={{ width: 1, height: 18, background: 'rgba(0,0,0,0.12)', margin: '0 6px' }} />
+                    <div style={{ position: 'relative' }}>
+                      {ov === 'dropdown' &&
+                        <div style={{ position: 'absolute', bottom: 'calc(100% + 12px)', left: 0, width: 280, background: '#fff', border: '0.5px solid rgba(0,0,0,0.10)', borderRadius: 14, boxShadow: '0 4px 24px rgba(0,0,0,0.10)', padding: 6, zIndex: 30, animation: 'h-menu 160ms ease-out' }}>
+                          <div style={{ fontSize: 10, fontWeight: 600, color: '#AAAAAA', textTransform: 'uppercase', letterSpacing: '0.08em', padding: '8px 10px 4px' }}>Add to your prompt</div>
+                          <DropRow icon="image" bg="#FFF0E8" fg="#C05B2A" title="Add assets" desc="Upload media to use in your site" onClick={() => setOv('assets')} />
+                          <DropRow icon="link" icon2="image" bg="#EDE9FF" fg="#6040D0" title="Add visual references" desc="Give Aria a look & feel to start from" onClick={() => setOv('url')} />
+                          <DropRow icon="document" bg="#E8F3FF" fg="#1A6CC0" title="Add info" desc="Any info that helps Aria build a better site" onClick={() => setOv('files')} />
+                          <span style={{ position: 'absolute', left: 12, bottom: -7, width: 14, height: 14, background: '#fff', borderRight: '0.5px solid rgba(0,0,0,0.10)', borderBottom: '0.5px solid rgba(0,0,0,0.10)', transform: 'rotate(45deg)' }} />
+                        </div>
+                      }
+                      <button className="hbtn hbtn-ghost" onClick={() => setOv(ov === 'dropdown' ? null : 'dropdown')} style={{ ...hBtnGhost('medium'), width: 32, padding: 0, minWidth: 0, color: '#32324D' }}>
+                        <HIc name="plus" size={14} color="#32324D" />
+                      </button>
                     </div>
-                  }
-                  <button className="hbtn hbtn-secondary" onClick={() => setOv(ov === 'dropdown' ? null : 'dropdown')} style={{ ...hBtnSecondary('medium'), border: `1px solid ${ov === 'dropdown' ? H_BLUE : '#E0E0E0'}`, background: ov === 'dropdown' ? 'rgba(45,78,224,0.06)' : '#fff', color: ov === 'dropdown' ? H_BLUE : '#32324D' }}>
-                    <HIc name="plus" size={14} color={ov === 'dropdown' ? H_BLUE : '#32324D'} />
-                    Add
-                  </button>
-                </div>
-                <span style={{ width: 1, height: 18, background: 'rgba(0,0,0,0.10)', margin: '0 10px' }} />
-                <button className="hbtn hbtn-secondary" onClick={() => setOv('import-url')} style={{ ...hBtnSecondary('medium') }}>
-                  <HIc name="globe" size={14} color="#32324D" />
-                  Create from URL
-                </button>
+                    <span style={{ width: 1, height: 18, background: 'rgba(0,0,0,0.12)', margin: '0 6px' }} />
+                    {/* URL chip */}
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, height: 30, padding: '0 10px 0 10px', background: '#fff', border: '1px solid #E8E7E7', borderRadius: 24, fontSize: 12, color: '#151414', fontWeight: 400, fontFamily: 'inherit' }}>
+                      <img src={`https://www.google.com/s2/favicons?domain=${importedSite.host}&sz=32`} width={13} height={13} style={{ borderRadius: 2, flexShrink: 0, display: 'block' }} onError={(e) => { e.target.style.display='none'; }} />
+                      <span style={{ maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{importedSite.host}</span>
+                      {importedSite.isShopify && <span style={{ background: '#EDFAF3', borderRadius: 8, padding: '1px 6px', fontSize: 10, fontWeight: 700, color: '#1A8A5A', flexShrink: 0 }}>Shopify</span>}
+                      <button onClick={() => { const s = importedSite; setImportedSite(null); showUndo(s.host, () => setImportedSite(s)); }} style={{ border: 0, background: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', lineHeight: 0, marginLeft: 2, flexShrink: 0 }}>
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2L8 8M8 2L2 8" stroke="#888" strokeWidth="1.6" strokeLinecap="round"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  /* ── "Default" state: Add dropdown + Create from URL ── */
+                  <>
+                    <div style={{ position: 'relative' }}>
+                      {ov === 'dropdown' &&
+                        <div style={{ position: 'absolute', bottom: 'calc(100% + 12px)', left: 0, width: 280, background: '#fff', border: '0.5px solid rgba(0,0,0,0.10)', borderRadius: 14, boxShadow: '0 4px 24px rgba(0,0,0,0.10)', padding: 6, zIndex: 30, animation: 'h-menu 160ms ease-out' }}>
+                          <div style={{ fontSize: 10, fontWeight: 600, color: '#AAAAAA', textTransform: 'uppercase', letterSpacing: '0.08em', padding: '8px 10px 4px' }}>Add to your prompt</div>
+                          <DropRow icon="image" bg="#FFF0E8" fg="#C05B2A" title="Add assets" desc="Upload media to use in your site" onClick={() => setOv('assets')} />
+                          <DropRow icon="link" icon2="image" bg="#EDE9FF" fg="#6040D0" title="Add visual references" desc="Give Aria a look & feel to start from" onClick={() => setOv('url')} />
+                          <DropRow icon="document" bg="#E8F3FF" fg="#1A6CC0" title="Add info" desc="Any info that helps Aria build a better site" onClick={() => setOv('files')} />
+                          <span style={{ position: 'absolute', left: 22, bottom: -7, width: 14, height: 14, background: '#fff', borderRight: '0.5px solid rgba(0,0,0,0.10)', borderBottom: '0.5px solid rgba(0,0,0,0.10)', transform: 'rotate(45deg)' }} />
+                        </div>
+                      }
+                      <button className="hbtn hbtn-secondary" onClick={() => setOv(ov === 'dropdown' ? null : 'dropdown')} style={{ ...hBtnSecondary('medium'), border: `1px solid ${ov === 'dropdown' ? H_BLUE : '#E0E0E0'}`, background: ov === 'dropdown' ? 'rgba(45,78,224,0.06)' : '#fff', color: ov === 'dropdown' ? H_BLUE : '#32324D' }}>
+                        <HIc name="plus" size={14} color={ov === 'dropdown' ? H_BLUE : '#32324D'} />
+                        Add
+                      </button>
+                    </div>
+                    <span style={{ width: 1, height: 18, background: 'rgba(0,0,0,0.10)', margin: '0 10px' }} />
+                    <button className="hbtn hbtn-secondary" onClick={() => setOv('import-url')} style={{ ...hBtnSecondary('medium') }}>
+                      <HIc name="globe" size={14} color="#32324D" />
+                      Create from URL
+                    </button>
+                  </>
+                )}
                 <div style={{ flex: 1 }} />
                 <span style={{ position: 'relative', display: 'inline-flex' }}
                     onMouseEnter={() => { const d = (!prompt.trim() && !asset && !refs.length && !importedSite) || continuing; if (d) setShowContinueTip(true); }}
@@ -851,7 +913,7 @@ function HomeFlow({ start = 'empty', onGenerate }) {
 
         {/* modals */}
         {ov === 'assets' && <AssetsModal onClose={closeOverlay} onAdd={confirmAsset} />}
-        {ov === 'files' && <AssetsModal onClose={closeOverlay} onAdd={confirmAsset} title="Add info" sub="Any info that helps Aria build a better site" hints={['Briefs, docs, brand guides, product lists — anything with context', 'Aria will use them to shape a better prompt for your site']} />}
+        {ov === 'files' && <AssetsModal onClose={closeOverlay} onAdd={(names) => confirmAsset(names, 'file')} title="Add info" sub="Any info that helps Aria build a better site" hints={['Briefs, docs, brand guides, product lists — anything with context', 'Aria will use them to shape a better prompt for your site']} />}
         {ov === 'extract' && <ExtractModal onClose={closeOverlay} onAdd={confirmAsset} />}
         {ov === 'url' && <UrlModal onClose={closeOverlay} onAdd={confirmVisualRef} onBack={() => setOv('dropdown')} />}
         {ov === 'import-url' && <ImportFlow onClose={closeOverlay} onImport={(site) => {setImportedSite(site);if (screen === 'empty') setScreen('text');setOv(null);}} />}
@@ -1156,9 +1218,9 @@ function UrlModal({ onClose, onAdd, onBack }) {
 }
 
 
-function ImportFlow({ onClose, onImport }) {
-  const [phase, setPhase] = hs('url'); // 'url' | 'scanning' | 'results' | 'error'
-  const [url, setUrl] = hs('');
+function ImportFlow({ onClose, onImport, initialUrl = '', initialPhase = 'url' }) {
+  const [phase, setPhase] = hs(initialPhase);
+  const [url, setUrl] = hs(initialUrl);
   const [sel, setSel] = hs('both');
   const isValidUrl = (u) => /^(https?:\/\/)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/.test(u.trim());
   const scan = () => {
@@ -1168,8 +1230,10 @@ function ImportFlow({ onClose, onImport }) {
   };
   const host = url.replace(/^https?:\/\//, '').replace(/\/.*$/, '') || 'mysite.com';
 
-  /* ── Demo rule: URLs containing "shop" or "store" are detected as Shopify ── */
-  const isShopify = /shop|store/i.test(host);
+  /* ── Demo detection rules ── */
+  const isShopify = /shop/i.test(host) && !/woo/i.test(host);
+  const isWoo = /woo/i.test(host);
+  const platform = isShopify ? 'Shopify' : isWoo ? 'WooCommerce' : null;
 
   /* icon SVGs inline */
   const IconLayers = ({ active }) => (
@@ -1233,14 +1297,6 @@ function ImportFlow({ onClose, onImport }) {
         <input autoFocus value={url} disabled={phase === 'scanning'} onChange={(e) => { setUrl(e.target.value); if (phase === 'error') setPhase('url'); }} onKeyDown={(e) => e.key === 'Enter' && phase !== 'scanning' && scan()} placeholder="Paste any URL addresses" style={{ flex: 1, height: 38, boxSizing: 'border-box', padding: '0 12px', background: '#F6F6F8', border: `1px solid ${phase === 'error' ? '#D32F2F' : '#ECECF0'}`, borderRadius: 8, fontSize: 14, color: '#32324D', outline: 'none', fontFamily: 'inherit' }} />
         <button className="hbtn" onClick={scan} disabled={phase === 'scanning'} style={{ ...hBtnPrimary('medium'), flexShrink: 0, opacity: phase === 'scanning' ? 0.6 : 1, cursor: phase === 'scanning' ? 'default' : 'pointer' }}>{phase === 'scanning' ? 'Scanning…' : 'Scan'}</button>
       </div>
-      {/* example URLs — one regular, one Shopify (shows the badge) */}
-      {phase !== 'scanning' &&
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 12, color: H_MUTED }}>Try an example:</span>
-          <button onClick={() => { setUrl('wix.com'); if (phase === 'error') setPhase('url'); }} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 28, padding: '0 12px', background: '#fff', border: '1px solid #E0E0E0', borderRadius: 14, fontSize: 12, fontWeight: 500, color: '#32324D', cursor: 'pointer', fontFamily: 'inherit' }}>wix.com</button>
-          <button onClick={() => { setUrl('mystore.com'); if (phase === 'error') setPhase('url'); }} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 28, padding: '0 4px 0 12px', background: '#fff', border: '1px solid #E0E0E0', borderRadius: 14, fontSize: 12, fontWeight: 500, color: '#32324D', cursor: 'pointer', fontFamily: 'inherit' }}>mystore.com<span style={{ background: '#EDFAF3', borderRadius: 10, padding: '3px 8px', fontSize: 10, fontWeight: 700, color: '#1A8A5A' }}>Shopify</span></button>
-        </div>
-      }
       {/* error */}
       {phase === 'error' &&
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: '#FFF3F3', border: '1px solid #FFCDD2', borderRadius: 8 }}>
@@ -1256,8 +1312,10 @@ function ImportFlow({ onClose, onImport }) {
         </div>
       }
     </div>
-    {/* legal strip */}
-    <div style={{ background: '#F6F6F8', padding: '15px 28px', fontSize: 13, color: '#44445A' }}>Only use URLs where you have rights to the content</div>
+    {/* WDS footnote strip */}
+    <div style={{ background: '#F0F0F4', borderTop: '1px solid #E8E8E8', borderRadius: '0 0 16px 16px', padding: '12px 28px' }}>
+      <span style={{ fontSize: 12, color: '#888898' }}>Only use URLs where you have rights to the content.</span>
+    </div>
   </div></Overlay>;
 
   /* ── Step 2: scan results ── */
@@ -1273,49 +1331,49 @@ function ImportFlow({ onClose, onImport }) {
       </button>
     </div>
 
-    <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-      {/* URL input + re-scan */}
-      <div style={{ display: 'flex', gap: 8 }}>
-        <input className="h-input" value={url} onChange={(e) => setUrl(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && scan()} placeholder="Paste any address or URL" style={{ flex: 1, height: 36, boxSizing: 'border-box', padding: '0 12px', border: '1px solid #C1C2C3', borderRadius: 8, fontSize: 14, color: '#32324D', outline: 'none', fontFamily: 'inherit', background: '#fff', transition: 'border-color 120ms, box-shadow 120ms' }} />
-        <button className="hbtn hbtn-secondary" onClick={scan} style={{ ...hBtnSecondary('medium'), flexShrink: 0 }}>Re-scan</button>
-      </div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, animation: 'h-fade 300ms ease' }}>
-        {/* full-width preview */}
-        <div style={{ border: '1px solid #E0E0EE', borderRadius: 10, overflow: 'hidden' }}>
-          {/* browser bar */}
-          <div style={{ height: 22, background: '#F3F4F6', display: 'flex', alignItems: 'center', gap: 4, padding: '0 10px', borderBottom: '1px solid #EBEBEB' }}>
-            {['#FF5F57','#FEBC2E','#28C840'].map((c) => <span key={c} style={{ width: 7, height: 7, borderRadius: '50%', background: c }} />)}
-            <span style={{ flex: 1, height: 12, background: '#E4E5EA', borderRadius: 4, marginLeft: 8 }} />
-          </div>
-          {/* screenshot — live via thum.io */}
-          <div style={{ height: 148, background: '#E8EAF0', overflow: 'hidden' }}>
-            <img src={`https://image.thum.io/get/width/640/crop/400/${url.startsWith('http') ? url : 'https://' + url}`} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }} />
-          </div>
-          {/* footer row */}
-          <div style={{ padding: '9px 14px', background: '#fff', borderTop: '1px solid #EBEBEB', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: 13, fontWeight: 600, color: '#32324D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{host}</span>
-            {isShopify && <span style={{ background: '#EDFAF3', borderRadius: 6, padding: '3px 10px', fontSize: 12, fontWeight: 700, color: '#1A8A5A', flexShrink: 0 }}>Shopify</span>}
-          </div>
+    <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+      {/* site preview card */}
+      <div style={{ border: '1px solid #E0E0EE', borderRadius: 10, overflow: 'hidden' }}>
+        {/* browser bar */}
+        <div style={{ height: 22, background: '#F3F4F6', display: 'flex', alignItems: 'center', gap: 4, padding: '0 10px', borderBottom: '1px solid #EBEBEB' }}>
+          {['#FF5F57','#FEBC2E','#28C840'].map((c) => <span key={c} style={{ width: 7, height: 7, borderRadius: '50%', background: c }} />)}
+          <span style={{ flex: 1, height: 12, background: '#E4E5EA', borderRadius: 4, marginLeft: 8 }} />
         </div>
-        {/* options — side by side */}
-        <div style={{ display: 'flex', gap: 10 }}>
-          <Opt id="both" title="Content & design" sub="Keep the pages, content and data" icon={<IconLayers active={sel === 'both'} />} shopifyNote />
-          <Opt id="design" title="Design only" sub="Keep the same visual style" icon={<IconPalette active={sel === 'design'} />} />
+        {/* screenshot */}
+        <div style={{ height: 148, background: '#E8EAF0', overflow: 'hidden' }}>
+          <img src={`https://image.thum.io/get/width/640/crop/400/${url.startsWith('http') ? url : 'https://' + url}`} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }} />
+        </div>
+        {/* footer row */}
+        <div style={{ padding: '9px 14px', background: '#fff', borderTop: '1px solid #EBEBEB', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ fontSize: 13, fontWeight: 600, color: '#32324D', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{host}</span>
+          {platform === 'Shopify' && <span style={{ background: '#EDFAF3', borderRadius: 6, padding: '3px 10px', fontSize: 12, fontWeight: 700, color: '#1A8A5A', flexShrink: 0 }}>Shopify</span>}
+          {platform === 'WooCommerce' && <span style={{ background: '#F3EEFF', borderRadius: 6, padding: '3px 10px', fontSize: 12, fontWeight: 700, color: '#7B3FC4', flexShrink: 0 }}>WooCommerce</span>}
         </div>
       </div>
 
-      {/* legal banner */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 9, background: '#F3F4F8', borderRadius: 8, padding: '10px 14px' }}>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}><circle cx="8" cy="8" r="7" stroke="#888898" strokeWidth="1.3"/><path d="M8 7.5V11" stroke="#888898" strokeWidth="1.5" strokeLinecap="round"/><circle cx="8" cy="5.5" r="0.75" fill="#888898"/></svg>
-        <span style={{ fontSize: 13, color: '#666677', lineHeight: 1.5 }}>Only use URLs where you have rights to the content.</span>
+      {/* what Aria will keep */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '12px 14px', background: '#F6F7FF', borderRadius: 10, border: '1px solid #E0E5FF' }}>
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style={{ flexShrink: 0, marginTop: 1 }}>
+          <path d="M10 2L2 6.5L10 11L18 6.5L10 2Z" stroke="#2F5DFF" strokeWidth="1.5" strokeLinejoin="round"/>
+          <path d="M2 10L10 14.5L18 10" stroke="#2F5DFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M2 13.5L10 18L18 13.5" stroke="#2F5DFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <span style={{ fontSize: 13, color: '#32324D', lineHeight: 1.55 }}>
+          {platform
+            ? 'Aria will keep the pages, content and visual of your site — included products data, images and prices.'
+            : 'Aria will keep the pages, content and visual of your site.'}
+        </span>
       </div>
     </div>
 
     {/* footer */}
-    <div style={{ padding: '12px 24px 20px', borderTop: '1px solid #F0F0F4', display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+    <div style={{ padding: '12px 24px', borderTop: '1px solid #F0F0F4', display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
       <button onClick={onClose} className="hbtn hbtn-secondary" style={cancelB}>Cancel</button>
-      <button onClick={() => onImport({ host, isShopify, mode: sel })} className="hbtn" style={addB}>Add to Aria</button>
+      <button onClick={() => onImport({ host, isShopify: !!platform, platform, mode: 'both' })} className="hbtn" style={addB}>Add to Aria</button>
+    </div>
+    {/* WDS footnote strip */}
+    <div style={{ background: '#F0F0F4', borderTop: '1px solid #E8E8E8', borderRadius: '0 0 16px 16px', padding: '12px 24px' }}>
+      <span style={{ fontSize: 12, color: '#888898' }}>Only use URLs where you have rights to the content.</span>
     </div>
   </div></Overlay>;
 }
@@ -1528,6 +1586,394 @@ function GeneratingScreen({ prompt }) {
 }
 
 /* ============================================================
+   Figma Entry Screen — "Design your site with Aria"
+   Static browser-chrome wrapper + functional Create from URL
+   ============================================================ */
+
+const FG_ASSETS = {
+  btns:       'https://www.figma.com/api/mcp/asset/a277e0c8-e194-4e67-b1c2-cb73a2d2f7fa',
+  wixFav:     'https://www.figma.com/api/mcp/asset/952efd76-725d-4839-bd8d-7a6ae5bd8606',
+  wixFav2:    'https://www.figma.com/api/mcp/asset/fbcb9b2c-d274-4a1d-8c23-162f68097210',
+  cruzar1:    'https://www.figma.com/api/mcp/asset/1f4a397a-db46-4041-a626-36f7439694c5',
+  cruzar2:    'https://www.figma.com/api/mcp/asset/1850a733-dd8d-45b5-a78f-a15e9c9ba66f',
+  vec1:       'https://www.figma.com/api/mcp/asset/1541f18d-3d88-41a4-8abd-871b35c1027e',
+  vec2:       'https://www.figma.com/api/mcp/asset/fddfcc40-78bc-4a60-b248-0159b187f75c',
+  vec3:       'https://www.figma.com/api/mcp/asset/ea36f11d-0b9d-4f8d-867c-e3274674f5d2',
+  vec4:       'https://www.figma.com/api/mcp/asset/61831faf-93c0-4e74-9964-b27ff6e42abc',
+  newTab:     'https://www.figma.com/api/mcp/asset/cfe192dd-ad29-4c9b-b550-468533e27369',
+  returnIc:   'https://www.figma.com/api/mcp/asset/48b2e81d-1719-4f40-9bd4-77208587cc31',
+  forwardIc:  'https://www.figma.com/api/mcp/asset/3d1bb03c-8430-4330-b737-02fc23b2a309',
+  refreshIc:  'https://www.figma.com/api/mcp/asset/970996e6-9b0d-40b2-af92-a7b68a3070ea',
+  lockIc:     'https://www.figma.com/api/mcp/asset/c60e85d7-b37a-4e5b-a5ca-11328878f8d7',
+  avatar:     'https://www.figma.com/api/mcp/asset/6c6bacf1-1076-4070-b627-57ffd3247d75',
+  bkmrk1:     'https://www.figma.com/api/mcp/asset/4bf91d44-4576-4978-b6f6-ab5182329eaf',
+  bkmrk2:     'https://www.figma.com/api/mcp/asset/e2ddf015-c2ce-4527-a81c-99172dfd0c23',
+  ariaOrb:    'https://www.figma.com/api/mcp/asset/6973dd50-be93-4921-8b5d-90fa580ad62b',
+  globe:      'https://www.figma.com/api/mcp/asset/29958fb3-553d-4ff9-9caa-72541d2d1341',
+  arrowL:     'https://www.figma.com/api/mcp/asset/d600c2c0-6f2c-4ed4-81a0-ed7af4f929b7',
+  arrowR:     'https://www.figma.com/api/mcp/asset/3ef3d7d9-477a-4e47-b741-a3e85fb34cd0',
+  chevronR:   'https://www.figma.com/api/mcp/asset/5d1f22c6-7c72-4a3c-a352-fa885f11d0e2',
+  tmpl1:      'https://www.figma.com/api/mcp/asset/4d3c4917-3766-4f5b-ad13-0d22dff33cc6',
+  tmpl2:      'https://www.figma.com/api/mcp/asset/dbc8aa5b-0e97-4f7b-b1a3-6825402bd0bc',
+  tmpl3:      'https://www.figma.com/api/mcp/asset/ad30e7ad-a9d8-4d2e-84a6-3e2918da799c',
+  tmpl4:      'https://www.figma.com/api/mcp/asset/7c423558-168b-471b-aca6-ce755a257a2c',
+  tmpl5:      'https://www.figma.com/api/mcp/asset/08f42b65-5d84-4b6b-9c5d-9799c8b60447',
+  tmpl6:      'https://www.figma.com/api/mcp/asset/cbc979c6-9bed-426c-8ba4-2171a32c694f',
+};
+
+const DEV_PRESETS = [
+  { label: 'Regular site', host: 'example.com' },
+  { label: 'mystore.s', host: 'mystore.shopify.com', badge: 'Shopify', badgeColor: '#1A8A5A', badgeBg: '#EDFAF3' },
+  { label: 'store.woo', host: 'store.woocommerce.com', badge: 'WooCommerce', badgeColor: '#7B3FC4', badgeBg: '#F3EEFF' },
+];
+
+function FigmaEntryScreen({ onGenerate }) {
+  const [importedSite, setImportedSite] = hs(null);
+  const [showImport, setShowImport] = hs(false);
+  const [undoSite, setUndoSite] = hs(null);
+  const [hovUrl, setHovUrl] = hs(false);
+  const [tweaksOpen, setTweaksOpen] = hs(false);
+  const [importPreset, setImportPreset] = hs(null); // { host } to pre-load in modal
+  const undoTimer = hr(null);
+
+  const removeSite = () => {
+    const s = importedSite;
+    setImportedSite(null);
+    setUndoSite(s);
+    clearTimeout(undoTimer.current);
+    undoTimer.current = setTimeout(() => setUndoSite(null), 4000);
+  };
+
+  return (
+    <div style={{ width: '100%', minHeight: '100vh', background: 'linear-gradient(169deg, #F6F6F6 8.4%, #F0F0F0 61.3%)', fontFamily: '"Wix Madefor Text", sans-serif', overflowX: 'hidden' }}>
+
+      {/* ── Page nav ── */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 24px' }}>
+        <button className="hbtn hbtn-ghost" style={{ ...hBtnGhost('small'), color: '#000624', gap: 6 }}>
+          <HIc name="arrow-left" size={18} color="#000624" />
+          Back
+        </button>
+        <button className="hbtn hbtn-ghost" style={{ ...hBtnGhost('small'), color: '#000624', gap: 6 }}>
+          Continue with setup for now
+          <HIc name="arrow-right" size={18} color="#000624" />
+        </button>
+      </div>
+
+      {/* ── Main content ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 56, padding: '16px 0 48px' }}>
+        {/* Heading */}
+        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <h1 style={{ margin: 0, fontSize: 48, fontWeight: 500, fontFamily: '"Wix Madefor Display", sans-serif', color: '#000624', lineHeight: 1.15 }}>Design your site with Aria</h1>
+          <p style={{ margin: 0, fontSize: 18, color: '#868AA5', fontWeight: 400 }}>Describe the site you want, Aria will generate it and stay by your side as you work.</p>
+        </div>
+
+        {/* Chat input card */}
+        <div style={{ width: 720, display: 'flex', flexDirection: 'column', gap: 12, position: 'relative' }}>
+          {/* Aria status line */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#1E1E2E', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <HAria size={20} />
+            </div>
+            <span style={{ fontSize: 14, fontWeight: 500, background: 'linear-gradient(90deg, #315FFF, #1D3999)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Aria is generating a prompt based on your site info...</span>
+          </div>
+
+          {/* Card */}
+          <div style={{ background: 'linear-gradient(204deg, rgba(206,255,126,0.1) 20%, rgba(255,255,255,0) 87%), #F6F7F9', borderRadius: 12, padding: 12, boxShadow: '0 12px 8px rgba(0,0,0,0.10)', display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {/* Text area */}
+            <div style={{ background: '#fff', borderRadius: 8, padding: '9px 12px', boxShadow: '-117px 128px 24.5px rgba(16,21,133,0), -75px 82px 22px rgba(16,21,133,0.01), -24px 24px 12px rgba(16,21,133,0.03), -5px 5px 7.5px rgba(16,21,133,0.07)', minHeight: 78 }}>
+              <p style={{ margin: 0, fontSize: 14, color: '#000624', lineHeight: '18px', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>
+                Create a bright, modern website for "Happy Moments", a shoe store in Tel Aviv, using soft sky blue, warm coral, and clean white for a cheerful, welcoming vi..
+              </p>
+            </div>
+
+            {/* Action bar */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              {/* Create from URL — Default or Added state */}
+              {importedSite ? (
+                /* ── Added state ── */
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <button onClick={() => setShowImport(true)} className="hbtn hbtn-secondary" style={{ ...hBtnSecondary('small'), borderRadius: 24, gap: 6 }}>
+                    <HIc name="link" size={14} color="#32324D" />
+                    Create from URL
+                  </button>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, height: 30, padding: '0 10px', background: '#fff', border: '1px solid #E0E0E0', borderRadius: 24, fontSize: 12, color: '#32324D', fontFamily: 'inherit', fontWeight: 600 }}>
+                    <img src={`https://www.google.com/s2/favicons?domain=${importedSite.host}&sz=32`} width={13} height={13} style={{ borderRadius: 2, flexShrink: 0, display: 'block' }} onError={e => { e.target.style.display='none'; }} />
+                    <span style={{ maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{importedSite.host}</span>
+                    {importedSite.isShopify && <span style={{ background: '#EDFAF3', borderRadius: 8, padding: '1px 6px', fontSize: 10, fontWeight: 700, color: '#1A8A5A' }}>Shopify</span>}
+                    <button onClick={removeSite} style={{ border: 0, background: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', lineHeight: 0, marginLeft: 2 }}>
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2L8 8M8 2L2 8" stroke="#888" strokeWidth="1.6" strokeLinecap="round"/></svg>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* ── Default state — WDS toggle/pill with hover tooltip ── */
+                <div style={{ position: 'relative', display: 'inline-flex' }}
+                  onMouseEnter={() => setHovUrl(true)}
+                  onMouseLeave={() => setHovUrl(false)}
+                >
+                  <button onClick={() => setShowImport(true)} className="hbtn" style={{ ...hBtnSecondary('small'), borderRadius: 24, gap: 6, background: hovUrl ? '#fff' : 'transparent', border: hovUrl ? '1px solid #E0E0E0' : '1px solid transparent', transition: 'background 150ms, border-color 150ms' }}>
+                    <HIc name="globe" size={14} color="#32324D" />
+                    Create from URL
+                  </button>
+                  {hovUrl && (
+                    <div style={{ position: 'absolute', bottom: 'calc(100% + 10px)', left: 0, zIndex: 200, width: 240, background: '#fff', borderRadius: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.14)', padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 10, pointerEvents: 'none' }}>
+                      {/* Arrow */}
+                      <div style={{ position: 'absolute', bottom: -6, left: 18, width: 12, height: 12, background: '#fff', transform: 'rotate(45deg)', boxShadow: '2px 2px 6px rgba(0,0,0,0.08)' }} />
+                      <div style={{ fontSize: 13, fontWeight: 700, color: '#1E1E2E' }}>Create from URL</div>
+                      <div style={{ fontSize: 12, color: '#555566', lineHeight: 1.5 }}>Use any existing website as a starting point — Aria will import its structure, style &amp; content.</div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 2 }}>
+                        {[
+                          { icon: '🏗️', label: 'Structure', desc: 'Pages, sections & layout' },
+                          { icon: '🎨', label: 'Style', desc: 'Colors, fonts & imagery' },
+                          { icon: '📄', label: 'Content', desc: 'Text, products & info' },
+                        ].map(({ icon, label, desc }) => (
+                          <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span style={{ fontSize: 14 }}>{icon}</span>
+                            <span style={{ fontSize: 11, color: '#32324D' }}><b>{label}</b> — {desc}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Generate Site button */}
+              <button className="hbtn" style={{ ...hBtnPrimary('medium'), background: '#116DFF' }}>
+                Generate Site
+              </button>
+            </div>
+          </div>
+
+          {/* Disclaimer */}
+          <p style={{ margin: 0, textAlign: 'center', fontSize: 12, color: '#868AA5' }}>AI can make mistakes. Always double-check the results</p>
+        </div>
+      </div>
+
+      {/* ── Template section ── */}
+      <div style={{ padding: '0 24px 24px' }}>
+        <div style={{ background: 'rgba(246,246,246,0.7)', backdropFilter: 'blur(10px)', borderRadius: 24, padding: 40, display: 'flex', flexDirection: 'column', gap: 40, boxShadow: 'inset 1px 1px 1px rgba(255,255,255,0.8), inset -1px -1px 1px rgba(255,255,255,0.8)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: 18, fontWeight: 600, fontFamily: '"Wix Madefor Display", sans-serif', color: '#000' }}>Or, start from a template recommended for you.</span>
+            <button style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 0, cursor: 'pointer', fontSize: 14, color: '#000624', fontFamily: 'inherit' }}>
+              See All <img src={FG_ASSETS.chevronR} width={18} height={18} />
+            </button>
+          </div>
+          <div style={{ display: 'flex', gap: 40 }}>
+            {[
+              [FG_ASSETS.tmpl1, 'Beauty Salon'],
+              [FG_ASSETS.tmpl2, 'Real Estate Landing Page'],
+              [FG_ASSETS.tmpl3, 'Health care'],
+            ].map(([src, label]) => (
+              <div key={label} style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <img src={src} style={{ width: '100%', borderRadius: 8, display: 'block', boxShadow: '0 10px 9px rgba(0,0,0,0.08)' }} />
+                <span style={{ fontSize: 14, color: '#000624' }}>{label}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 40 }}>
+            {[
+              [FG_ASSETS.tmpl4, 'Fitness app site'],
+              [FG_ASSETS.tmpl5, 'Portfolio Site'],
+              [FG_ASSETS.tmpl6, 'Health Care Landing Page (Fresh)'],
+            ].map(([src, label]) => (
+              <div key={label} style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <img src={src} style={{ width: '100%', borderRadius: 8, display: 'block', boxShadow: '0 10px 9px rgba(0,0,0,0.08)' }} />
+                <span style={{ fontSize: 14, color: '#000624' }}>{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Floating dev tweaks panel ── */}
+      <div style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 9000, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
+        {tweaksOpen && (
+          <div style={{ background: '#1E1E2E', borderRadius: 12, padding: '14px 16px', width: 220, boxShadow: '0 8px 32px rgba(0,0,0,0.30)', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: '#9090A8', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Dev — Simulate URL scan</div>
+            {DEV_PRESETS.map(({ label, host, badge, badgeColor, badgeBg }) => (
+              <button key={host} onClick={() => { setImportPreset({ host }); setShowImport(true); setTweaksOpen(false); }} style={{ textAlign: 'left', height: 30, padding: '0 10px', border: 0, borderRadius: 6, fontSize: 11, fontWeight: 500, cursor: 'pointer', background: '#32324D', color: '#fff', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6 }}>
+                {label}
+                {badge && <span style={{ background: badgeBg, borderRadius: 6, padding: '1px 5px', fontSize: 9, fontWeight: 700, color: badgeColor }}>{badge}</span>}
+              </button>
+            ))}
+          </div>
+        )}
+        <button onClick={() => setTweaksOpen(o => !o)} style={{ width: 36, height: 36, borderRadius: '50%', border: 0, background: '#1E1E2E', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 16px rgba(0,0,0,0.25)' }}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="4" r="1.5" fill="#fff"/><circle cx="8" cy="8" r="1.5" fill="#fff"/><circle cx="8" cy="12" r="1.5" fill="#fff"/></svg>
+        </button>
+      </div>
+
+      {/* ── ImportFlow modal ── */}
+      {showImport && (
+        <ImportFlow
+          initialUrl={importPreset ? importPreset.host : ''}
+          initialPhase={importPreset ? 'results' : 'url'}
+          onClose={() => { setShowImport(false); setImportPreset(null); }}
+          onImport={(site) => { setImportedSite(site); setShowImport(false); setImportPreset(null); }}
+        />
+      )}
+
+      {/* ── Undo toast ── */}
+      {undoSite && (
+        <div style={{ position: 'fixed', bottom: 32, left: '50%', transform: 'translateX(-50%)', zIndex: 9999, background: '#32324D', color: '#fff', borderRadius: 8, padding: '10px 16px', fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 4px 20px rgba(0,0,0,0.22)', whiteSpace: 'nowrap' }}>
+          <span>Removed <b>{undoSite.host}</b></span>
+          <button onClick={() => { setImportedSite(undoSite); setUndoSite(null); clearTimeout(undoTimer.current); }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.35)', borderRadius: 6, color: '#fff', fontSize: 12, fontWeight: 600, padding: '3px 10px', cursor: 'pointer' }}>Undo</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
+   HarmonyV11Screen — Harmony Creation V1.1 entry point
+   Same ImportFlow modal as FigmaEntryScreen (shared component).
+   ============================================================ */
+
+function HarmonyV11Screen({ onGenerate }) {
+  const [showImport, setShowImport] = hs(false);
+  const [importPreset, setImportPreset] = hs(null);
+  const [importedSite, setImportedSite] = hs(null);
+  const [hovUrl, setHovUrl] = hs(false);
+  const [tweaksOpen, setTweaksOpen] = hs(false);
+
+  const EXAMPLE_PROMPTS = ['Fashion store', 'Online course', 'Wellness service', 'Consulting website', 'Community hub', 'Creative portfolio'];
+
+  return (
+    <div style={{ width: '100%', minHeight: '100vh', background: 'radial-gradient(ellipse 90% 55% at 50% 130%, rgba(225,237,255,0.95) 0%, rgba(255,255,255,0) 70%), #f6f6f6', fontFamily: '"Wix Madefor Text", sans-serif', display: 'flex', flexDirection: 'column' }}>
+
+      {/* ── Header ── */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72, padding: '0 56px', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          {/* Wix wordmark */}
+          <svg width="40" height="22" viewBox="0 0 80 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <text x="0" y="22" fontSize="26" fontWeight="900" fontFamily="'Wix Madefor Display', Arial, sans-serif" fill="#000">Wix</text>
+          </svg>
+          {/* Avatar placeholder */}
+          <div style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #2f5dff', background: '#dde8ff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: '#2f5dff', flexShrink: 0 }}>N</div>
+        </div>
+        <button style={{ background: 'none', border: 0, cursor: 'pointer', fontSize: 15, fontWeight: 700, color: '#2f5dff', fontFamily: 'inherit' }}>Upgrade</button>
+      </div>
+
+      {/* ── Main stage ── */}
+      <div style={{ flex: 1, padding: '0 130px', maxWidth: 1440, margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+
+        {/* Heading block */}
+        <div style={{ paddingTop: 46, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {/* Aria greeting */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#1E1E2E', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <HAria size={22} />
+            </div>
+            <div style={{ fontSize: 34, fontWeight: 400, fontFamily: '"Wix Madefor Display", sans-serif', letterSpacing: '-0.8px', lineHeight: '39.1px', background: 'linear-gradient(90deg, #315FFF 0%, #1D3999 100%)', backgroundClip: 'text', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              Hi! I'm Aria, your friendly design assistant.
+            </div>
+          </div>
+          {/* Subtitle */}
+          <div style={{ fontSize: 32, fontWeight: 400, fontFamily: '"Wix Madefor Display", sans-serif', letterSpacing: '-0.8px', lineHeight: '36.8px', color: '#151414' }}>
+            Tell me your site's{' '}<span style={{ color: '#2f5dff' }}>name</span>, what kind of{' '}
+            <span style={{ color: '#2f5dff' }}>business it is,</span> and what{' '}
+            <span style={{ color: '#2f5dff' }}>makes it unique.</span>
+          </div>
+        </div>
+
+        {/* Composer card */}
+        <div style={{ marginTop: 40, borderRadius: 24, background: '#fff', border: '1.5px solid #9db9ff', padding: '26px 28px 18px', minHeight: 296, display: 'flex', flexDirection: 'column', boxShadow: '0 2px 2px rgba(0,6,36,0.05), 0 0 3px rgba(0,6,36,0.1)', position: 'relative' }}>
+          {/* Textarea */}
+          <textarea
+            placeholder="Describe the site you want to build…"
+            style={{ flex: 1, width: '100%', fontSize: 22, fontFamily: '"Wix Madefor Text", sans-serif', color: '#767574', border: 0, outline: 0, resize: 'none', lineHeight: '29.7px', background: 'transparent', minHeight: 168, boxSizing: 'border-box', '::placeholder': { color: '#767574' } }}
+          />
+          {/* Composer footer */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8 }}>
+            {/* Create from URL text button */}
+            <div style={{ position: 'relative', display: 'inline-flex' }}
+              onMouseEnter={() => setHovUrl(true)}
+              onMouseLeave={() => setHovUrl(false)}
+            >
+              <button onClick={() => setShowImport(true)} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'none', border: 0, cursor: 'pointer', fontSize: 16, fontWeight: 700, color: '#151414', fontFamily: 'inherit', padding: '8px 12px', borderRadius: 24 }}>
+                <HIc name="globe" size={18} color="#151414" />
+                Create from URL
+              </button>
+              {hovUrl && (
+                <div style={{ position: 'absolute', bottom: 'calc(100% + 10px)', left: 0, zIndex: 200, width: 240, background: '#fff', borderRadius: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.14)', padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 10, pointerEvents: 'none' }}>
+                  <div style={{ position: 'absolute', bottom: -6, left: 18, width: 12, height: 12, background: '#fff', transform: 'rotate(45deg)', boxShadow: '2px 2px 6px rgba(0,0,0,0.08)' }} />
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#1E1E2E' }}>Create from URL</div>
+                  <div style={{ fontSize: 12, color: '#555566', lineHeight: 1.5 }}>Use any existing website as a starting point — Aria will import its structure, style &amp; content.</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 2 }}>
+                    {[
+                      { icon: '🏗️', label: 'Structure', desc: 'Pages, sections & layout' },
+                      { icon: '🎨', label: 'Style', desc: 'Colors, fonts & imagery' },
+                      { icon: '📄', label: 'Content', desc: 'Text, products & info' },
+                    ].map(({ icon, label, desc }) => (
+                      <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ fontSize: 14 }}>{icon}</span>
+                        <span style={{ fontSize: 11, color: '#32324D' }}><b>{label}</b> — {desc}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Generate Site button */}
+            <button className="hbtn" style={{ ...hBtnPrimary('medium'), background: '#2f5dff', gap: 10, borderRadius: 12, boxShadow: '0 4px 7px rgba(47,93,255,0.35)' }}>
+              Generate Site
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 12L12 2M12 2H5M12 2V9" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Example prompts */}
+        <div style={{ marginTop: 40, paddingLeft: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={{ fontSize: 14, fontWeight: 500, color: '#151414' }}>Try an example prompt</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {EXAMPLE_PROMPTS.map(p => (
+              <button key={p} style={{ background: 'rgba(255,255,255,0.5)', border: '1.5px solid #fff', borderRadius: 8, padding: '8px 12px', fontSize: 14, fontWeight: 500, color: '#383838', cursor: 'pointer', fontFamily: 'inherit', boxShadow: '1px 8px 17px rgba(120,150,255,0.08)' }}>{p}</button>
+            ))}
+            <button style={{ background: 'rgba(255,255,255,0.5)', border: '1.5px solid #fff', borderRadius: 8, padding: '8px 12px', fontSize: 14, fontWeight: 500, color: '#2f5dff', cursor: 'pointer', fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 6, boxShadow: '1px 8px 17px rgba(120,150,255,0.08)' }}>
+              <HIc name="refresh" size={16} color="#2f5dff" />
+              More Ideas
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div style={{ textAlign: 'center', padding: '24px 20px 32px', fontSize: 13, color: '#6b6b6f', flexShrink: 0 }}>AI can make mistakes. Double check the results.</div>
+
+      {/* ── Floating dev tweaks panel ── */}
+      <div style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 9000, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
+        {tweaksOpen && (
+          <div style={{ background: '#1E1E2E', borderRadius: 12, padding: '14px 16px', width: 220, boxShadow: '0 8px 32px rgba(0,0,0,0.30)', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: '#9090A8', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Dev — Simulate URL scan</div>
+            {DEV_PRESETS.map(({ label, host, badge, badgeColor, badgeBg }) => (
+              <button key={host} onClick={() => { setImportPreset({ host }); setShowImport(true); setTweaksOpen(false); }} style={{ textAlign: 'left', height: 30, padding: '0 10px', border: 0, borderRadius: 6, fontSize: 11, fontWeight: 500, cursor: 'pointer', background: '#32324D', color: '#fff', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6 }}>
+                {label}
+                {badge && <span style={{ background: badgeBg, borderRadius: 6, padding: '1px 5px', fontSize: 9, fontWeight: 700, color: badgeColor }}>{badge}</span>}
+              </button>
+            ))}
+          </div>
+        )}
+        <button onClick={() => setTweaksOpen(o => !o)} style={{ width: 36, height: 36, borderRadius: '50%', border: 0, background: '#1E1E2E', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 16px rgba(0,0,0,0.25)' }}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="4" r="1.5" fill="#fff"/><circle cx="8" cy="8" r="1.5" fill="#fff"/><circle cx="8" cy="12" r="1.5" fill="#fff"/></svg>
+        </button>
+      </div>
+
+      {/* ── ImportFlow modal (shared component) ── */}
+      {showImport && (
+        <ImportFlow
+          initialUrl={importPreset ? importPreset.host : ''}
+          initialPhase={importPreset ? 'results' : 'url'}
+          onClose={() => { setShowImport(false); setImportPreset(null); }}
+          onImport={(site) => { setImportedSite(site); setShowImport(false); setImportPreset(null); }}
+        />
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
    Intro screens (4 static pre-funnel screens)
    ============================================================ */
 
@@ -1553,6 +1999,8 @@ function App() {
     return () => window.removeEventListener('keydown', onKey);
   }, [step]);
 
+  if (step === 'figma') return <FigmaEntryScreen onGenerate={(p) => { setGenPrompt(p); setStep(5); }} />;
+  if (step === 'v11') return <HarmonyV11Screen onGenerate={(p) => { setGenPrompt(p); setStep(5); }} />;
   if (step >= 5) return (
     <div style={{ width: '100%', height: '100vh', position: 'relative' }}>
       <GeneratingScreen prompt={genPrompt} />

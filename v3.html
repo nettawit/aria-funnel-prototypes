@@ -1,84 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
   <meta charset="utf-8">
   <title>Harmony V1.2</title>
-  <link rel="icon" type="image/svg+xml" href="favicon-v2.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400..800&family=Wix+Madefor+Text:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="_ds/wix-design-system-official-019dd41b-b90a-76ec-b726-689c69a4c997/tokens-harmony.css">
-  <link rel="stylesheet" href="wds/colors_and_type.css">
-  <script src="wds/icons.js" defer></script>
-  <script src="_ds/wix-design-system-official-019dd41b-b90a-76ec-b726-689c69a4c997/_ds_bundle.js"></script>
-  <style>
-    html, body { margin: 0; height: 100%; background: linear-gradient(180deg, #ffffff 0%, #eaf0fb 55%, #d8e5f5 100%) fixed; font-family: var(--wds-font-family-default, "Wix Madefor Text", "Madefor", sans-serif); }
-    #root { width: 100%; height: 100%; }
-
-    /* Typing border — subtle pulse on the border only */
-    @keyframes hf-border-pulse {
-      0%, 100% { border-color: rgba(47, 93, 255, 0.22); box-shadow: 0 0 0 3px rgba(47,93,255,0.06), 0 2px 12px rgba(100,100,180,0.07); }
-      50%       { border-color: rgba(47, 93, 255, 0.50); box-shadow: 0 0 0 3px rgba(47,93,255,0.11), 0 2px 16px rgba(47,93,255,0.10); }
-    }
-    .hf-typing-card {
-      animation: hf-border-pulse 1.8s ease-in-out infinite !important;
-    }
-
-    /* Example prompt chips */
-    .hf-chip:hover { background: rgba(255,255,255,0.85) !important; border-color: rgba(0,0,0,0.18) !important; }
-    .hf-chip:active { background: rgba(255,255,255,1) !important; transform: scale(0.98); }
-    .hf-chip-more:hover { color: #1a3ecc !important; }
-
-    /* Harmony button hover states */
-    .hbtn { transition: filter 120ms ease, box-shadow 120ms ease; }
-    .hbtn:hover:not(:disabled) { filter: brightness(0.92); }
-    .hbtn:active:not(:disabled) { filter: brightness(0.85); transform: scale(0.99); }
-    .hbtn-secondary:hover:not(:disabled) { background: #F4F4F4 !important; filter: none; }
-    .hbtn-secondary:active:not(:disabled) { background: #E8E8E8 !important; filter: none; }
-    .hbtn-ghost:hover:not(:disabled) { background: rgba(47,93,255,0.07) !important; filter: none; }
-    .hbtn-ghost:active:not(:disabled) { background: rgba(47,93,255,0.14) !important; filter: none; }
-    .hbtn-std-secondary:hover:not(:disabled) { background: rgba(47,93,255,0.06) !important; filter: none; }
-    .hbtn-std-secondary:active:not(:disabled) { background: rgba(47,93,255,0.12) !important; filter: none; }
-    /* Harmony Input focus state */
-    .h-input:focus { border-color: #116DFF !important; box-shadow: 0 0 0 3px rgba(17,109,255,0.12) !important; }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateX(-50%) translateY(8px); }
-      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-    }
-    @keyframes card-enter {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes placeholder-fadein {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-  </style>
-  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-  <style id="force-madefor">
-    :root {
-      --wds-font-family-default: "Wix Madefor Text", sans-serif !important;
-      --wds-font-family-display: "Wix Madefor Display", sans-serif !important;
-    }
-    *, body, button, input, textarea, select { font-family: "Wix Madefor Text", sans-serif !important; }
-  </style>
+  <meta http-equiv="refresh" content="0; url=harmony-funnel-v1.2.html">
 </head>
-<body style="background: linear-gradient(180deg, #ffffff 0%, #eaf0fb 55%, #d8e5f5 100%) no-repeat fixed; background-size: 100% 100vh">
-  <div id="root"></div>
-  <script>
-    window.START_STEP = 4; // skip intro screens — open straight on the home screen
-    window.DISABLE_GENERATE = true; // Harmony Creation v1.2 — Generate is inert in this version
-    fetch('round-15.jsx?v=20260611g')
-      .then(r => r.text())
-      .then(src => {
-        const compiled = Babel.transform(src, { presets: ['react'] }).code;
-        eval(compiled);
-        const E = window.HarmonyApp;
-        ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(E));
-      })
-      .catch(e => { document.getElementById('root').innerText = 'Error: ' + e.message; });
-  </script>
+<body>
+  <p>Redirecting to <a href="harmony-funnel-v1.2.html">Harmony Funnel V1.2</a>…</p>
 </body>
 </html>

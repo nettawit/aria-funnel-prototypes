@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>GeneratingScreen — Skeleton Sketch</title>
+<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Wix Madefor Text", sans-serif; background: #1a1a2e; display: flex; flex-direction: column; align-items: center; padding: 32px 24px; gap: 24px; }
+h2 { color: #fff; font-size: 13px; opacity: .5; letter-spacing: .5px; text-transform: uppercase; }
+
+/* shimmer */
+@keyframes sh { 0% { background-position: 100% center; } 100% { background-position: -100% center; } }
+.sh { background: linear-gradient(90deg,#e8edf5 25%,#d0d9ea 50%,#e8edf5 75%); background-size: 400% 100%; animation: sh 1.8s ease-in-out infinite; border-radius: 4px; }
+
+.screen { width: 1100px; height: 620px; background: #f0f2f8; display: flex; flex-direction: column; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+
+/* ── TOP BAR ── */
+.topbar {
+  height: 44px; background: #fff; border-bottom: 1px solid #e2e6ef;
+  display: flex; align-items: center; padding: 0 14px; gap: 8px; flex-shrink: 0;
+}
+.logo { width: 24px; height: 24px; background: #116DFF; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.avatar { width: 26px; height: 26px; border-radius: 50%; background: #c5712a; flex-shrink: 0; }
+.topbar-label { font-size: 12px; font-weight: 500; color: #32324D; white-space: nowrap; }
+.topbar-caret { font-size: 10px; color: #888; margin-left: 2px; }
+.center-label { font-size: 12px; font-weight: 500; color: #32324D; white-space: nowrap; }
+.badge-green { background: #97E573; border-radius: 4px; padding: 2px 7px; font-size: 11px; font-weight: 700; color: #1a4a00; white-space: nowrap; }
+.btn-upgrade { font-size: 12px; font-weight: 600; color: #116DFF; background: none; border: none; cursor: pointer; white-space: nowrap; }
+.icon-btn { width: 28px; height: 28px; border-radius: 6px; background: transparent; display: flex; align-items: center; justify-content: center; }
+.btn-preview { height: 28px; padding: 0 12px; border: 1px solid #e0e0e0; border-radius: 14px; font-size: 12px; font-weight: 600; color: #32324D; background: #fff; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+.btn-publish { height: 28px; padding: 0 14px; border: none; border-radius: 14px; font-size: 12px; font-weight: 700; color: #fff; background: #116DFF; white-space: nowrap; }
+
+/* ── BODY ── */
+.body { flex: 1; display: flex; overflow: hidden; }
+
+/* ── CANVAS ── */
+.canvas { flex: 1; background: #f0f2f8; position: relative; overflow: hidden; }
+.page { margin-left: 9%; height: 100%; background: #fff; padding: 22px 28px 0; display: flex; flex-direction: column; gap: 16px; overflow: hidden; box-shadow: -3px 0 16px rgba(0,0,0,.06); }
+
+.site-brief-label { font-size: 10px; font-weight: 500; color: #888; }
+.page-title { font-size: 32px; font-weight: 700; color: #1E1E2E; line-height: 1.1; }
+
+.two-col { display: flex; gap: 16px; }
+.prompt-block { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.domain-card { width: 34%; flex-shrink: 0; background: #f8f9fc; border: 1px solid #e8edf5; border-radius: 10px; padding: 13px 14px; display: flex; flex-direction: column; gap: 8px; }
+
+.cards-row { display: flex; gap: 10px; flex-shrink: 0; }
+.card { flex: 1; height: 128px; border-radius: 10px; overflow: hidden; }
+.card-typo { background: #2D1B14; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 14px; }
+.card-colors { display: flex; flex-direction: column; }
+.card-colors div { flex: 1; }
+.card-photo { background: linear-gradient(135deg, #c8d4e8, #b0bfe0); }
+
+.cards-row2 { display: flex; gap: 10px; flex-shrink: 0; }
+.card2 { flex: 1; height: 96px; border-radius: 10px; overflow: hidden; padding: 12px 13px; display: flex; flex-direction: column; gap: 6px; }
+.card-vp { background: #f8f9fc; border: 1px solid #e8edf5; }
+.card-goals { background: #ff6b4a; }
+.card-apps { background: #f8f9fc; border: 1px solid #e8edf5; }
+
+/* ── RIGHT PANEL ── */
+.panel { width: 240px; flex-shrink: 0; background: #fff; border-left: 1px solid #e2e6ef; display: flex; flex-direction: column; }
+.panel-body { flex: 1; padding: 18px 16px 12px; display: flex; flex-direction: column; gap: 0; overflow: hidden; }
+.aria-label { font-size: 14px; font-weight: 700; color: #1E1E2E; margin-bottom: 12px; }
+.aria-msg { font-size: 12px; color: #32324D; line-height: 1.6; }
+
+/* ── APPS WIDGET ── */
+.apps-widget {
+  margin: 12px; border: 1px solid #e2e6ef; border-radius: 10px;
+  background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,.07);
+  padding: 12px 13px; display: flex; flex-direction: column; gap: 8px;
+  flex-shrink: 0;
+}
+.apps-title { font-size: 13px; font-weight: 700; color: #1E1E2E; display: flex; align-items: center; justify-content: space-between; }
+.apps-sub { font-size: 11px; color: #888; }
+.app-row { display: flex; align-items: center; gap: 9px; padding: 7px 9px; background: #fff; border: 1px solid #e8edf5; border-radius: 8px; }
+.app-check { width: 15px; height: 15px; border-radius: 3px; background: #116DFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.app-icon { width: 30px; height: 30px; border-radius: 7px; flex-shrink: 0; }
+.app-info { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+.app-name { font-size: 12px; font-weight: 600; color: #1E1E2E; }
+.app-desc { font-size: 10px; color: #888; line-height: 1.3; }
+.apps-footer { display: flex; justify-content: space-between; align-items: center; }
+.more-apps { font-size: 11px; color: #116DFF; }
+.btn-add-apps { height: 28px; padding: 0 14px; background: #116DFF; color: #fff; border: none; border-radius: 14px; font-size: 12px; font-weight: 700; cursor: pointer; }
+</style>
+</head>
+<body>
+<h2>Skeleton — before 5.png fades in</h2>
+
+<div class="screen">
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <!-- left -->
+    <div class="logo">
+      <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M0 0L3.5 10L7 3L10.5 10L14 0" stroke="white" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="avatar"></div>
+    <span class="topbar-label">Site Name <span class="topbar-caret">›</span></span>
+    <span class="topbar-label">Brand <span class="topbar-caret">›</span></span>
+    <!-- center -->
+    <div style="flex:1;display:flex;justify-content:center;">
+      <span class="center-label">Fit (96%) ›</span>
+    </div>
+    <!-- right -->
+    <span class="badge-green">50% Off</span>
+    <button class="btn-upgrade">Upgrade</button>
+    <div class="icon-btn">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M3 8L6 5M3 8L6 11" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="icon-btn">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M13 8L10 5M13 8L10 11" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <button class="btn-preview">
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 2L12 7L2 12V2Z" stroke="#888" stroke-width="1.4" stroke-linejoin="round"/></svg>
+      Preview
+    </button>
+    <button class="btn-publish">Publish</button>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- CANVAS -->
+    <div class="canvas">
+      <div class="page">
+        <!-- Site Brief + Title -->
+        <div>
+          <div class="site-brief-label">Site Brief</div>
+          <div class="page-title sh" style="width:44%;height:36px;margin-top:8px;border-radius:8px;background:none;"></div>
+        </div>
+
+        <!-- Site prompt + Domain card -->
+        <div class="two-col">
+          <div class="prompt-block">
+            <div class="sh" style="width:70px;height:10px;margin-bottom:4px;"></div>
+            <div class="sh" style="width:100%;height:9px;"></div>
+            <div class="sh" style="width:96%;height:9px;"></div>
+            <div class="sh" style="width:98%;height:9px;"></div>
+            <div class="sh" style="width:93%;height:9px;"></div>
+            <div class="sh" style="width:89%;height:9px;"></div>
+            <div class="sh" style="width:62%;height:9px;"></div>
+          </div>
+          <div class="domain-card">
+            <div class="sh" style="width:70px;height:10px;"></div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#888" stroke-width="1.2"/><ellipse cx="7" cy="7" rx="2.5" ry="6" stroke="#888" stroke-width="1.2"/><path d="M1 7h12" stroke="#888" stroke-width="1.2"/></svg>
+              <div class="sh" style="width:80%;height:10px;"></div>
+            </div>
+            <div style="height:28px;background:#116DFF;border-radius:14px;display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:11px;font-weight:700;color:#fff;">Connect Domain</span>
+            </div>
+            <div class="sh" style="width:90%;height:8px;"></div>
+          </div>
+        </div>
+
+        <!-- Card row 1: typography / colors / photo -->
+        <div class="cards-row">
+          <div class="card card-typo">
+            <div style="font-size:9px;color:rgba(255,255,255,.4);font-weight:500;">Site typography</div>
+            <div style="font-size:30px;font-weight:700;color:#fff;opacity:.9;line-height:1;">Aa</div>
+            <div style="font-size:8px;color:rgba(255,255,255,.3);">abcdefghijklm...</div>
+          </div>
+          <div class="card card-colors">
+            <div style="flex:1;background:#FDFBF7;"></div>
+            <div style="flex:1;background:#2D1B14;"></div>
+            <div style="flex:1;background:#FF6B4A;"></div>
+            <div style="flex:1;background:#B5FFD9;"></div>
+            <div style="flex:1;background:#FF99C8;"></div>
+            <div style="flex:1;background:#FFD166;"></div>
+          </div>
+          <div class="card card-photo"></div>
+        </div>
+
+        <!-- Card row 2: visual profile / site goals / site apps -->
+        <div class="cards-row2">
+          <div class="card2 card-vp">
+            <div class="sh" style="width:72px;height:9px;"></div>
+            <div class="sh" style="width:60%;height:28px;border-radius:6px;"></div>
+            <div class="sh" style="width:45%;height:9px;"></div>
+          </div>
+          <div class="card2 card-goals">
+            <div style="font-size:9px;font-weight:600;color:rgba(255,255,255,.7);">Site goals</div>
+            <div style="display:flex;align-items:center;gap:5px;"><span style="color:#fff;font-size:10px;">✓</span><div style="font-size:10px;color:#fff;font-weight:500;">Sell professional courses</div></div>
+            <div style="display:flex;align-items:center;gap:5px;"><span style="color:#fff;font-size:10px;">✓</span><div style="font-size:10px;color:#fff;font-weight:500;">Offer daily immersion</div></div>
+            <div style="display:flex;align-items:center;gap:5px;"><span style="color:#fff;font-size:10px;">✓</span><div class="sh" style="width:70%;height:8px;opacity:.4;"></div></div>
+          </div>
+          <div class="card2 card-apps">
+            <div class="sh" style="width:56px;height:9px;"></div>
+            <div class="sh" style="width:100%;height:9px;"></div>
+            <div class="sh" style="width:80%;height:9px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="panel">
+      <div class="panel-body">
+        <div class="aria-label">Aria</div>
+        <p class="aria-msg">
+          I've got everything I need to build your site.<br/>
+          One last thing —
+        </p>
+        <p class="aria-msg" style="margin-top:10px;color:#555;">
+          Based on what you told me, these apps will help your business run smoothly. Want to add them?
+        </p>
+      </div>
+
+      <!-- Apps widget -->
+      <div class="apps-widget">
+        <div class="apps-title">
+          Apps for your site
+          <span style="font-size:14px;color:#aaa;cursor:pointer;">×</span>
+        </div>
+        <div class="apps-sub">These apps are recommended for your business</div>
+
+        <div class="app-row">
+          <div class="app-check">
+            <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="app-icon" style="background:#dde8ff;display:flex;align-items:center;justify-content:center;">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2" stroke="#116DFF" stroke-width="1.5"/><path d="M7 10h6M10 7v6" stroke="#116DFF" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="app-info">
+            <div class="app-name">Wix Bookings</div>
+            <div class="app-desc">Let clients schedule appointments on your site</div>
+          </div>
+        </div>
+
+        <div class="app-row">
+          <div class="app-check">
+            <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="app-icon" style="background:#1a2a4e;display:flex;align-items:center;justify-content:center;">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h8M2 12h10" stroke="white" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
+          <div class="app-info">
+            <div class="app-name">Wix Stores</div>
+            <div class="app-desc">Sell your products or find new products to sell</div>
+          </div>
+        </div>
+
+        <div class="apps-footer">
+          <span class="more-apps">more apps</span>
+          <button class="btn-add-apps">Add</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
